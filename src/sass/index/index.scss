@@ -1,0 +1,30 @@
+.common {
+  background-color: #e18585;
+  min-height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  &-con {
+    background-color: #b3d929;
+    &-header {
+      background-color: rgba(130, 234, 216, 0.863);
+      height: 65px;
+      display: flex;
+      align-items: center;
+      font-size: 22px;
+      font-weight: 700;
+      .image {
+        width: 50px;
+        height: 50px;
+        margin-right:20px ;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+    }
+    &-aside {
+      background-color: #1a99c0;
+    }
+    &-main {
+      background-color: #e7489a;
+    }
+  }
+}

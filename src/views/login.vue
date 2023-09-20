@@ -15,7 +15,7 @@ const userData = userStore(pinia); // 用户数据
 let changeState = reactive({
   changeName: "注册",
   confirmName: "登录",
-  isRegister: false,
+  isRegister: false,//是否注册
 });
 
 let formRef = ref(null); //表单对象
@@ -47,6 +47,7 @@ let form = reactive({
   username: "",
   password: "",
   checkPassword: "",
+  role:""
 });
 
 // 检查用户名是否存在
@@ -119,7 +120,7 @@ const confirm = ($router) => {
     let isSuccess = false;
     let loginServe = null;
     if (changeState.confirmName === "注册") {
-      loginServe = await reguser(form.username, form.password);
+      loginServe = await reguser(form.username, form.password,form.role);
     } else {
       loginServe = await login(form.username, form.password);
     }
@@ -149,7 +150,7 @@ const confirm = ($router) => {
 </script>
 <template>
   <div class="login">
-    <div class="login-box">
+    <div class="login-box" :class="{regist_height:changeState.isRegister}">
       <!-- 头像区域 -->
       <div class="login-box-avatar">
         <img src="../assets/vue.svg" />
@@ -197,6 +198,10 @@ const confirm = ($router) => {
             type="password"
             autocomplete="off"
           ></ElInput>
+        </el-form-item>
+        <el-form-item v-if="changeState.isRegister">
+            <el-radio v-model="radio" label="1">我是老师</el-radio>
+            <el-radio v-model="radio" label="2">我是学生</el-radio>
         </el-form-item>
         <el-form-item class="login-box-form-btns">
           <button type="button" class="confirm" @click="confirm($router)">
