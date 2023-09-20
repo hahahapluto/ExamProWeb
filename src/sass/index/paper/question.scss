@@ -1,0 +1,32 @@
+.selector {
+  // background-color: #afadad;
+  display: flex;
+  height: 40px;
+  &-form {
+    display: flex;
+    align-items: center;
+    &-item {
+      margin-bottom: 0px;
+      margin-right: 30px;
+      &-input {
+        // background-color: #ed4141;
+      }
+      &-select {
+      }
+    }
+  }
+}
+
+.form {
+  margin-top: 25px;
+  &-table {
+    background-color: #5cf277;
+  }
+}
+
+.page {
+  position: absolute;
+  bottom: 25px;
+  left: 45%;
+  // transform: translateX(-50%);
+}
