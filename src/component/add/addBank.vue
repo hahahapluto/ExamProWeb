@@ -1,7 +1,6 @@
 <template>
   <div>
-    新增题库
-  </div>
+    
 </template>
 
 <script>

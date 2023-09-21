@@ -29,3 +29,7 @@ export function localSaveData(name:string, data:any) {
 export function sessionSaveData(name:string, data:any) {
     sessionStorage.setItem(name, JSON.stringify(data));
 }
+
+export function jumpPath($router: any, path: string) {
+  $router.push('/index/' + path)
+}

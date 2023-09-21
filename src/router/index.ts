@@ -26,7 +26,14 @@ const router = createRouter({
         {
           path: '/index/question',
           name: '试题管理',
-          component: () => import('../component/paper/question.vue')
+          component: () => import('../component/paper/question.vue'),
+          children: [
+            {
+              path: '/index/question/add',
+              name: '新增题目',
+              component: () => import('../component/add/addQues.vue')
+            }
+          ]
         },
         { path: '/index/teaTopicPool', name: '老师的题目池管理', component: () => import('../component/paper/teaTopicPool.vue') },
         { path: '/index/topicPool', name: '题目池', component: () => import('../component/topic/topicPool.vue') },
