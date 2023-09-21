@@ -6,6 +6,7 @@ import '../../sass/index/paper/addQues.scss'
 import { getAllQuestion } from '../../request/api/paper/question'
 import cloneDeep from 'lodash/cloneDeep'
 import { jumpPath } from '../../hooks/useStorage'
+import { el } from 'element-plus/es/locale'
 
 interface Ques {
   type: string
@@ -121,7 +122,7 @@ const filteredType = computed(() => {
 //
 
 const dialogTableVisible = ref(false)
-const dialogFormVisible = ref(false)
+let dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 const dialogForm = reactive({
   name: '',
@@ -136,6 +137,31 @@ const dialogForm = reactive({
     D: ''
   }
 })
+
+const addQnes=function addQnes(){
+  // 主观题 subjective
+  let QuestionDescription,QuestionAnswer;
+  if(dialogForm.qtype==='1'){
+    QuestionDescription=dialogForm.describe;
+    QuestionAnswer=dialogForm.answer
+  }else if(dialogForm.qtype==='2'){//单选
+    QuestionDescription=`${dialogForm.describe}(exampro)A=${dialogForm.choose.A}&B=${dialogForm.choose.B}&C=${dialogForm.choose.C}&D=${dialogForm.choose.D}`;
+    QuestionAnswer=dialogForm.answer
+  }else{
+    QuestionDescription=`${dialogForm.describe}(exampro)A=${dialogForm.choose.A}&B=${dialogForm.choose.B}&C=${dialogForm.choose.C}&D=${dialogForm.choose.D}`;
+    
+  }
+  const qusetionMessage={
+    // 题目类型
+    QuestionType:dialogForm.qtype,
+    // 题目描述
+    QuestionDescription,
+    // 题目答案
+    QuestionAnswer,
+  }
+  console.log(qusetionMessage);
+  dialogFormVisible.value = false
+}
 </script>
 
 <template>
@@ -234,7 +260,7 @@ const dialogForm = reactive({
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"> 添加 </el-button>
+          <el-button type="primary" @click="addQnes()"> 添加 </el-button>
         </span>
       </template>
     </el-dialog>
