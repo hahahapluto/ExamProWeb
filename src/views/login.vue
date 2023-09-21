@@ -140,7 +140,7 @@ const confirm = ($router) => {
         // 保存 token 到 session
         sessionSaveData("token", loginData.token);
         sessionSaveData("username", loginData.username);
-        $router.push("/home");
+        $router.push("/index");
       }
     } else {
       ElMessage.success(changeState.confirmName + "异常，请重试！");

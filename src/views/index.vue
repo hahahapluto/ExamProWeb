@@ -8,7 +8,7 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
-
+// 点击跳转对应路由
 const jumpPath=function($router,path){
   $router.push('/index/'+path)
 }
