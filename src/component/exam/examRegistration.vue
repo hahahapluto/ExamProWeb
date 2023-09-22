@@ -6,23 +6,7 @@
 </template>
 
 <script>
-export default {
-  name: 'WorkspaceJsonExamRegistration',
 
-  data() {
-    return {
-      
-    };
-  },
-
-  mounted() {
-    
-  },
-
-  methods: {
-    
-  },
-};
 </script>
 
 <style lang="scss" scoped>

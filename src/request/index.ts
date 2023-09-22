@@ -1,7 +1,7 @@
 import axios from "axios";
 
 let service = axios.create({
-  baseURL: "http://47.115.228.27:707",
+  baseURL: "http://localhost:8080",
 });
 
 // 添加请求拦截器

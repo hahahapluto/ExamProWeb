@@ -15,7 +15,7 @@ const userData = userStore(pinia); // 用户数据
 let changeState = reactive({
   changeName: "注册",
   confirmName: "登录",
-  isRegister: false,//是否注册
+  isRegister: false, //是否注册
 });
 
 let formRef = ref(null); //表单对象
@@ -39,6 +39,7 @@ const changeModel = () => {
   form.username = "";
   form.password = "";
   form.checkPassword = "";
+  form.role = "1";
   resetFrom();
 };
 
@@ -47,7 +48,7 @@ let form = reactive({
   username: "",
   password: "",
   checkPassword: "",
-  role:""
+  role: "1",
 });
 
 // 检查用户名是否存在
@@ -65,7 +66,8 @@ const validateifUserExist = async (rule, value, callback) => {
       }
     } else {
       let loginData = ifUserExistServer.data;
-      if (loginData.status) {
+      console.log(loginData);
+      if (!loginData.status) {
         callback();
       } else {
         callback("该用户名不存在！");
@@ -120,7 +122,7 @@ const confirm = ($router) => {
     let isSuccess = false;
     let loginServe = null;
     if (changeState.confirmName === "注册") {
-      loginServe = await reguser(form.username, form.password,form.role);
+      loginServe = await reguser(form.username, form.password, form.role);
     } else {
       loginServe = await login(form.username, form.password);
     }
@@ -150,10 +152,10 @@ const confirm = ($router) => {
 </script>
 <template>
   <div class="login">
-    <div class="login-box" :class="{regist_height:changeState.isRegister}">
+    <div class="login-box" :class="{ regist_height: changeState.isRegister }">
       <!-- 头像区域 -->
       <div class="login-box-avatar">
-        <img src="../assets/vue.svg" />
+        <img src="../assets/logo.png" />
       </div>
       <!-- 登录表单区域 -->
       <el-form
@@ -200,8 +202,8 @@ const confirm = ($router) => {
           ></ElInput>
         </el-form-item>
         <el-form-item v-if="changeState.isRegister">
-            <el-radio v-model="radio" label="1">我是老师</el-radio>
-            <el-radio v-model="radio" label="2">我是学生</el-radio>
+          <el-radio v-model="form.role" label="1">我是学生</el-radio>
+          <el-radio v-model="form.role" label="2">我是老师</el-radio>
         </el-form-item>
         <el-form-item class="login-box-form-btns">
           <button type="button" class="confirm" @click="confirm($router)">

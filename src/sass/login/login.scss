@@ -3,14 +3,15 @@
   min-height: 100vh;
   width: 100%;
   overflow: hidden;
-  background-color: #477ccc;
+  background: linear-gradient(#4f49c5 40%, #6c66d1 60%);
+  background-color: #5d58cc;
   // background-image: linear-gradient(180deg, #477ccc, #477ccca6);
 
   &-box {
     width: 450px;
     height: 280px;
     background-color: #fff;
-    border-radius: 3px;
+    border-radius: 20px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -55,6 +56,7 @@
       .el-input__inner {
         background-color: transparent !important;
       }
+
       &-btns {
         display: flex;
         justify-content: center;
@@ -62,17 +64,17 @@
 
         .confirm {
           border: 0;
-          background-color: #789ad9;
+          background-color: #4f49c4;
           min-width: 135px;
           padding: 5px 10px;
-          border-radius: 32px;
+          border-radius: 12px;
           height: 35px;
           box-sizing: border-box;
           color: #fff;
         }
 
         .confirm:hover {
-          background-color: #678ed6;
+          background-color: #413ac5;
         }
 
         .change {
@@ -83,8 +85,31 @@
         }
 
         .change:hover {
-          color: #477ccc;
+          color: #4f49c4;
         }
+      }
+
+      .el-input__wrapper {
+        border-radius: 10px;
+      }
+
+      .el-input__wrapper.is-focus {
+        box-shadow: 0 0 0 1px #413ac5;
+      }
+
+      .el-radio .is-checked {
+        color: #413ac5;
+
+
+      }
+
+      .el-radio__input.is-checked .el-radio__inner {
+        border-color: #413ac5;
+        background: #413ac5;
+      }
+
+      .el-radio__input.is-checked+.el-radio__label {
+        color: #413ac5;
       }
     }
   }
