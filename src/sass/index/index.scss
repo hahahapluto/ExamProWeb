@@ -1,5 +1,6 @@
 .common {
-  background-color: #f4f6f5;
+  // background-color: #f4f6f5;
+
   min-height: 100vh;
   max-height: 100vh;
   display: flex;
@@ -7,7 +8,13 @@
 
   &-con {
     background-color: #f4f6f5;
+    // background-color: #8ec5fc;
+    //     background-image: linear-gradient(62deg, #8ec5fc 0%, #e0c3fc 100%);
+    background-color: #faf3ff;
+    // background-image: linear-gradient(180deg, #faf3ff 0%, #c0cfff 50%, #e0c3fc 100%);
 
+    // background-color: #8ec5fc;
+    // background-image: linear-gradient(62deg, #add3f964 50%, #e0c3fc 100%);
     &-header {
       min-width: 850px;
       // margin-top: 10px;
@@ -38,7 +45,7 @@
       border-radius: 10px;
       background-color: #fff;
       box-shadow: 0 0 10px #ddd;
-      transition: all .2s linear;
+      transition: all 0.2s linear;
 
       // 导航栏整体的背景颜色
       .el-menu {

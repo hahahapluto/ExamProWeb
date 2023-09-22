@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { reactive, ref, computed, onMounted, watch } from "vue";
-import { ElTable, ElMessage, ElMessageBox } from "element-plus";
-import "../../sass/index/paper/question.scss";
+import { ElTable } from "element-plus";
+import { computed, reactive, ref } from "vue";
 import "../../sass/index/paper/addQues.scss";
-import { getAllQuestion } from "../../request/api/paper/question";
+import "../../sass/index/paper/question.scss";
+// import { getAllQuestion } from "../../request/api/paper/question";
 import cloneDeep from "lodash/cloneDeep";
-import { jumpPath } from "../../hooks/useStorage";
 
 interface Ques {
   type: string;
@@ -18,20 +17,20 @@ const form = reactive({
   type: "请选择题目类型",
 });
 // 获取表格信息的查询参数
-const queryInfo = reactive({
-  query: "", // 查询参数
-  pagenum: 1, // 当前页码
-  pagesize: 2, // 每页显示条数
-});
+// const queryInfo = reactive({
+//   query: "", // 查询参数
+//   pagenum: 1, // 当前页码
+//   pagesize: 2, // 每页显示条数
+// });
 
 // 获取对应页码的题目 初始化
-const getQuesList = async function getQuesList() {
-  const { data: res } = await getAllQuestion(
-    queryInfo.pagenum,
-    queryInfo.pagesize
-  );
-  return res;
-};
+// const getQuesList = async function getQuesList() {
+//   const { data: res } = await getAllQuestion(
+//     queryInfo.pagenum,
+//     queryInfo.pagesize
+//   );
+//   return res;
+// };
 
 // const allTableDate=getQuesList();
 const allTableDate = ref<Ques[]>([
@@ -123,12 +122,11 @@ const filteredType = computed(() => {
 
 //
 
-const dialogTableVisible = ref(false);
 let dialogFormVisible = ref(false);
 const formLabelWidth = "140px";
 const dialogForm = reactive({
   name: "",
-  qtype: "1", //类型
+  qtype:"1", //类型
   describe: "", //题目描述
   answer: "", //单选答案
   canswer: [], //多选答案
@@ -257,7 +255,7 @@ const addQnes = function addQnes() {
         <el-form-item
           label="题目内容"
           :label-width="formLabelWidth"
-          v-if="dialogForm.qtype == 1"
+          v-if="dialogForm.qtype == '1'"
         >
           <el-input
             v-model="dialogForm.describe"
@@ -272,7 +270,7 @@ const addQnes = function addQnes() {
         <el-form-item
           label="题目答案"
           :label-width="formLabelWidth"
-          v-if="dialogForm.qtype == 1"
+          v-if="dialogForm.qtype == '1'"
         >
           <el-input
             v-model="dialogForm.answer"
@@ -288,7 +286,7 @@ const addQnes = function addQnes() {
         <el-form-item
           label="题目描述"
           :label-width="formLabelWidth"
-          v-if="dialogForm.qtype == 2 || dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '2' || dialogForm.qtype == '3'"
         >
           <el-input
             v-model="dialogForm.describe"
@@ -303,34 +301,34 @@ const addQnes = function addQnes() {
         <el-form-item
           label=" 选项A "
           class="choose"
-          v-if="dialogForm.qtype == 2 || dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '2' || dialogForm.qtype == '3'"
         >
           <el-input v-model="dialogForm.choose.A" />
         </el-form-item>
         <el-form-item
           label=" 选项B "
           class="choose"
-          v-if="dialogForm.qtype == 2 || dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '2' || dialogForm.qtype == '3'"
         >
           <el-input v-model="dialogForm.choose.B" />
         </el-form-item>
         <el-form-item
           label=" 选项C "
           class="choose"
-          v-if="dialogForm.qtype == 2 || dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '2' || dialogForm.qtype == '3'"
         >
           <el-input v-model="dialogForm.choose.C" />
         </el-form-item>
         <el-form-item
           label=" 选项D "
           class="choose"
-          v-if="dialogForm.qtype == 2 || dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '2' || dialogForm.qtype == '3'"
         >
           <el-input v-model="dialogForm.choose.D" />
         </el-form-item>
         <el-form-item
           label="单选答案"
-          v-if="dialogForm.qtype == 2"
+          v-if="dialogForm.qtype == '2'"
           class="single"
         >
           <el-radio-group v-model="dialogForm.answer">
@@ -343,7 +341,7 @@ const addQnes = function addQnes() {
         <!-- 多选题 -->
         <el-form-item
           label="多选答案"
-          v-if="dialogForm.qtype == 3"
+          v-if="dialogForm.qtype == '3'"
           class="single"
         >
           <el-checkbox-group v-model="dialogForm.canswer">

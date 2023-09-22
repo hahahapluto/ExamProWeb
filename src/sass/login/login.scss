@@ -3,9 +3,11 @@
   min-height: 100vh;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(#4f49c5 40%, #6c66d1 60%);
-  background-color: #5d58cc;
-  // background-image: linear-gradient(180deg, #477ccc, #477ccca6);
+  // background: linear-gradient(#4f49c5 40%, #6c66d1 60%);
+  background-color: #8ec5fc;
+  background-image: linear-gradient(62deg, #8ec5fc 0%, #e0c3fc 100%);
+//   background-color: #8BC6EC;
+// background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
 
   &-box {
     width: 450px;
@@ -99,8 +101,6 @@
 
       .el-radio .is-checked {
         color: #413ac5;
-
-
       }
 
       .el-radio__input.is-checked .el-radio__inner {
@@ -108,7 +108,7 @@
         background: #413ac5;
       }
 
-      .el-radio__input.is-checked+.el-radio__label {
+      .el-radio__input.is-checked + .el-radio__label {
         color: #413ac5;
       }
     }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import "../sass/index/index.scss";
 
-import { Menu as IconMenu, Location } from "@element-plus/icons-vue";
+// import { Menu as IconMenu, Location } from "@element-plus/icons-vue";
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
