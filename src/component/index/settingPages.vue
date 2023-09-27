@@ -222,4 +222,3 @@ const resetFrom = () => {
     </el-tab-pane>
   </el-tabs>
 </template>
-../../request/api/users/login.ts

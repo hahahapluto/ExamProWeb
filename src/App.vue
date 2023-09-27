@@ -31,4 +31,12 @@ body::-webkit-scrollbar-thumb {
   border-radius: 6px;
   background: #4b4b4b;
 }
+
+.el-dialog__headerbtn:hover .el-dialog__close {
+  color: #283ee3;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0px 0px 1px 1px #283ee3;
+}
 </style>

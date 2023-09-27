@@ -41,7 +41,7 @@ const allExamRegInfo = ref<ExamRegInfo[]>([
 const state = reactive({
   search: "",
   tableData: cloneDeep(allExamRegInfo.value),
-  examReg: true,
+  examReg: false,
 });
 
 // 搜索
