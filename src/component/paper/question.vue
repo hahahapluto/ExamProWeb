@@ -74,6 +74,7 @@ let openToAddBank = function () {};
 // 根据form.data搜索对应的题目
 const searchQuesByInput = function searchQuesByInput() {
   console.log(form.data);
+  console.log(filteredData.value);
   if (form.data.length > 0) {
     // 进行模糊查询并赋值给 tableData
     tableData.value = filteredData.value;
@@ -126,7 +127,7 @@ let dialogFormVisible = ref(false);
 const formLabelWidth = "140px";
 const dialogForm = reactive({
   name: "",
-  qtype:"1", //类型
+  qtype: "1", //类型
   describe: "", //题目描述
   answer: "", //单选答案
   canswer: [], //多选答案

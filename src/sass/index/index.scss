@@ -1,6 +1,5 @@
 .common {
   // background-color: #f4f6f5;
-
   min-height: 100vh;
   max-height: 100vh;
   display: flex;
@@ -9,13 +8,14 @@
   &-con {
     background-color: #f4f6f5;
     // background-color: #8ec5fc;
-    //     background-image: linear-gradient(62deg, #8ec5fc 0%, #e0c3fc 100%);
+    // background-image: linear-gradient(62deg, #8ec5fc 0%, #e0c3fc 100%);
     background-color: #faf3ff;
     // background-image: linear-gradient(180deg, #faf3ff 0%, #c0cfff 50%, #e0c3fc 100%);
-
     // background-color: #8ec5fc;
     // background-image: linear-gradient(62deg, #add3f964 50%, #e0c3fc 100%);
+
     &-header {
+      user-select: none;
       min-width: 850px;
       // margin-top: 10px;
       // border-radius: 10px 0 0 10px;
@@ -26,15 +26,32 @@
       height: 65px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       font-size: 22px;
       font-weight: 700;
+      font-size: 20px;
 
-      .image {
-        width: 50px;
-        height: 50px;
-        margin-right: 20px;
-        border-radius: 10px;
+      &-left {
+        display: flex;
+        align-items: center;
+
+        .image {
+          width: 50px;
+          height: 50px;
+          margin-right: 20px;
+          border-radius: 10px;
+          overflow: hidden;
+        }
+      }
+
+
+      .popup {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
         overflow: hidden;
+        margin: 0 12px;
+        cursor: pointer;
       }
     }
 
@@ -74,7 +91,8 @@
         }
 
         .el-menu-item.is-active {
-          color: #000;
+          color: #fff;
+          background-color: #4b4b4b;
         }
 
         .el-menu-item:hover.is-active {

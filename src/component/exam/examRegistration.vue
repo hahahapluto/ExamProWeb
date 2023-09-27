@@ -1,14 +1,156 @@
+<script lang="ts" setup>
+import { reactive, computed, ref } from "vue";
+import "../../sass/exam/examRegistration.scss";
+import ExamReg from "./popup/examReg.vue";
+import cloneDeep from "lodash/cloneDeep";
+interface ExamRegInfo {
+  PaperId: string;
+  PaperName: string;
+  StartTime: string;
+  EndTime: string;
+  NumberOfExaminees: string;
+  CreateBy: string;
+}
+
+const allExamRegInfo = ref<ExamRegInfo[]>([
+  {
+    PaperId: "1",
+    PaperName: "语文考试1",
+    StartTime: "2023-9-20 17:00",
+    EndTime: "2023-9-20 22:00",
+    NumberOfExaminees: "20",
+    CreateBy: "王五",
+  },
+  {
+    PaperId: "2",
+    PaperName: "语文考试2",
+    StartTime: "2023-9-20 17:00",
+    EndTime: "2023-9-20 22:00",
+    NumberOfExaminees: "20",
+    CreateBy: "王五",
+  },
+  {
+    PaperId: "3",
+    PaperName: "语文考试3",
+    StartTime: "2023-9-20 17:00",
+    EndTime: "2023-9-20 22:00",
+    NumberOfExaminees: "20",
+    CreateBy: "王五",
+  },
+]);
+const state = reactive({
+  search: "",
+  tableData: cloneDeep(allExamRegInfo.value),
+  examReg: true,
+});
+
+// 搜索
+const onSearch = () => {
+  console.log(state.tableData);
+  console.log(filteredData.value);
+  console.log("onSearch!");
+  if (state.search.length > 0) {
+    // 进行模糊查询并赋值给 tableData
+    state.tableData = filteredData.value;
+  } else {
+    // 当 form.data 为空时，赋值为 allTableDate
+    state.tableData = allExamRegInfo.value;
+  }
+};
+
+const clearSearch = () => {
+  if (state.search.length == 0) {
+    // 当 form.data 为空时，赋值为 allTableDate
+    state.tableData = allExamRegInfo.value;
+  }
+};
+
+// 报名
+const handleReg = (index: any, row: any) => {
+  console.log(index, row);
+  state.examReg = true;
+};
+
+// 定义模糊查询的 computed 属性
+const filteredData = computed(() => {
+  // 使用 form.data 进行模糊查询
+  const searchData = state.search.toLowerCase(); // 将查询字符串转换为小写
+  return state.tableData.filter((item) => {
+    // 根据题目内容和题目类型进行模糊查询
+    return item.PaperName.toLowerCase().includes(searchData);
+  });
+});
+</script>
+
 <template>
   <div>
     <!-- 考试报名 -->
-    Exam registration
+    <div class="examRegistration">
+      <el-form
+        :inline="true"
+        :model="state"
+        class="examRegistration-form"
+        size="large"
+      >
+        <el-form-item label="查询考试：">
+          <el-input
+            v-model="state.search"
+            placeholder="请输入相关考试名称"
+            @input="clearSearch"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="search" type="primary" @click="onSearch"
+            >查询</el-button
+          >
+        </el-form-item>
+      </el-form>
+      <el-table
+        :data="state.tableData"
+        max-height="555"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="PaperId"
+          label="试卷ID"
+          align="center"
+          width="100px"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="PaperName"
+          label="考试名称"
+          align="center"
+          width="150px"
+        >
+        </el-table-column>
+        <el-table-column prop="StartTime" label="考试开始时间" align="center">
+        </el-table-column>
+        <el-table-column prop="EndTime" label="考试结束时间" align="center">
+        </el-table-column>
+        <el-table-column
+          prop="NumberOfExaminees"
+          label="考试报考人数"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column prop="CreateBy" label="创建人" align="center">
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="120" align="center">
+          <template #default="scope">
+            <el-button
+              class="search"
+              type="primary"
+              @click="handleReg(scope.$index, scope.row)"
+              >报名</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-dialog title="考试报名" v-model="state.examReg" width="540px">
+        <ExamReg></ExamReg>
+      </el-dialog>
+    </div>
   </div>
 </template>
-
-<script>
-
-</script>
-
-<style lang="scss" scoped>
-
-</style>

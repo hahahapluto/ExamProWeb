@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { ElPopover } from "element-plus";
+import PopUp from "../component/index/popUp.vue";
 import "../sass/index/index.scss";
-
-// import { Menu as IconMenu, Location } from "@element-plus/icons-vue";
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
@@ -31,7 +31,7 @@ const jumpPath = function ($router: any, path: String) {
             >
               <el-sub-menu index="1">
                 <template #title>
-                  <el-icon><location /></el-icon>
+                  <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
                   <span>考试</span>
                 </template>
                 <el-menu-item
@@ -57,12 +57,17 @@ const jumpPath = function ($router: any, path: String) {
                 index="2"
                 @click="() => jumpPath($router, 'topicPool')"
               >
-                <el-icon><icon-menu /></el-icon>
+                <el-icon
+                  ><el-icon
+                    ><i class="icon iconfont icon-timujindu"></i></el-icon
+                ></el-icon>
                 <span>题目池</span>
               </el-menu-item>
               <el-sub-menu index="3">
                 <template #title>
-                  <el-icon><location /></el-icon>
+                  <el-icon
+                    ><i class="icon iconfont icon-kaojuanguanli"></i
+                  ></el-icon>
                   <span>考卷管理</span>
                 </template>
                 <el-menu-item
@@ -88,7 +93,9 @@ const jumpPath = function ($router: any, path: String) {
               </el-sub-menu>
               <el-sub-menu index="4">
                 <template #title>
-                  <el-icon><location /></el-icon>
+                  <el-icon
+                    ><i class="icon iconfont icon-pingfenbiaozhun"></i
+                  ></el-icon>
                   <span>评卷管理</span>
                 </template>
                 <el-menu-item
@@ -104,10 +111,20 @@ const jumpPath = function ($router: any, path: String) {
 
       <el-container>
         <el-header class="common-con-header">
-          <div class="image">
-            <img src="../assets/logo.png" alt="" />
+          <div class="common-con-header-left">
+            <div class="image">
+              <img src="../assets/logo.png" alt="" />
+            </div>
+            ExamPro 在线考试管理系统
           </div>
-          ExamPro 在线考试管理系统
+          <el-popover placement="bottom" :width="200" trigger="click">
+            <template #reference>
+              <div class="popup">
+                <img src="../assets/user.jpg" alt="user" />
+              </div>
+            </template>
+            <PopUp></PopUp>
+          </el-popover>
         </el-header>
         <el-main class="common-con-main">
           <router-view></router-view>

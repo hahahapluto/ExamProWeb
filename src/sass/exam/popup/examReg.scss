@@ -1,0 +1,14 @@
+.testInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &-title {
+    margin-top: -10px;
+  }
+
+  &-main {
+    margin-top: 30px;
+  }
+}

@@ -1,6 +1,6 @@
-import service from "..";
+import service from "../..";
 // 检测用户名是否存在
-export function checkIfUserExist(username:String) {
+export function checkIfUserExist(username: String) {
   return service({
     method: "post",
     url: "/user/checkIfUserExist",
@@ -12,7 +12,7 @@ export function checkIfUserExist(username:String) {
 }
 
 // 注册
-export function reguser(username:String, password:String,role:Number) {
+export function reguser(username: String, password: String, role: Number) {
   return service({
     method: "post",
     url: "/user/reguser",
@@ -20,13 +20,13 @@ export function reguser(username:String, password:String,role:Number) {
     data: {
       username: username,
       password: password,
-      role:role
+      role: role,
     },
   });
 }
 
 // 登录
-export function login(username:String, password:String) {
+export function login(username: String, password: String) {
   return service({
     method: "post",
     url: "/user/login",
