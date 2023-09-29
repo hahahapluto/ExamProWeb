@@ -128,8 +128,9 @@ const confirm = ($router) => {
     }
     if (loginServe) {
       let loginData = loginServe.data;
+      console.log(loginData);
       // 如果登录失败则给出提示
-      if (loginData.status) {
+      if (loginData.code) {
         ElMessage.error(loginData.msg);
       } else {
         ElMessage.success(loginData.msg);
@@ -137,11 +138,12 @@ const confirm = ($router) => {
       }
       if (isSuccess) {
         // 保存 token username 到 piano
-        userData.username = loginData.username;
-        userData.token = loginData.token;
+        userData.username = loginData.data.username;
+        userData.token = loginData.data.token;
         // 保存 token 到 session
-        sessionSaveData("token", loginData.token);
-        sessionSaveData("username", loginData.username);
+        console.log();
+        sessionSaveData("token", loginData.data.token);
+        sessionSaveData("username", loginData.data.username);
         $router.push("/index");
       }
     } else {
