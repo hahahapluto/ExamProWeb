@@ -144,6 +144,7 @@ const confirm = ($router) => {
         console.log();
         sessionSaveData("token", loginData.data.token);
         sessionSaveData("username", loginData.data.username);
+        sessionSaveData("userid", loginData.data.userid);
         $router.push("/index");
       }
     } else {
@@ -219,4 +220,4 @@ const confirm = ($router) => {
     </div>
   </div>
 </template>
-../request/api/users/login.ts
+<!-- ../request/api/users/login.ts -->

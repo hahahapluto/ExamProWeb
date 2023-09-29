@@ -1,12 +1,16 @@
+import { sessionGetData } from '../../../hooks/useStorage'
 import service from '../../index'
+
 // 获取个人的题目池
-export function getAllQuestion(pagenum: Number, pagesize: Number) {
+export function getAllQuestion() {
+  console.log(sessionGetData('userid'))
+
   return service({
-    method: 'get',
-    url: '/index/getQuestionById',
+    method: 'post',
+    url: '/index/searchQuesByUserId',
     data: {
-      pagenum, // 当前页码
-      pagesize // 每页显示条数
-    }
+      userid: sessionGetData('userid')
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }

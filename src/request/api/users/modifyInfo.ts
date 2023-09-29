@@ -1,6 +1,6 @@
 import service from "../..";
 // 修改用户名
-export function modifyUsername(username) {
+export function modifyUsername(username:string) {
   return service({
     method: "post",
     url: "/modfiyUserInfo/modifyUsername",
@@ -14,7 +14,7 @@ export function modifyUsername(username) {
 }
 
 // 检测原始密码是否正确
-export function checkPassword(password) {
+export function checkPassword(password:string) {
   return service({
     method: "post",
     url: "/modfiyUserInfo/checkPassword",
@@ -28,7 +28,7 @@ export function checkPassword(password) {
 }
 
 // 修改密码
-export function modifyPassword(password) {
+export function modifyPassword(password:string) {
   return service({
     method: "post",
     url: "/modfiyUserInfo/modifyPassword",
