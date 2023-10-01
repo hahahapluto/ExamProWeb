@@ -141,7 +141,6 @@ const confirm = ($router) => {
         userData.username = loginData.data.username;
         userData.token = loginData.data.token;
         // 保存 token 到 session
-        console.log();
         sessionSaveData("token", loginData.data.token);
         sessionSaveData("username", loginData.data.username);
         sessionSaveData("userid", loginData.data.userid);
@@ -158,7 +157,7 @@ const confirm = ($router) => {
     <div class="login-box" :class="{ regist_height: changeState.isRegister }">
       <!-- 头像区域 -->
       <div class="login-box-avatar">
-        <img src="../assets/logo.png" />
+        <img src="../assets/logo.gif" />
       </div>
       <!-- 登录表单区域 -->
       <el-form
