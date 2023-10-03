@@ -8,3 +8,16 @@ export function getMyBank() {
     url: `/index/searchBankById?userId=${sessionGetData('userid')}`
   })
 }
+
+// 新增题库
+export function addBank(bankname:string) {
+  return service({
+    method: 'post',
+    url: `/index/addBank`,
+    data: {
+      userid: sessionGetData('userid'),
+      bankname
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}

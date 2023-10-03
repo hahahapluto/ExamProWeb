@@ -8,7 +8,7 @@ import { addQuestion, getMyQuestion } from '../../request/api/paper/question'
 import '../../sass/index/paper/addQues.scss'
 import '../../sass/index/paper/question.scss'
 import { mainStore } from '../../stores/mainStore'
-import { commonRules, formatExamString } from '../../utils/question'
+import { commonRules, formatExamString, getOption, getQues } from '../../utils/question'
 interface Ques {
   type: string
   description: string
@@ -40,18 +40,18 @@ let tableData: any = ref<Ques[]>()
 const AllQuestion = async () => {
   allTableData = (await getMyQuestion()).data.data
   console.log(allTableData)
-  allTableData.forEach((item: { type: string,description:string }) => {
+  allTableData.forEach((item: { type: string; description: string }) => {
     if (item.type == '0') {
       item.type = '主观题'
     } else if (item.type == '1') {
-      item.type = '单选题';
-      item.description = formatExamString(item.description);
+      item.type = '单选题'
+      item.description = formatExamString(item.description)
     } else {
-      item.type = '多选题';
-      item.description = formatExamString(item.description);
+      item.type = '多选题'
+      item.description = formatExamString(item.description)
     }
   })
-  console.log(allTableData);
+  console.log(allTableData)
   tableData.value = cloneDeep(allTableData)
 }
 AllQuestion()
@@ -121,19 +121,19 @@ const filteredData = computed(() => {
 // 根据对应的type显示对应的题目内容
 const filteredType = computed(() => {
   // 使用 form.data 进行模糊查询
-  const searchData = form.type; // 将查询字符串转换为小写
-  return allTableData.filter((item:any) => {
-    if (searchData == "1") {
-      return item.type == "主观题";
-    } else if (searchData == "2") {
-      return item.type == "单选题";
-    } else if (searchData == "3") {
-      return item.type == "多选题";
+  const searchData = form.type // 将查询字符串转换为小写
+  return allTableData.filter((item: any) => {
+    if (searchData == '1') {
+      return item.type == '主观题'
+    } else if (searchData == '2') {
+      return item.type == '单选题'
+    } else if (searchData == '3') {
+      return item.type == '多选题'
     } else {
-      return "";
+      return ''
     }
-  });
-});
+  })
+})
 
 /**
  *  return allTableData.filter((item: Ques) => {
@@ -178,15 +178,15 @@ const addQnes = async (formEl: FormInstance | undefined) => {
       }
       console.log(qusetionMessage)
       //发送添加题目请求
-      const { code,msg } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
+      const { code, msg } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
       if (code == 0) {
         console.log('插入成功', 0)
         // 刷新列表
         AllQuestion()
         // 成功弹窗
-        ElMessage.success(msg);
+        ElMessage.success(msg)
         // 表单重置
-        formEl.resetFields();
+        formEl.resetFields()
       }
       dialogFormVisible.value = false
     } else {
@@ -267,7 +267,6 @@ const dialogForm = reactive({
   }
 })
 
-
 const rules = reactive<FormRules<RuleForm>>({
   qtype: commonRules('题目类型', 'change'),
   // 主观题
@@ -289,7 +288,7 @@ const rules = reactive<FormRules<RuleForm>>({
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  
+
   // formEl.resetFields()
 }
 </script>
@@ -321,11 +320,47 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" border class="from-table">
-        <el-table-column type="selection" width="55" />
-        <el-table-column property="type" label="题目类型" width="120" />
-        <el-table-column property="description" label="题目内容(点击可查看详细信息)" />
-        <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" />
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%;" @selection-change="handleSelectionChange" class="from-table" :row-style="{height: '50px'}" border>
+        <el-table-column type="expand" width="50" align="center" >
+          <template #default="props">
+            <div style="display: flex; padding: 10px">
+              <!-- <p>A: {{ getOption('A=', props.row.description) }}</p> -->
+              <!-- <p m="t-0 b-2">City: {{ props.row.description }}</p>
+              <p m="t-0 b-2">Address: {{ props.row.description }}</p>
+              <p m="t-0 b-2">Zip: {{ props.row.description }}</p> -->
+              <div class="des">
+                <div class="des-left">题干</div>
+                <div class="des-right">
+                  <p class="des-right-pp">{{ getQues(props.row.description) }}</p>
+                  <p v-if="props.row.type !== '主观题'" class="des-right-p">A、 {{ getOption('A=', props.row.description) }}</p>
+                  <p v-if="props.row.type !== '主观题'" class="des-right-p">B、 {{ getOption('B=', props.row.description) }}</p>
+                  <p v-if="props.row.type !== '主观题'" class="des-right-p">C、 {{ getOption('C=', props.row.description) }}</p>
+                  <p v-if="props.row.type !== '主观题'" class="des-right-p">D、 {{ getOption('D=', props.row.description) }}</p>
+                </div>
+              </div>
+              <div class="answ">
+                <div class="answ-left">答案</div>
+                <div class="answ-right">
+                  <p class="answ-right-p">{{ props.row.answer }}</p>
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column property="type" label="题型" width="120" align="center" />
+        <el-table-column property="description" label="题目">
+          <template #default="scope">
+            <div style="display: flex; flex-direction: column">
+              <div>{{ getQues(scope.row.description) }}</div>
+              <!-- <div v-if="scope.row.type !== '主观题'" style="margin-top: 5px">A : {{ getOption('A=', scope.row.description) }}</div>
+              <div v-if="scope.row.type !== '主观题'">B : {{ getOption('B=', scope.row.description) }}</div>
+              <div v-if="scope.row.type !== '主观题'">C : {{ getOption('C=', scope.row.description) }}</div>
+              <div v-if="scope.row.type !== '主观题'">D : {{ getOption('D=', scope.row.description) }}</div> -->
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
       </el-table>
       <div style="margin-top: 20px">
         <!-- <el-button @click="toggleSelection([tableData[1], tableData[2]])">点击第二个和第三个</el-button> -->
@@ -428,10 +463,4 @@ function getAllQuestion(): any { throw new Error('Function not implemented.') } 
 //   { type: '多选题', data: '2信654息', createTime: '创建时间' }
 // ]) -->
 
-function formatExamString(description: string): string {
-    throw new Error('Function not implemented.')
-}
-
-function formatExamString(description: string): string {
-    throw new Error('Function not implemented.')
-}
+function formatExamString(description: string): string { throw new Error('Function not implemented.') } function formatExamString(description: string): string { throw new Error('Function not implemented.') }
