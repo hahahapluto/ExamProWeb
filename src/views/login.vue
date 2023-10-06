@@ -59,15 +59,16 @@ const validateifUserExist = async (rule, value, callback) => {
     let ifUserExistServer = await checkIfUserExist(form.username);
     if (changeState.confirmName === "注册") {
       let regData = ifUserExistServer.data;
-      if (regData.status) {
-        callback(new Error(regData.msg));
-      } else {
+      console.log(regData);
+      if (regData.code) {
         callback();
+      } else {
+        callback("用户名已经被占用,请重新输入一个新的用户名!");
       }
     } else {
       let loginData = ifUserExistServer.data;
       console.log(loginData);
-      if (!loginData.status) {
+      if (!loginData.code) {
         callback();
       } else {
         callback("该用户名不存在！");
@@ -126,6 +127,7 @@ const confirm = ($router) => {
     } else {
       loginServe = await login(form.username, form.password);
     }
+    console.log(loginServe);
     if (loginServe) {
       let loginData = loginServe.data;
       console.log(loginData);

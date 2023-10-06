@@ -29,8 +29,8 @@ const validateifUserExist = async (rule, value, callback) => {
   } else {
     let ifUserExistServer = await checkIfUserExist(newUserInfo.username);
     let regData = ifUserExistServer.data;
-    if (regData.status) {
-      callback(new Error(regData.msg));
+    if (!regData.code) {
+      callback("用户已存在");
     } else {
       callback();
     }
@@ -44,7 +44,7 @@ const confirmUserName = () => {
     if (!valid) return;
     let modifyServe = await modifyUsername(newUserInfo.username);
     let modifyData = modifyServe.data;
-    if (modifyData.status) {
+    if (modifyData.code) {
       ElMessage.error(modifyData.msg);
     } else {
       ElMessage.success(modifyData.msg);
@@ -68,7 +68,7 @@ const validateOldPass = async (rule, value, callback) => {
       let oldPassSever = await checkPassword(newUserInfo.oldPassword);
       console.log(oldPassSever);
       let oldPassData = oldPassSever.data;
-      if (oldPassData.status) {
+      if (oldPassData.code) {
         callback(new Error(oldPassData.msg));
       } else {
         callback();
@@ -108,7 +108,7 @@ const confirmPassword = () => {
     if (!valid) return;
     let modifyServe = await modifyPassword(newUserInfo.newPassword);
     let modifyData = modifyServe.data;
-    if (modifyData.status) {
+    if (modifyData.code) {
       ElMessage.error(modifyData.msg);
     } else {
       ElMessage.success(modifyData.msg);
