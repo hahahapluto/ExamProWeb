@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import "../../sass/Popover/popUp.scss";
 import { ref } from "vue";
 import router from "../../router/index.ts";
@@ -13,6 +13,11 @@ const exist = () => {
   router.push("/login");
   sessionStorage.clear();
   localStorage.clear();
+};
+
+// 改变 modifyForm 的状态
+const closeModify = () => {
+  modifyForm.value = false;
 };
 </script>
 
@@ -32,7 +37,7 @@ const exist = () => {
       <div class="setting-common-name">我的设置</div>
     </div>
     <el-dialog title="我的设置" v-model="modifyForm" width="540px">
-      <SettingPages modifyForm="{modifyForm}"></SettingPages>
+      <SettingPages :closeModify="closeModify"></SettingPages>
     </el-dialog>
     <div class="setting-common setting-warn" @click="exist">
       <div class="icon iconfont icon-h"></div>

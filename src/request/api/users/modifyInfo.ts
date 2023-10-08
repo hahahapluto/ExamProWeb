@@ -1,9 +1,9 @@
 import service from "../..";
 // 修改用户名
-export function modifyUsername(username:string) {
+export function modifyUsername(username: string) {
   return service({
     method: "post",
-    url: "/modfiyUserInfo/modifyUsername",
+    url: "/modifyUserInfo/modifyUsername",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
@@ -14,7 +14,7 @@ export function modifyUsername(username:string) {
 }
 
 // 检测原始密码是否正确
-export function checkPassword(password:string) {
+export function checkPassword(password: string) {
   return service({
     method: "post",
     url: "/modfiyUserInfo/checkPassword",
@@ -28,7 +28,7 @@ export function checkPassword(password:string) {
 }
 
 // 修改密码
-export function modifyPassword(password:string) {
+export function modifyPassword(password: string) {
   return service({
     method: "post",
     url: "/modfiyUserInfo/modifyPassword",

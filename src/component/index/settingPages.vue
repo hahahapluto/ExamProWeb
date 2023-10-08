@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ElInput, ElForm, ElFormItem, ElMessage } from "element-plus";
 import { ref, reactive } from "vue";
 import "../../sass/Popover/settingPages.scss";
@@ -11,11 +11,12 @@ import {
 import userStore from "../../stores/userStore.ts";
 import pinia from "../../stores/index.ts";
 import { sessionSaveData } from "../../hooks/useStorage.ts";
+import type { ElFormInstance } from "../../types/components.d.ts";
 
-const props = defineProps(["modifyForm"]);
+const props = defineProps(["closeModify"]);
 const userData = userStore(pinia); // 用户数据
 // 修改用户名
-let usernameFormRef = ref(null); // 修改用户名表单对象
+let usernameFormRef = ref<ElFormInstance>(); // 修改用户名表单对象
 let newUserInfo = reactive({
   username: "",
   oldPassword: "",
@@ -23,7 +24,7 @@ let newUserInfo = reactive({
   checkPassword: "",
 });
 // 检查新的用户名是否已经存在
-const validateifUserExist = async (rule, value, callback) => {
+const validateifUserExist = async (_rule: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请新的输入用户名"));
   } else {
@@ -39,7 +40,7 @@ const validateifUserExist = async (rule, value, callback) => {
 
 // 确认修改用户名
 const confirmUserName = () => {
-  usernameFormRef.value.validate(async (valid) => {
+  usernameFormRef.value?.validate(async (valid: any) => {
     // 如果表单的数据不合法则不发起请求
     if (!valid) return;
     let modifyServe = await modifyUsername(newUserInfo.username);
@@ -48,19 +49,18 @@ const confirmUserName = () => {
       ElMessage.error(modifyData.msg);
     } else {
       ElMessage.success(modifyData.msg);
-      userData.username = modifyData.username;
-      sessionSaveData("username", modifyData.username);
+      userData.username = modifyData.data.username;
+      sessionSaveData("username", modifyData.data.username);
       newUserInfo.username = "";
-      props.modifyForm.value = false;
-      newUserInfo.username = "";
+      props.closeModify();
     }
   });
 };
 
 // 修改密码
-let passwordFormRef = ref(null);
+let passwordFormRef = ref<ElFormInstance>();
 // 检查旧密码是否正确
-const validateOldPass = async (rule, value, callback) => {
+const validateOldPass = async (_rule: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请输入原始密码"));
   } else {
@@ -79,19 +79,19 @@ const validateOldPass = async (rule, value, callback) => {
 };
 
 // 检查新密码
-const validateNewPass = (rule, value, callback) => {
+const validateNewPass = (_rule: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请输入密码"));
   } else {
     if (newUserInfo.checkPassword !== "") {
-      passwordFormRef.value.validateField("checkPassword");
+      passwordFormRef.value?.validateField("checkPassword");
     }
     callback();
   }
 };
 
 // 二次校验密码
-const validateCheckPass = (rule, value, callback) => {
+const validateCheckPass = (_rule: any, value: any, callback: any) => {
   if (value === "") {
     callback(new Error("请再次输入密码"));
   } else if (value !== newUserInfo.newPassword) {
@@ -103,7 +103,7 @@ const validateCheckPass = (rule, value, callback) => {
 
 // 确认修改密码
 const confirmPassword = () => {
-  passwordFormRef.value.validate(async (valid) => {
+  passwordFormRef.value?.validate(async (valid: any) => {
     // 如果表单的数据不合法则不发起请求
     if (!valid) return;
     let modifyServe = await modifyPassword(newUserInfo.newPassword);
@@ -111,19 +111,19 @@ const confirmPassword = () => {
     if (modifyData.code) {
       ElMessage.error(modifyData.msg);
     } else {
-      ElMessage.success(modifyData.msg);
-      userData.password = modifyData.password;
-      sessionSaveData("password", modifyData.password);
-      props.modifyForm.value = false;
+      // ElMessage.success(modifyData.msg);
+      // userData.password = modifyData.password;
+      // sessionSaveData("password", modifyData.password);
       newUserInfo.oldPassword = "";
       newUserInfo.newPassword = "";
       newUserInfo.checkPassword = "";
+      props.closeModify();
     }
   });
 };
 
 // 表单的验证规则对象
-let userInfoRules = reactive({
+let userInfoRules = reactive<any>({
   // 验证新的用户名是否合法
   username: [
     {
@@ -144,8 +144,8 @@ let userInfoRules = reactive({
 
 // 重置表单
 const resetFrom = () => {
-  passwordFormRef.value.resetFields();
-  usernameFormRef.value.resetFields();
+  passwordFormRef.value?.resetFields();
+  usernameFormRef.value?.resetFields();
 };
 </script>
 
