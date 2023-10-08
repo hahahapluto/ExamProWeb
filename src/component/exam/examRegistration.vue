@@ -3,41 +3,23 @@ import { reactive, computed, ref } from "vue";
 import "../../sass/exam/examRegistration.scss";
 import ExamReg from "./popup/examReg.vue";
 import cloneDeep from "lodash/cloneDeep";
+import { onMounted } from "vue";
+import { getAllExams } from "../../request/api/exam/examRegistration";
+import { watchEffect } from "vue";
+
 interface ExamRegInfo {
-  PaperId: string;
-  PaperName: string;
-  StartTime: string;
-  EndTime: string;
-  NumberOfExaminees: string;
-  CreateBy: string;
+  paperId: string;
+  examName: string;
+  startTime: string;
+  endTime: string;
+  numberOfExaminees: string;
+  objectiveScore: Number;
+  subjectiveScore: Number;
+  createdBy: string;
 }
 
-const allExamRegInfo = ref<ExamRegInfo[]>([
-  {
-    PaperId: "1",
-    PaperName: "语文考试1",
-    StartTime: "2023-9-20 17:00",
-    EndTime: "2023-9-20 22:00",
-    NumberOfExaminees: "20",
-    CreateBy: "王五",
-  },
-  {
-    PaperId: "2",
-    PaperName: "语文考试2",
-    StartTime: "2023-9-20 17:00",
-    EndTime: "2023-9-20 22:00",
-    NumberOfExaminees: "20",
-    CreateBy: "王五",
-  },
-  {
-    PaperId: "3",
-    PaperName: "语文考试3",
-    StartTime: "2023-9-20 17:00",
-    EndTime: "2023-9-20 22:00",
-    NumberOfExaminees: "20",
-    CreateBy: "王五",
-  },
-]);
+const allExamRegInfo = ref<ExamRegInfo[]>([]);
+
 const state = reactive({
   search: "",
   tableData: cloneDeep(allExamRegInfo.value),
@@ -66,8 +48,10 @@ const clearSearch = () => {
 };
 
 // 报名
-const handleReg = (index: any, row: any) => {
-  console.log(index, row);
+const examRegData = ref<ExamRegInfo>();
+const handleReg = (_index: any, row: ExamRegInfo) => {
+  examRegData.value = { ...row };
+  console.log(examRegData.value);
   state.examReg = true;
 };
 
@@ -77,8 +61,26 @@ const filteredData = computed(() => {
   const searchData = state.search.toLowerCase(); // 将查询字符串转换为小写
   return state.tableData.filter((item) => {
     // 根据题目内容和题目类型进行模糊查询
-    return item.PaperName.toLowerCase().includes(searchData);
+    return item.examName.toLowerCase().includes(searchData);
   });
+});
+
+onMounted(() => {
+  // 获取考试列表
+  const getExamList = async () => {
+    try {
+      let res = await getAllExams();
+      allExamRegInfo.value = res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  getExamList();
+});
+
+// 在数据变化时重新渲染视图
+watchEffect(() => {
+  state.tableData = cloneDeep(allExamRegInfo.value);
 });
 </script>
 
@@ -112,30 +114,30 @@ const filteredData = computed(() => {
         style="width: 100%"
       >
         <el-table-column
-          prop="PaperId"
+          prop="paperId"
           label="试卷ID"
           align="center"
           width="100px"
         >
         </el-table-column>
         <el-table-column
-          prop="PaperName"
+          prop="examName"
           label="考试名称"
           align="center"
           width="150px"
         >
         </el-table-column>
-        <el-table-column prop="StartTime" label="考试开始时间" align="center">
+        <el-table-column prop="startTime" label="考试开始时间" align="center">
         </el-table-column>
-        <el-table-column prop="EndTime" label="考试结束时间" align="center">
+        <el-table-column prop="endTime" label="考试结束时间" align="center">
         </el-table-column>
         <el-table-column
-          prop="NumberOfExaminees"
+          prop="numberOfExaminees"
           label="考试报考人数"
           align="center"
         >
         </el-table-column>
-        <el-table-column prop="CreateBy" label="创建人" align="center">
+        <el-table-column prop="createdBy" label="创建人" align="center">
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120" align="center">
           <template #default="scope">
@@ -149,7 +151,7 @@ const filteredData = computed(() => {
         </el-table-column>
       </el-table>
       <el-dialog title="考试报名" v-model="state.examReg" width="540px">
-        <ExamReg></ExamReg>
+        <ExamReg :examRegData="examRegData"></ExamReg>
       </el-dialog>
     </div>
   </div>
