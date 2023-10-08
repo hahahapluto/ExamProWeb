@@ -22,7 +22,11 @@ const router = createRouter({
         { path: '/index/myExamRecord', name: '考试记录', component: () => import('../component/exam/myExamRecord.vue') },
         { path: '/index/markPaper', name: '评分卷子', component: () => import('../component/mark/markPaper.vue') },
         { path: '/index/paper', name: '试卷管理', component: () => import('../component/paper/paper.vue') },
-        { path: '/index/quesBank', name: '题库管理', component: () => import('../component/paper/quesBank.vue') },
+        {
+          path: '/index/quesBank',
+          name: '题库管理',
+          component: () => import('../component/paper/quesBank.vue')
+        },
         {
           path: '/index/question',
           name: '试题管理',
@@ -41,7 +45,8 @@ const router = createRouter({
           path: '/index/addBanl',
           name: '新增题库',
           component: () => import('../component/add/addBank.vue')
-        }
+        },
+        { path: '/index/quesBank/add', name: '题目添加进题库', component: () => import('../component/paper/bank/addQuesInBank.vue') }
       ]
     }
   ]

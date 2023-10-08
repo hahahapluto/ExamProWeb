@@ -3,10 +3,15 @@ import type { FormInstance } from 'element-plus'
 import { ElMessage, ElTable, FormRules } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 import { computed, reactive, ref } from 'vue'
-import { addQuestion, getMyQuestion } from '../../request/api/paper/question'
-import '../../sass/index/paper/addQues.scss'
-import '../../sass/index/paper/question.scss'
-import { commonRules, formatExamString, getOption, getQues } from '../../utils/question'
+import { addQuesInBank, getQuesInBank } from '../../../request/api/paper/bank'
+import { addQuestion } from '../../../request/api/paper/question'
+import '../../../sass/index/paper/addQues.scss'
+import '../../../sass/index/paper/question.scss'
+import pinia from '../../../stores'
+import quesStore from '../../../stores/quesStore'
+import { commonRules, formatExamString, getOption, getQues } from '../../../utils/question'
+const quesData = quesStore(pinia)
+console.log(quesData.bankId)
 interface Ques {
   type: string
   description: string
@@ -27,7 +32,7 @@ let tableData: any = ref<Ques[]>()
 
 // tableData = myQuestionList;
 const AllQuestion = async () => {
-  allTableData = (await getMyQuestion()).data.data
+  allTableData = (await getQuesInBank(quesData.bankId)).data.data
   console.log(allTableData)
   allTableData.forEach((item: { type: string; description: string }) => {
     if (item.type == '0') {
@@ -51,9 +56,9 @@ const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref<Ques[]>([])
 
 // 可以用于选择固定的第几位 修改成clear all
-const toggleSelection = () => {
-  multipleTableRef.value!.clearSelection()
-}
+// const toggleSelection = () => {
+//   multipleTableRef.value!.clearSelection()
+// }
 
 // handleSelectionChange：选中了几个题目并存放在value中
 const handleSelectionChange = (val: Ques[]) => {
@@ -62,7 +67,7 @@ const handleSelectionChange = (val: Ques[]) => {
 }
 
 // 将选择的试题添加到题库
-let openToAddBank = function () {}
+// let openToAddBank = function () {}
 
 // 根据form.data搜索对应的题目
 const searchQuesByInput = function searchQuesByInput() {
@@ -116,7 +121,7 @@ const filteredType = computed(() => {
 let dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 
-// 新增题目 （exampro）无意义用于区分题目和选项
+// 新增题目 （exampro）到题库
 const addQnes = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   // 首先调用表单验证
@@ -149,15 +154,20 @@ const addQnes = async (formEl: FormInstance | undefined) => {
       }
       console.log(qusetionMessage)
       //发送添加题目请求
-      const { code, msg } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
+      const { code, msg, data } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
       if (code == 0) {
-        console.log('插入成功', 0)
-        // 刷新列表
-        AllQuestion()
-        // 成功弹窗
-        ElMessage.success(msg)
-        // 表单重置
-        formEl.resetFields()
+        console.log(data)
+        // 讲题目添加到对应的题库里面
+        const res: any = await addQuesInBank(quesData.bankId, data)
+        console.log(res)
+        if (res.data.code == 0) {
+          // 刷新列表
+          AllQuestion()
+          // 成功弹窗
+          ElMessage.success(msg)
+          // 表单重置
+          formEl.resetFields()
+        }
       }
       dialogFormVisible.value = false
     } else {
@@ -265,7 +275,14 @@ const resetForm = (formEl: FormInstance | undefined) => {
 </script>
 
 <template>
+  <!-- <ul>
+    <li v-for="item in counterStore.myQuestionList" :key="item.questionId">{{ item.description }}</li>
+  </ul> -->
   <div>
+    <div class="title">
+      <el-icon class="title-icon"><ArrowLeftBold /></el-icon>
+      <span class="title-h2">{{ quesData.bankName }}</span>
+    </div>
     <!-- 筛选试题信息 -->
     <div class="selector">
       <el-form :model="form" class="selector-form" size="large">
@@ -288,8 +305,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%;" @selection-change="handleSelectionChange" class="from-table" :row-style="{height: '50px'}" border  height="650">
-        <el-table-column type="expand" width="50" align="center" >
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border>
+        <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
               <!-- <p>A: {{ getOption('A=', props.row.description) }}</p> -->
@@ -331,17 +348,14 @@ const resetForm = (formEl: FormInstance | undefined) => {
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
       </el-table>
       <div style="margin-top: 20px">
-        <!-- <el-button @click="toggleSelection([tableData[1], tableData[2]])">点击第二个和第三个</el-button> -->
-        <el-button @click="toggleSelection()">清空所有选择</el-button>
-        <!-- <el-row class="mb-4"> -->
-        <el-button @click="openToAddBank" type="primary" color="#283ee3">添加到题库 </el-button>
-        <!-- </el-row> -->
+        <el-button type="primary" color="#f56c6c" style="color: aliceblue">Delete</el-button>
+        <!-- <el-button @click="openToAddBank" type="primary" color="#283ee3">添加到题库 </el-button> -->
       </div>
     </div>
     <!-- 分页器 -->
-    <!-- <div class="page">
+    <div class="page">
       <el-pagination layout="prev, pager, next" :total="1000" background />
-    </div> -->
+    </div>
     <!-- <router-view></router-view> -->
     <el-dialog v-model="dialogFormVisible" title="新增题目">
       <el-form :model="dialogForm" :rules="rules" ref="ruleFormRef">
@@ -410,7 +424,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <!-- @click="dialogFormVisible = false" -->
           <el-button @click="resetForm(ruleFormRef)">重置</el-button>
           <el-button type="primary" @click="addQnes(ruleFormRef)"> 添加 </el-button>
         </span>
@@ -418,3 +431,31 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </el-dialog>
   </div>
 </template>
+
+<style scoped lang="scss">
+.title {
+  display: flex;
+  align-items: center;
+  &-icon {
+    // height: 100%;
+    width: 30px;
+    height: 30px;
+    line-height: 50px;
+    border-radius: 5px;
+    background-color: #ccc;
+  }
+  &-icon:hover{
+    background: #000;
+  }
+  &-h2 {
+    // margin-bottom: 15px;
+    color: #626aef;
+    height: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 10px;
+    // height: 100%;
+  }
+}
+</style>

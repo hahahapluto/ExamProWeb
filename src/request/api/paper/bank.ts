@@ -21,3 +21,28 @@ export function addBank(bankname:string) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
+
+// 获取题库里面的题目 selectBankQuesByBankId
+export function getQuesInBank(bankid:Number) {
+  return service({
+    method: 'post',
+    url: `/index/selectBankQuesByBankId`,
+    data: {
+      bankid
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}
+
+// 添加题库到题库
+export function addQuesInBank(bankid: Number, questionid: Number) {
+  return service({
+    method: 'POST',
+    url: '/index/addQuesInBank',
+    data: {
+      bankid,
+      questionid
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}

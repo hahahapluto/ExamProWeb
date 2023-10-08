@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ElPopover } from "element-plus";
 import PopUp from "../component/index/popUp.vue";
+import { jumpPath } from "../hooks/useStorage";
 import "../sass/index/index.scss";
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
@@ -9,9 +10,9 @@ const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
 // 点击跳转对应路由
-const jumpPath = function ($router: any, path: String) {
-  $router.push("/index/" + path);
-};
+// const jumpPath = function ($router: any, path: String) {
+//   $router.push("/index/" + path);
+// };
 </script>
 
 <template>
