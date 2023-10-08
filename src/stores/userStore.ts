@@ -8,5 +8,6 @@ const userStore = defineStore("userStore", {
       token: "", // token
     };
   },
+  persist: true,
 });
 export default userStore;

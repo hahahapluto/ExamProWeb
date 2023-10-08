@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 // import { ref } from 'vue'
 // import { getMyQuestion } from '../request/api/paper/question'
 
@@ -18,14 +18,15 @@ const mainStore = defineStore("mainStore", {
   // 公用数据
   state: () => {
     return {
-      count:0
+      count: 0,
     };
   },
   // 公用方法
   actions: {
     increacement() {
-      this.count++
-    }
+      this.count++;
+    },
   },
+  persist: true,
 });
-export default mainStore
+export default mainStore;

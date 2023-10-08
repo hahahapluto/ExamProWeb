@@ -1,13 +1,14 @@
-import { defineStore } from 'pinia'
-const quesStore = defineStore('quesStore', {
+import { defineStore } from "pinia";
+const quesStore = defineStore("quesStore", {
   // 公用数据
   state: () => {
     return {
       bankId: 0,
-      bankName: ''
-    }
+      bankName: "",
+    };
   },
   // 公用方法
-  actions: {}
-})
-export default quesStore
+  actions: {},
+  persist: true,
+});
+export default quesStore;
