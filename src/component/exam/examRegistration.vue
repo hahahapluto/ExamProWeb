@@ -8,7 +8,7 @@ import { getAllExams } from "../../request/api/exam/examRegistration";
 import { watchEffect } from "vue";
 
 interface ExamRegInfo {
-  paperId: string;
+  examID: string;
   examName: string;
   startTime: string;
   endTime: string;
@@ -28,9 +28,6 @@ const state = reactive({
 
 // 搜索
 const onSearch = () => {
-  console.log(state.tableData);
-  console.log(filteredData.value);
-  console.log("onSearch!");
   if (state.search.length > 0) {
     // 进行模糊查询并赋值给 tableData
     state.tableData = filteredData.value;
@@ -51,7 +48,6 @@ const clearSearch = () => {
 const examRegData = ref<ExamRegInfo>();
 const handleReg = (_index: any, row: ExamRegInfo) => {
   examRegData.value = { ...row };
-  console.log(examRegData.value);
   state.examReg = true;
 };
 
@@ -114,8 +110,8 @@ watchEffect(() => {
         style="width: 100%"
       >
         <el-table-column
-          prop="paperId"
-          label="试卷ID"
+          prop="examID"
+          label="考试ID"
           align="center"
           width="100px"
         >

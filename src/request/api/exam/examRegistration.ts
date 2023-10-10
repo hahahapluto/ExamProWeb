@@ -10,10 +10,13 @@ export function getAllExams() {
 }
 
 // 考试报名
-export function registerExam() {
+export function registerExam(examID: Number) {
   return service({
-    method: "get", // 使用GET请求
-    url: "/exam/allExams", // 考试数据的URL
-    headers: { "Content-Type": "application/json" },
+    method: "post", // 使用GET请求
+    url: "/exam/regExam", // 考试数据的URL
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    data: {
+      examID,
+    },
   });
 }
