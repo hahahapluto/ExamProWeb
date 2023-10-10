@@ -8,3 +8,12 @@ export function getAllExams() {
     headers: { "Content-Type": "application/json" },
   });
 }
+
+// 考试报名
+export function registerExam() {
+  return service({
+    method: "get", // 使用GET请求
+    url: "/exam/allExams", // 考试数据的URL
+    headers: { "Content-Type": "application/json" },
+  });
+}
