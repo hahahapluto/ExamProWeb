@@ -14,7 +14,7 @@ export function getMyQuestion() {
 }
 
 // 添加题目
-export function addQuestion(questiontype: String, questiondescription: String, questionanswer: String) {
+export function addQuestion(questiontype: String, questiondescription: String, questionanswer: String, questionscore: String) {
   return service({
     method: 'post',
     url: '/index/addQuestion',
@@ -22,7 +22,8 @@ export function addQuestion(questiontype: String, questiondescription: String, q
       questiontype,
       questiondescription,
       userid: sessionGetData('userid'),
-      questionanswer
+      questionanswer,
+      questionscore: questionscore
     },
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })

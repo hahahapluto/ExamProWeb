@@ -47,7 +47,6 @@ const AllQuestion = async () => {
     let date = new Date(item.createTime)
     item.createTime = date.toLocaleString()
   })
-  console.log(allTableData)
   tableData.value = cloneDeep(allTableData)
 }
 AllQuestion()

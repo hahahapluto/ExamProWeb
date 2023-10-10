@@ -51,13 +51,16 @@
     background-color: #ffffff;
     color: #bbb6bd;
     margin-right: 30px;
+    text-wrap: nowrap;
+    letter-spacing:0.8px;
   }
   &-right {
     // background-color: #b03333;
     width: 300px;
+    // line-height: 1.6;
+    letter-spacing:0.8px;
     &-p {
       margin-top: 10px;
-
     }
   }
 }
@@ -65,17 +68,35 @@
 .answ {
   display: flex;
   // justify-content: center;
-  align-items: center;
-  height: 20px;
-  &-left {
-    color: #bbb6bd;
-    height: 20px;
-  }
-  &-right {
-    &-p {
-      margin-left: 30px;
-      line-height: 20px;
+  // align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  &-box {
+    display: flex;
+    // flex:1;
+    &-left {
+      color: #bbb6bd;
       height: 20px;
+      text-wrap: nowrap;
+      letter-spacing:0.8px;
+      
     }
+    &-right {
+      &-p {
+        margin-left: 30px;
+        letter-spacing:0.8px;
+        // text-wrap: nowrap;
+        line-height: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .score{
+    height: 20px;
+    line-height:20px;
+    // background-color: #af4c4c;
+    margin-bottom: 10px;
+    // flex:content;
   }
 }

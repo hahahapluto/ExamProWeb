@@ -46,7 +46,8 @@ const router = createRouter({
           name: '新增题库',
           component: () => import('../component/add/addBank.vue')
         },
-        { path: '/index/quesBank/add', name: '题目添加进题库', component: () => import('../component/paper/bank/addQuesInBank.vue') }
+        { path: '/index/quesBank/add', name: '题目添加进题库', component: () => import('../component/paper/bank/addQuesInBank.vue') },
+        { path: '/index/exam', name: '考试管理', component: () => import('../component/paper/exam.vue') }
       ]
     }
   ]

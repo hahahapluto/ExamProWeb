@@ -91,6 +91,11 @@ const handleClose = (key: string, keyPath: string[]) => {
                   @click="() => jumpPath($router, 'paper')"
                   >试卷管理</el-menu-item
                 >
+                <el-menu-item
+                  index="3-5"
+                  @click="() => jumpPath($router, 'exam')"
+                  >考试管理</el-menu-item
+                >
               </el-sub-menu>
               <el-sub-menu index="4">
                 <template #title>

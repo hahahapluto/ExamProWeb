@@ -13,6 +13,7 @@ interface Ques {
   createTime: string
   questionId: string
   answer: string
+  questionscore: string
 }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
@@ -145,11 +146,12 @@ const addQnes = async (formEl: FormInstance | undefined) => {
         // 题目描述
         QuestionDescription,
         // 题目答案
-        QuestionAnswer
+        QuestionAnswer,
+        questionscore: dialogForm.questionscore
       }
       console.log(qusetionMessage)
       //发送添加题目请求
-      const { code, msg } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
+      const { code, msg } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer, dialogForm.questionscore)).data
       if (code == 0) {
         console.log('插入成功', 0)
         // 刷新列表
@@ -199,8 +201,9 @@ interface RuleForm {
       C: string
       D: string
     }
-    manswer: string[] //多选答案
+    manswer: string[] //多选答案,
   }
+  questionscore: string
 }
 
 // 获取表单的ref
@@ -235,7 +238,8 @@ const dialogForm = reactive({
       D: ''
     },
     manswer: [] //多选答案
-  }
+  },
+  questionscore: ''
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -254,7 +258,8 @@ const rules = reactive<FormRules<RuleForm>>({
   'multiple.mchoose.B': commonRules('B选项', 'blur'),
   'multiple.mchoose.C': commonRules('C选项', 'blur'),
   'multiple.mchoose.D': commonRules('D选项', 'blur'),
-  'multiple.manswer': commonRules('题目答案', 'change')
+  'multiple.manswer': commonRules('题目答案', 'change'),
+  questionscore: commonRules('题目分值', 'blur')
 })
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -288,8 +293,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%;" @selection-change="handleSelectionChange" class="from-table" :row-style="{height: '50px'}" border  height="650">
-        <el-table-column type="expand" width="50" align="center" >
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border height="650">
+        <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
               <!-- <p>A: {{ getOption('A=', props.row.description) }}</p> -->
@@ -307,10 +312,17 @@ const resetForm = (formEl: FormInstance | undefined) => {
                 </div>
               </div>
               <div class="answ">
-                <div class="answ-left">答案</div>
-                <div class="answ-right">
-                  <p class="answ-right-p">{{ props.row.answer }}</p>
+                <div class="answ-box score">
+                  <div class="answ-box-left">分值</div>
+                  <p class="answ-box-right-p">{{ props.row.questionStore }}</p>
                 </div>
+                <div class="answ-box">
+                  <div class="answ-box-left">答案</div>
+                  <div class="answ-box-right">
+                    <p class="answ-box-right-p">{{ props.row.answer }}</p>
+                  </div>
+                </div>
+                
               </div>
             </div>
           </template>
@@ -351,6 +363,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
             <el-option label="单选题" value="2" />
             <el-option label="多选题" value="3" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="题目分值" :label-width="formLabelWidth" prop="questionscore">
+          <el-input v-model="dialogForm.questionscore" autocomplete="off" :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
         </el-form-item>
         <!-- 主观题 -->
         <el-form-item label="题目内容" :label-width="formLabelWidth" v-if="dialogForm.qtype == '1'" prop="subjective.sdescribe">

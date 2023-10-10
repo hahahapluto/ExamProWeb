@@ -18,6 +18,7 @@ interface Ques {
   createTime: string
   questionId: string
   answer: string
+  questionscore: string
 }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
@@ -34,6 +35,7 @@ let tableData: any = ref<Ques[]>()
 const AllQuestion = async () => {
   allTableData = (await getQuesInBank(quesData.bankId)).data.data
   console.log(allTableData)
+  if(allTableData.length==0) return
   allTableData.forEach((item: { type: string; description: string }) => {
     if (item.type == '0') {
       item.type = '主观题'
@@ -150,13 +152,14 @@ const addQnes = async (formEl: FormInstance | undefined) => {
         // 题目描述
         QuestionDescription,
         // 题目答案
-        QuestionAnswer
+        QuestionAnswer,
+        questionscore: dialogForm
       }
       console.log(qusetionMessage)
       //发送添加题目请求
-      const { code, msg, data } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer)).data
+      const { code, msg, data } = (await addQuestion((parseInt(dialogForm.qtype) - 1).toString(), QuestionDescription, QuestionAnswer, dialogForm.questionscore)).data
+
       if (code == 0) {
-        console.log(data)
         // 讲题目添加到对应的题库里面
         const res: any = await addQuesInBank(quesData.bankId, data)
         console.log(res)
@@ -211,6 +214,7 @@ interface RuleForm {
     }
     manswer: string[] //多选答案
   }
+  questionscore: string
 }
 
 // 获取表单的ref
@@ -245,7 +249,8 @@ const dialogForm = reactive({
       D: ''
     },
     manswer: [] //多选答案
-  }
+  },
+  questionscore: ''
 })
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -264,7 +269,8 @@ const rules = reactive<FormRules<RuleForm>>({
   'multiple.mchoose.B': commonRules('B选项', 'blur'),
   'multiple.mchoose.C': commonRules('C选项', 'blur'),
   'multiple.mchoose.D': commonRules('D选项', 'blur'),
-  'multiple.manswer': commonRules('题目答案', 'change')
+  'multiple.manswer': commonRules('题目答案', 'change'),
+  questionscore: commonRules('题目分值', 'blur')
 })
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -272,15 +278,13 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
   // formEl.resetFields()
 }
+// 回退到题库
 </script>
 
 <template>
-  <!-- <ul>
-    <li v-for="item in counterStore.myQuestionList" :key="item.questionId">{{ item.description }}</li>
-  </ul> -->
   <div>
     <div class="title">
-      <el-icon class="title-icon"><ArrowLeftBold /></el-icon>
+      <el-icon class="title-icon" @click="()=>$router.push('/index/quesBank')"><ArrowLeftBold /></el-icon>
       <span class="title-h2">{{ quesData.bankName }}</span>
     </div>
     <!-- 筛选试题信息 -->
@@ -324,9 +328,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
                 </div>
               </div>
               <div class="answ">
-                <div class="answ-left">答案</div>
-                <div class="answ-right">
-                  <p class="answ-right-p">{{ props.row.answer }}</p>
+                <div class="answ-box score">
+                  <div class="answ-box-left">分值</div>
+                  <p class="answ-box-right-p">{{ props.row.questionStore }}</p>
+                </div>
+                <div class="answ-box">
+                  <div class="answ-box-left">答案</div>
+                  <div class="answ-box-right">
+                    <p class="answ-box-right-p">{{ props.row.answer }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -353,9 +363,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
       </div>
     </div>
     <!-- 分页器 -->
-    <div class="page">
+    <!-- <div class="page">
       <el-pagination layout="prev, pager, next" :total="1000" background />
-    </div>
+    </div> -->
     <!-- <router-view></router-view> -->
     <el-dialog v-model="dialogFormVisible" title="新增题目">
       <el-form :model="dialogForm" :rules="rules" ref="ruleFormRef">
@@ -365,6 +375,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
             <el-option label="单选题" value="2" />
             <el-option label="多选题" value="3" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="题目分值" :label-width="formLabelWidth" prop="questionscore">
+          <el-input v-model="dialogForm.questionscore" autocomplete="off" :autosize="{ minRows: 3, maxRows: 3 }"></el-input>
         </el-form-item>
         <!-- 主观题 -->
         <el-form-item label="题目内容" :label-width="formLabelWidth" v-if="dialogForm.qtype == '1'" prop="subjective.sdescribe">
@@ -444,7 +457,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
     border-radius: 5px;
     background-color: #ccc;
   }
-  &-icon:hover{
+  &-icon:hover {
     background: #000;
   }
   &-h2 {
