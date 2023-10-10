@@ -297,10 +297,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
         <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
-              <!-- <p>A: {{ getOption('A=', props.row.description) }}</p> -->
-              <!-- <p m="t-0 b-2">City: {{ props.row.description }}</p>
-              <p m="t-0 b-2">Address: {{ props.row.description }}</p>
-              <p m="t-0 b-2">Zip: {{ props.row.description }}</p> -->
               <div class="des">
                 <div class="des-left">题干</div>
                 <div class="des-right">
@@ -333,10 +329,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
           <template #default="scope">
             <div style="display: flex; flex-direction: column">
               <div>{{ getQues(scope.row.description) }}</div>
-              <!-- <div v-if="scope.row.type !== '主观题'" style="margin-top: 5px">A : {{ getOption('A=', scope.row.description) }}</div>
-              <div v-if="scope.row.type !== '主观题'">B : {{ getOption('B=', scope.row.description) }}</div>
-              <div v-if="scope.row.type !== '主观题'">C : {{ getOption('C=', scope.row.description) }}</div>
-              <div v-if="scope.row.type !== '主观题'">D : {{ getOption('D=', scope.row.description) }}</div> -->
             </div>
           </template>
         </el-table-column>
