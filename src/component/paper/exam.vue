@@ -23,7 +23,24 @@
     <div class="showbox">
       <div class="showbox-exam">
         <div class="showbox-exam-item first" @click="dialogFormVisible = true"></div>
-        <div class="showbox-exam-item">
+        <div class="showbox-exam-item" v-for="item in tableData">
+          <div class="showbox-exam-item-title">{{ item.examName }}</div>
+          <div class="showbox-exam-item-describe">{{ item.examDescription }}</div>
+          <div class="showbox-exam-item-detail">
+            <div class="showbox-exam-item-detail-starttime">
+              <el-icon class="examicon" color="#626aef"><Loading /></el-icon>{{ item.startTime }}
+            </div>
+            <div class="showbox-exam-item-detail-duration">
+              <el-icon class="examicon" color="#626aef"><Clock /></el-icon>限时<span style="font-weight: 700; margin: 0px 2px">{{ item.examDuration }}</span
+              >分钟
+            </div>
+            <div class="showbox-exam-item-detail-numberOfExam">
+              <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>考试人数：<span style="font-weight: 700; margin: 0px 2px">{{ item.numberOfExaminees }}</span
+              >人
+            </div>
+          </div>
+        </div>
+        <!-- <div class="showbox-exam-item">
           <div class="showbox-exam-item-title">计算机网络</div>
           <div class="showbox-exam-item-describe">我是考试地描述</div>
           <div class="showbox-exam-item-detail">
@@ -37,22 +54,7 @@
               <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>考试人数：1人
             </div>
           </div>
-        </div>
-        <div class="showbox-exam-item">
-          <div class="showbox-exam-item-title">计算机网络</div>
-          <div class="showbox-exam-item-describe">我是考试地描述</div>
-          <div class="showbox-exam-item-detail">
-            <div class="showbox-exam-item-detail-starttime">
-              <el-icon class="examicon" color="#626aef"><Loading /></el-icon>2023-15-40
-            </div>
-            <div class="showbox-exam-item-detail-duration">
-              <el-icon class="examicon" color="#626aef"><Clock /></el-icon>限时90分钟
-            </div>
-            <div class="showbox-exam-item-detail-numberOfExam">
-              <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>考试人数：1人
-            </div>
-          </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- 新增考试 -->
@@ -65,49 +67,53 @@
           <el-input v-model="examForm.describe" autocomplete="off" :autosize="{ minRows: 5, maxRows: 5 }" type="textarea" placeholder="请输入题目内容" maxlength="300" show-word-limit />
         </el-form-item>
         <el-form-item label="开始时间" :label-width="formLabelWidth" prop="examStartTime">
-          <el-row>   
-              <el-date-picker v-model="examForm.examStartTime" type="datetime" placeholder="请选择考试开始时间" class="w-50 m-2"/>
-              <span style="margin: 0px 15px 0px 40px;">考试时长</span>
-              <el-input-number v-model="examForm.duration" :min="30" :max="300" class="w-50 m-2" :step="10"/>
+          <el-row>
+            <el-date-picker v-model="examForm.examStartTime" type="datetime" placeholder="请选择考试开始时间" class="w-50 m-2" />
+            <span style="margin: 0px 15px 0px 40px">考试时长</span>
+            <el-input-number v-model="examForm.duration" :min="0" :max="300" class="w-50 m-2" :step="10" />
           </el-row>
         </el-form-item>
         <el-form-item label="选择考卷" :label-width="formLabelWidth" prop="paper">
           <el-select v-model="examForm.paper" placeholder="please select your zone">
-            <el-option :label="item.value" :value="item.value" :id="item.id" v-for="item in paper"/>
+            <el-option :label="item.paperName" :value="item.paperId" :id="item.paperId" v-for="item in paperData" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-          <el-button type="primary" @click="addQnes(ruleFormRef)" color="#626aef" style="color: aliceblue"> 添加 </el-button>
+          <el-button type="primary" @click="addExamButton(ruleFormRef)" color="#626aef" style="color: aliceblue"> 添加 </el-button>
         </span>
       </template>
     </el-dialog>
   </div>
 </template>
 <script setup lang="ts">
-import { Search } from '@element-plus/icons-vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { reactive, ref } from 'vue';
-import { commonRules } from '../../utils/question';
+import { Search } from '@element-plus/icons-vue'
+import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import cloneDeep from 'lodash/cloneDeep'
+import { reactive, ref } from 'vue'
+import { addExam, getMyExam } from '../../request/api/paper/exam'
+import { getPaper } from '../../request/api/paper/paper'
 
-interface RuleForm {
+import { commonRules } from '../../utils/question'
+
+interface examInterface {
   name: string
   describe: string
   examStartTime: string
-  duration: string
-  paper:string
+  duration: Number
+  paper: string
 }
 
 const showInput = ref('')
 let dialogFormVisible = ref(false)
-const examForm = reactive<RuleForm>({
+const examForm = reactive<examInterface>({
   name: '',
   examStartTime: '',
   describe: '',
-  duration: '',
-  paper:''
+  duration: 30,
+  paper: ''
 })
 const formLabelWidth = '140px'
 // 获取表单的ref
@@ -119,12 +125,39 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-const addQnes = async (formEl: FormInstance | undefined) => {
+const addExamButton = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   // 首先调用表单验证
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      formEl.resetFields()
+      console.log(examForm.examStartTime)
+      const inputDate = new Date(examForm.examStartTime)
+      // 提取年、月、日、小时和分钟
+      const year = inputDate.getFullYear()
+      const month = inputDate.getMonth() + 1 // 月份从0开始，所以需要加1
+      const day = inputDate.getDate()
+      const hours = inputDate.getHours()
+      const minutes = inputDate.getMinutes()
+
+      // 格式化为 "yyyy-mm-dd hh:mm:00" 格式
+      const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`
+
+      console.log(formattedDate) // 输出格式化后的日期时间
+      const examMessage = {
+        name: examForm.name,
+        describe: examForm.describe,
+        paper: examForm.paper,
+        examStartTime: formattedDate,
+        duration: examForm.duration
+      }
+      console.log(examMessage);
+      const { code, msg, data } = (await addExam(examForm.name, examForm.describe, examForm.paper, formattedDate, examForm.duration)).data
+      console.log(code, msg, data)
+      formEl.resetFields();
+      // 成功弹窗
+      ElMessage.success(msg);
+      dialogFormVisible.value = false;
+      getExam();
     } else {
       console.log('error submit!', fields)
       return
@@ -132,25 +165,46 @@ const addQnes = async (formEl: FormInstance | undefined) => {
   })
 }
 
-// 试卷信息
-const paper = [
-  {
-    id: 1,
-    value:'试卷1'
-  },{
-    id: 2,
-    value:'试卷2'
-  },
-]
-
+let paperData: any = ref()
+//获取试卷信息
+const getPaperData = async () => {
+  paperData = (await getPaper()).data.data
+  console.log(paperData)
+}
+getPaperData()
 // 验证规则
-const rules = reactive<FormRules<RuleForm>>({
+const rules = reactive<FormRules<examInterface>>({
   name: commonRules('题目类型', 'blur'),
   examStartTime: commonRules('题目类型', 'change'),
   describe: commonRules('考试描述', 'blur'),
   duration: commonRules('考试时间', 'change'),
-  paper:commonRules('考试试卷', 'change'),
+  paper: commonRules('考试试卷', 'change')
 })
+
+let examData: any = ref<examInterface[]>()
+let tableData: any = ref<examInterface[]>()
+console.log(examData)
+const getExam = async () => {
+  examData = (await getMyExam()).data.data
+  console.log(examData)
+  examData.forEach((item: { startTime: string }) => {
+    let date = new Date(item.startTime)
+    item.startTime = date.toLocaleString()
+  })
+  // examData.forEach((item: { type: string; description: string }) => {
+  //   if (item.type == '0') {
+  //     item.type = '主观题'
+  //   } else if (item.type == '1') {
+  //     item.type = '单选题'
+  //     item.description = formatExamString(item.description)
+  //   } else {
+  //     item.type = '多选题'
+  //     item.description = formatExamString(item.description)
+  //   }
+  // })
+  tableData.value = cloneDeep(examData)
+}
+getExam()
 </script>
 <style lang="scss" scoped>
 .selectbox {
@@ -189,8 +243,9 @@ const rules = reactive<FormRules<RuleForm>>({
   width: 100%;
   &-exam {
     display: flex;
-    padding: 30px 30px 30px 0;
+    padding: 30px 0px 30px 0;
     flex-wrap: wrap;
+    // justify-content: space-between;
     // justify-content: space-between;
     &-item {
       // background-color: #f6a2a2;
@@ -223,6 +278,8 @@ const rules = reactive<FormRules<RuleForm>>({
           margin-right: 15px;
           display: flex;
           align-items: center;
+          font-weight: 700;
+          letter-spacing: 1px;
         }
         &-duration {
           margin-right: 15px;
