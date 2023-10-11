@@ -95,7 +95,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import { reactive, ref } from 'vue'
 import { addExam, getMyExam } from '../../request/api/paper/exam'
 import { getPaper } from '../../request/api/paper/paper'
-
 import { commonRules } from '../../utils/question'
 
 interface examInterface {
@@ -150,14 +149,14 @@ const addExamButton = async (formEl: FormInstance | undefined) => {
         examStartTime: formattedDate,
         duration: examForm.duration
       }
-      console.log(examMessage);
+      console.log(examMessage)
       const { code, msg, data } = (await addExam(examForm.name, examForm.describe, examForm.paper, formattedDate, examForm.duration)).data
       console.log(code, msg, data)
-      formEl.resetFields();
+      formEl.resetFields()
       // 成功弹窗
-      ElMessage.success(msg);
-      dialogFormVisible.value = false;
-      getExam();
+      ElMessage.success(msg)
+      dialogFormVisible.value = false
+      getExam()
     } else {
       console.log('error submit!', fields)
       return
@@ -242,17 +241,19 @@ getExam()
 .showbox {
   width: 100%;
   &-exam {
-    display: flex;
+    display: grid;
     padding: 30px 0px 30px 0;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(3, 1fr);
+    // flex-wrap: wrap;
     // justify-content: space-between;
     // justify-content: space-between;
     &-item {
       // background-color: #f6a2a2;
       margin-left: 39px;
       padding: 20px 30px;
-      width: 330px;
+      // width: 330px;
       height: 160px;
+      min-width: 280px;
       border: #eeeeee 1px solid;
       box-shadow: 0px 2px 4px #ccc;
       border-radius: 5px;
@@ -312,10 +313,12 @@ getExam()
 }
 
 .first {
+  // width: 330px;
+  // height: 160px;
   background-image: url(../../assets/add.png);
   background-size: contain;
   background-repeat: no-repeat;
-  background-size: 31% 60%;
+  background-size: 31% auto;
   background-position: 50% 50%;
   // box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   -webkit-transition-duration: 0.3s;

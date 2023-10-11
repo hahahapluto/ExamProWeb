@@ -34,7 +34,7 @@ export function getQuesInBank(bankid:Number) {
   })
 }
 
-// 添加题库到题库
+// 添加题mu到题库
 export function addQuesInBank(bankid: Number, questionid: Number) {
   return service({
     method: 'POST',

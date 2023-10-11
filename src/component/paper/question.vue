@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { toRaw } from '@vue/reactivity'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElTable, FormRules } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 import { computed, reactive, ref } from 'vue'
+import { addQuesInBank, getMyBank } from '../../request/api/paper/bank'
 import { addQuestion, getMyQuestion } from '../../request/api/paper/question'
 import '../../sass/index/paper/addQues.scss'
 import '../../sass/index/paper/question.scss'
@@ -11,7 +13,7 @@ interface Ques {
   type: string
   description: string
   createTime: string
-  questionId: string
+  questionId: Number
   answer: string
   questionscore: string
 }
@@ -29,7 +31,7 @@ let tableData: any = ref<Ques[]>()
 // tableData = myQuestionList;
 const AllQuestion = async () => {
   allTableData = (await getMyQuestion()).data.data
-  console.log(allTableData)
+  // console.log(allTableData)
   allTableData.forEach((item: { type: string; description: string }) => {
     if (item.type == '0') {
       item.type = '主观题'
@@ -58,12 +60,30 @@ const toggleSelection = () => {
 
 // handleSelectionChange：选中了几个题目并存放在value中
 const handleSelectionChange = (val: Ques[]) => {
-  console.log('handleSelectionChange', val)
+  // console.log('handleSelectionChange', val)
   multipleSelection.value = val
 }
-
+const selectBank = ref('')
 // 将选择的试题添加到题库
-let openToAddBank = function () {}
+let openToAddBank = async function async() {
+  console.log(selectBank.value);
+  if(selectBank.value=='') return ElMessage.warning("未选择题目")
+  console.log(multipleSelection.value)
+  const selectQues = toRaw(multipleSelection.value)
+  if(selectQues.length==0) return ElMessage.warning("未选择题目")
+  for (let item of selectQues) {
+    console.log(item.questionId)
+    const { data, code, msg } = (await addQuesInBank(Number.parseInt(selectBank.value), item.questionId)).data
+    console.log(data, msg)
+    if (!data || code != 0) {
+      ElMessage.warning(msg)
+    } else {
+      ElMessage.success(msg)
+    }
+  }
+  // addQuesInBank()
+  console.log(selectQues)
+}
 
 // 根据form.data搜索对应的题目
 const searchQuesByInput = function searchQuesByInput() {
@@ -267,6 +287,18 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
   // formEl.resetFields()
 }
+interface bankInterface{
+  bankId: Number,
+  bankName:string
+}
+let bankData:any = ref<bankInterface[]>();
+
+// 获取题库信息
+const getBankData = async () => {
+  bankData.value = (await getMyBank()).data.data;
+  console.log(bankData);
+}
+getBankData();
 </script>
 
 <template>
@@ -318,11 +350,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
                     <p class="answ-box-right-p">{{ props.row.answer }}</p>
                   </div>
                 </div>
-                
               </div>
             </div>
           </template>
         </el-table-column>
+        <el-table-column property="questionId" label="编号" width="60" align="center" />
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column property="type" label="题型" width="120" align="center" />
         <el-table-column property="description" label="题目">
@@ -334,12 +366,12 @@ const resetForm = (formEl: FormInstance | undefined) => {
         </el-table-column>
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
       </el-table>
-      <div style="margin-top: 20px">
-        <!-- <el-button @click="toggleSelection([tableData[1], tableData[2]])">点击第二个和第三个</el-button> -->
+      <div style="margin-top: 20px;display: flex;">
         <el-button @click="toggleSelection()">清空所有选择</el-button>
-        <!-- <el-row class="mb-4"> -->
-        <el-button @click="openToAddBank" type="primary" color="#283ee3">添加到题库 </el-button>
-        <!-- </el-row> -->
+        <el-select v-model="selectBank" placeholder="请选择要添加的题库" class="selectbox" style="margin: 0px 15px;">
+          <el-option :label="item.bankName" :value="item.bankId" :id="item.bankId" v-for="item in bankData" class="selectbox-option"/>
+        </el-select>
+        <el-button @click="openToAddBank" type="primary" color="#283ee3">添加到题库</el-button>
       </div>
     </div>
     <!-- 分页器 -->
@@ -425,3 +457,5 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </el-dialog>
   </div>
 </template>
+<style scoped lang="scss">
+</style>
