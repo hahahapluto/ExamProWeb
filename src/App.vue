@@ -22,14 +22,14 @@ img {
 }
 
 body::-webkit-scrollbar {
-  width: 5px;
+  width: 12px;
   height: 7px;
 }
 
 body::-webkit-scrollbar-thumb {
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   border-radius: 6px;
-  background: #4b4b4b;
+  background: #4b4b4bad;
 }
 
 .el-dialog__headerbtn:hover .el-dialog__close {

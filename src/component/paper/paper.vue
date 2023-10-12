@@ -1,29 +1,6 @@
-<template>
-  <div>
-    试卷管理
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'WorkspaceJsonPaperManagement',
-
-  data() {
-    return {
-      
-    };
-  },
-
-  mounted() {
-    
-  },
-
-  methods: {
-    
-  },
-};
+<script lang="ts" setup>
+import createPaper from "./createPaper.vue";
 </script>
-
-<style lang="scss" scoped>
-
-</style>
+<template>
+  <createPaper />
+</template>
