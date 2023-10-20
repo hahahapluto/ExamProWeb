@@ -36,7 +36,31 @@ body::-webkit-scrollbar-thumb {
   color: #283ee3;
 }
 
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #283ee3 inset;
+}
+
 .el-input__wrapper.is-focus {
   box-shadow: 0px 0px 1px 1px #283ee3;
+}
+
+.el-select .el-input.is-focus .el-input__wrapper {
+  box-shadow: 0px 0px 1px 1px #283ee3 inset !important;
+}
+
+.el-select .el-input .el-input__wrapper {
+  box-shadow: 0px 0px 1px 1px #dcdfe6 inset !important;
+}
+
+.el-select-dropdown__item.selected {
+  color: #283ee3;
+}
+
+.el-textarea__inner:focus {
+  box-shadow: 0 0 0 1.5px #283ee3 inset;
+}
+
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1.5px #283ee3 inset;
 }
 </style>

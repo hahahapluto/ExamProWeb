@@ -2,7 +2,9 @@
 import { ref } from "vue";
 import "../../sass/paper/createPaper.scss";
 import quesSequence from "./paperComponent/quesSequence.vue";
-import topic from "./paperComponent/multipleChoice.vue";
+import addTopicPop from "./paperComponent/addTopicPop.vue";
+import multipleChoice from "./paperComponent/multipleChoice.vue";
+import subQuestions from "./paperComponent/subQuestions.vue";
 import { quesSequenceType } from "../../types/paper";
 
 // 左侧-题目序列数据
@@ -23,6 +25,9 @@ const quesSequenceDatas = ref<quesSequenceType[]>([
     lists: [],
   },
 ]);
+
+// 是否显示添加题目的弹出框
+const dialogFormVisible = ref(false);
 </script>
 <template>
   <el-container>
@@ -56,10 +61,12 @@ const quesSequenceDatas = ref<quesSequenceType[]>([
           </div>
         </div>
       </div>
-      <div class="createPaper-addTopic"></div>
+      <div class="createPaper-addTopic" @click="dialogFormVisible = true"></div>
       <h1 style="margin: 20px 20px">一. 单选题（共8题，40分）</h1>
-      <topic />
-      <topic />
+      <subQuestions /><multipleChoice />
     </el-main>
+    <el-dialog title="添加题目" v-model="dialogFormVisible" width="945px">
+      <addTopicPop />
+    </el-dialog>
   </el-container>
 </template>

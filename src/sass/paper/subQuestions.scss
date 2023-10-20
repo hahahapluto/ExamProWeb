@@ -1,0 +1,67 @@
+.subQuestions {
+    margin: 20px 20px;
+    padding: 30px 20px;
+    min-width: 280px;
+    border: #eeeeee 1px solid;
+    // box-shadow: 0px 2px 4px #ccc;
+    border-radius: 5px;
+    margin-bottom: 35px;
+    transition-duration: 0.3s;
+    transition-property: box-shadow, transform;
+    transform: perspective(1px) translateZ(0);
+
+    &-topic {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &-label {
+            user-select: none;
+            display: block;
+            width: 25px;
+            height: 25px;
+            margin-right: 20px;
+            line-height: 25px;
+            font-size: 14px;
+            text-align: center;
+            // color: #725AC1;
+            background: transparent;
+            transition: ease-out 0.5s;
+            border: 2px solid #725AC1;
+            border-radius: 5px;
+            // box-shadow: inset 0 0 0 0 #725AC1;
+
+            color: white;
+            box-shadow: inset 0 -100px 0 0 #725AC1;
+            // &:hover {
+            //     color: white;
+            //     box-shadow: inset 0 -100px 0 0 #725AC1;
+            // }
+        }
+
+        &-detail {
+            flex: 1;
+            /* 调整行间距为1.5倍字体大小 */
+            line-height: 1.5;
+            font-size: 14px;
+            letter-spacing: 0.6px;
+            word-spacing: 2px;
+        }
+    }
+
+    &-textarea_box {
+        margin-top: 20px;
+
+        .tctextarea {
+            border: #725AC1 1px solid;
+        }
+
+        .el-textarea__inner:focus {
+            box-shadow: 0 0 0 1.5px #725AC1 inset;
+        }
+
+        .el-textarea__inner:hover {
+            box-shadow: 0 0 0 1.5px #725AC1 inset;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+.addTopicPop {
+    &-options {
+        display: flex;
+
+        &-ques {
+            margin-right: 20px;
+        }
+    }
+
+    &-footer {
+        margin-top: 20px;
+        display: flex;
+        justify-content: end;
+    }
+
+    .el-button--primary {
+        background-color: #6269efbd;
+        border: #6269ef67 1px solid;
+    }
+
+    .el-button:focus,
+    .el-button:hover {
+        color: #fff;
+        background-color: #626aef;
+    }
+
+    .active {
+        color: #fff;
+        background-color: #626aef;
+    }
+}

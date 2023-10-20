@@ -22,7 +22,7 @@ const allExamRegInfo = ref<ExamRegInfo[]>([]);
 
 const state = reactive({
   search: "",
-  tableData: cloneDeep(allExamRegInfo.value),
+  tableData: allExamRegInfo.value,
   examReg: false,
 });
 
