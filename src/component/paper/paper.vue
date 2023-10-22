@@ -3,7 +3,11 @@ import { ElMessage, FormInstance, FormRules } from "element-plus";
 import { getPaper, addPaper } from "../../request/api/paper/paper";
 import "../../sass/paper/paper.scss";
 import { reactive, ref, computed, onMounted, watchEffect } from "vue";
-// import createPaper from "./createPaper.vue";
+import pinia from "../../stores";
+import paperStore from "../../stores/paperStore";
+
+const paperData = paperStore(pinia);
+
 interface paperInfo {
   paperId: string;
   paperName: string;
@@ -11,6 +15,8 @@ interface paperInfo {
   subjectiveScore: Number;
   totalScore: string;
 }
+
+// 所有试卷的信息
 const allPaperInfo = ref<paperInfo[]>([]);
 
 const state = reactive({
@@ -86,7 +92,7 @@ const resetForm = (formEl: any) => {
   formEl.resetFields();
 };
 
-const addNewPaper = async (formEl: FormInstance | undefined) => {
+const addNewPaper = async ($router: any, formEl: FormInstance | undefined) => {
   dialogFormVisible.value = false;
   if (!formEl) return;
   // 首先调用表单验证
@@ -98,7 +104,9 @@ const addNewPaper = async (formEl: FormInstance | undefined) => {
       console.log(res);
       // 重新获取试卷信息
       getPaperList();
+      paperData.paperName = dialoForm.inputName;
       ElMessage.success(res.data.msg);
+      $router.push("/index/detailPaper");
     } else {
       console.log("error submit!", fields);
       ElMessage.warning("添加考试失败！");
@@ -106,6 +114,8 @@ const addNewPaper = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+
+watchEffect(() => {});
 </script>
 <template>
   <!-- <createPaper /> -->
@@ -195,7 +205,7 @@ const addNewPaper = async (formEl: FormInstance | undefined) => {
           <el-button
             color="#626aef"
             type="primary"
-            @click="addNewPaper(ruleFormRef)"
+            @click="addNewPaper($router, ruleFormRef)"
           >
             添加
           </el-button>

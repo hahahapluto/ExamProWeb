@@ -1,67 +1,132 @@
 <script lang="ts" setup>
 import "../../../sass/paper/addTopicPop.scss";
 import { ElButton } from "element-plus";
-import { ref, reactive } from "vue";
+import { Ref, ref } from "vue";
+import { getMyBank, getQuesInBank } from "../../../request/api/paper/bank";
+import { watch } from "vue";
+import { onMounted } from "vue";
+import { formatExamString, formatExamString2 } from "../../../utils/question";
+import { getAllQues } from "../../../request/api/paper/question";
+import { formatDateTime } from "../../../utils/common";
 
 const multipleSelection = ref([]);
 const handleSelectionChange = (val: any) => {
   multipleSelection.value = val;
 };
 
+interface questionBankOption {
+  bankId: string;
+  bankName: string;
+}
+
+interface question {
+  createTime: string;
+  description: string;
+  questionId: string;
+  type: string;
+}
+
 // 题库
-const questionBank = ref("");
+const questionBank = ref();
 // 题库列表
-const questionBankOptions = reactive([
-  {
-    value: "选项1",
-    label: "黄金糕",
-  },
-  {
-    value: "选项2",
-    label: "双皮奶",
-  },
-  {
-    value: "选项3",
-    label: "蚵仔煎",
-  },
-  {
-    value: "选项4",
-    label: "龙须面",
-  },
-  {
-    value: "选项5",
-    label: "北京烤鸭",
-  },
-]);
+const questionBankOptions = ref<questionBankOption[]>([]);
+
+const getQuestionBankOptions = async () => {
+  let res = await getMyBank();
+  questionBankOptions.value = res.data.data;
+};
 
 // 题目列表
-const toppicTableData = reactive([
-  {
-    QuestionType: "2016-05-03",
-    QuestionDescription: "王小虎",
-    createTime: "上海市普陀区金沙江路 1518 弄",
-  },
-  {
-    QuestionType: "2016-05-03",
-    QuestionDescription: "王小虎",
-    createTime: "上海市普陀区金沙江路 1518 弄",
-  },
-  {
-    QuestionType: "2016-05-03",
-    QuestionDescription: "王小虎",
-    createTime: "上海市普陀区金沙江路 1518 弄",
-  },
-  {
-    QuestionType: "2016-05-03",
-    QuestionDescription: "王小虎",
-    createTime: "上海市普陀区金沙江路 1518 弄",
-  },
-]);
+const toppicTableData: Ref<any[]> = ref([]);
+// const toppicTableData = ref([]);
+
+const getQuesInBankData = async (questionBankId: Number) => {
+  const res = await getQuesInBank(questionBankId);
+  toppicTableData.value = res.data.data;
+  console.log(toppicTableData.value);
+
+  toppicTableData.value.forEach(
+    (item: { type: string; description: string }) => {
+      if (item.type == "0") {
+        item.type = "主观题";
+      } else if (item.type == "1") {
+        item.type = "单选题";
+        item.description = formatExamString(item.description);
+      } else {
+        item.type = "多选题";
+        item.description = formatExamString(item.description);
+      }
+    }
+  );
+};
+
+watch(
+  () => questionBank.value,
+  () => {
+    getQuesInBankData(questionBank.value);
+  }
+);
+
+// 获取全部题目
+const getAllQuesData = async () => {
+  const res = await getAllQues();
+  const needFormatData = res.data.data;
+  let maps: question[] = [] as any[];
+  needFormatData.forEach(
+    (item: {
+      createTime: string;
+      questionDescription: string;
+      questionId: string;
+      questionType: string;
+    }) => {
+      const map: question = {
+        createTime: "",
+        description: "",
+        questionId: "",
+        type: "",
+      };
+      map.createTime = formatDateTime(item.createTime);
+      map.description = item.questionDescription;
+      map.questionId = item.questionId;
+      map.type = item.questionType;
+      maps.push(map);
+    }
+  );
+
+  toppicTableData.value = maps as any[];
+
+  toppicTableData.value.forEach((item: question) => {
+    const type = item.type;
+    if (type === "0") {
+      item.type = "主观题";
+    } else if (type === "1") {
+      item.type = "单选题";
+      item.description = formatExamString2(item.description);
+    } else {
+      item.type = "多选题";
+      item.description = formatExamString2(item.description);
+    }
+  });
+};
+
+// 点击获取所有题目
+const onclick_allques = () => {
+  getAllQuesData();
+};
+
+// 获取数据
+onMounted(() => {
+  getQuestionBankOptions();
+  getAllQuesData();
+});
 </script>
 <template>
   <div class="addTopicPop">
     <div class="addTopicPop-options">
-      <ElButton class="addTopicPop-options-ques" size="large"
+      <ElButton
+        class="addTopicPop-options-ques"
+        size="large"
+        @click="onclick_allques"
         >全部试题</ElButton
       >
       <el-select
@@ -72,9 +137,9 @@ const toppicTableData = reactive([
       >
         <el-option
           v-for="item in questionBankOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.bankId"
+          :label="item.bankName"
+          :value="item.bankId"
         >
         </el-option>
       </el-select>
@@ -85,22 +150,16 @@ const toppicTableData = reactive([
       :data="toppicTableData"
       tooltip-effect="dark"
       border
-      style="width: 100%; margin-top: 30px"
+      style="width: 100%; margin-top: 30px; height: 300px"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="QuestionType" label="题型" width="120">
-      </el-table-column>
-      <el-table-column
-        prop="QuestionDescription"
-        label="题目"
-        show-overflow-tooltip
-      >
+      <el-table-column prop="type" label="题型" width="120"> </el-table-column>
+      <el-table-column prop="description" label="题目" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="200">
       </el-table-column>
     </el-table>
-
     <span class="addTopicPop-footer">
       <el-button @click="">取 消</el-button>
       <el-button type="primary" @click="">确 定</el-button>
