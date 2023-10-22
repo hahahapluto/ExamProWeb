@@ -318,14 +318,14 @@ getBankData();
           </el-select>
         </el-form-item>
         <el-row class="mb-4">
-          <el-button type="primary" color="#283ee3" icon="plus" @click="dialogFormVisible = true"> 新增题目 </el-button>
+          <el-button type="primary" color="#626aef" style="color: aliceblue" icon="plus" @click="dialogFormVisible = true"> 新增题目 </el-button>
           <!-- @click="jumpPath($router,'question/add')" -->
         </el-row>
       </el-form>
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border height="650">
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%; height: 630px;" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border >
         <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
@@ -366,12 +366,12 @@ getBankData();
         </el-table-column>
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
       </el-table>
-      <div style="margin-top: 20px;display: flex;">
-        <el-button @click="toggleSelection()">清空所有选择</el-button>
-        <el-select v-model="selectBank" placeholder="请选择要添加的题库" class="selectbox" style="margin: 0px 15px;">
+      <div style="margin-top: 20px;display: flex; height: 40px;">
+        <el-button @click="toggleSelection()" size="large" >清空所有选择</el-button>
+        <el-select v-model="selectBank" placeholder="请选择要添加的题库" size="large" class="selectbox" style="margin: 0px 15px;">
           <el-option :label="item.bankName" :value="item.bankId" :id="item.bankId" v-for="item in bankData" class="selectbox-option"/>
         </el-select>
-        <el-button @click="openToAddBank" type="primary" color="#283ee3">添加到题库</el-button>
+        <el-button @click="openToAddBank" type="primary" color="#626aef" style="color: aliceblue" size="large">添加到题库</el-button>
       </div>
     </div>
     <!-- 分页器 -->
@@ -458,4 +458,5 @@ getBankData();
   </div>
 </template>
 <style scoped lang="scss">
+
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import "../../../sass/exam/popup/examReg.scss";
-import { registerExam } from "../../../request/api/exam/examRegistration.ts";
 import { ElMessage } from "element-plus";
+import { registerExam } from "../../../request/api/exam/examRegistration";
+import "../../../sass/exam/popup/examReg.scss";
 
 const props = defineProps(["examRegData"]);
 let tableData = [

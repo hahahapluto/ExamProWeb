@@ -4,10 +4,10 @@
     <div class="selectbox">
       <div class="selector">
         <div class="selector-left">
-          <div class="selector-left-item">全部</div>
-          <div class="selector-left-item">未开始</div>
-          <div class="selector-left-item">已开始</div>
-          <div class="selector-left-item">已过期</div>
+          <div class="selector-left-item" @click="chooseStates('全部')" :class="{ selected: selectedState === '全部' }">全部</div>
+          <div class="selector-left-item" @click="chooseStates('未开始')" :class="{ selected: selectedState === '未开始' }">未开始</div>
+          <div class="selector-left-item" @click="chooseStates('考试中')" :class="{ selected: selectedState === '考试中' }">已开始</div>
+          <div class="selector-left-item" @click="chooseStates('已结束')" :class="{ selected: selectedState === '已结束' }">已过期</div>
         </div>
         <div class="selector-right">
           <div class="selector-right-input"></div>
@@ -38,6 +38,9 @@
               <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>考试人数：<span style="font-weight: 700; margin: 0px 2px">{{ item.numberOfExaminees }}</span
               >人
             </div>
+            <div class="showbox-exam-item-detail-state">
+              <el-icon class="examicon" color="#626aef"><Promotion /></el-icon>状态：<span style="font-weight: 700; margin: 0px 2px" :class="getStatusClass(getExamStatus(item.startTime, item.examDuration))">{{ getExamStatus(item.startTime, item.examDuration) }}</span>
+            </div>
           </div>
         </div>
         <!-- <div class="showbox-exam-item">
@@ -57,6 +60,7 @@
         </div> -->
       </div>
     </div>
+    <!-- <examItem :tableData="tableData"></examItem> -->
     <!-- 新增考试 -->
     <el-dialog v-model="dialogFormVisible" title="新增考试">
       <el-form :model="examForm" ref="ruleFormRef" :rules="rules">
@@ -190,20 +194,54 @@ const getExam = async () => {
     let date = new Date(item.startTime)
     item.startTime = date.toLocaleString()
   })
-  // examData.forEach((item: { type: string; description: string }) => {
-  //   if (item.type == '0') {
-  //     item.type = '主观题'
-  //   } else if (item.type == '1') {
-  //     item.type = '单选题'
-  //     item.description = formatExamString(item.description)
-  //   } else {
-  //     item.type = '多选题'
-  //     item.description = formatExamString(item.description)
-  //   }
-  // })
   tableData.value = cloneDeep(examData)
 }
+
+// 定义获取状态样式类的函数
+const getStatusClass = (status: string) => {
+  if (status === '未开始') {
+    return 'status-gray'
+  } else if (status === '考试中') {
+    return 'status-blue'
+  } else if (status === '已结束') {
+    return 'status-red'
+  } else {
+    return 'status-default'
+  }
+}
+
+function getExamStatus(startTimeStr: string, durationMinutes: number) {
+  // 将输入的开始时间字符串转换为日期对象
+  const startTime = new Date(startTimeStr)
+  // 获取当前时间
+  const currentTime = new Date()
+  // 计算结束时间
+  const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000)
+  if (currentTime < startTime) {
+    // 考试未开始
+    return '未开始'
+  } else if (currentTime >= startTime && currentTime <= endTime) {
+    // 考试进行中
+    return '考试中'
+  } else {
+    // 考试已结束
+    return '已结束'
+  }
+}
 getExam()
+
+const chooseStates = (state: string) => {
+  selectedState.value = state
+  if (state == '全部') {
+    return (tableData.value = examData)
+  }
+  tableData.value = examData.filter((item: { startTime: string; examDuration: number }) => {
+    return getExamStatus(item.startTime, item.examDuration) == state
+  })
+}
+
+// 响应式变量，用于存储当前选择的状态，默认为"全部"
+const selectedState = ref('全部')
 </script>
 <style lang="scss" scoped>
 .selectbox {
@@ -228,6 +266,9 @@ getExam()
       border-radius: 5px;
     }
     &-item:hover {
+      background-color: #e1def2;
+    }
+    .selected {
       background-color: #e1def2;
     }
   }
@@ -288,7 +329,13 @@ getExam()
           align-items: center;
         }
         &-numberOfExam {
-          // margin-top: 5px;
+          margin-top: 5px;
+          display: flex;
+          align-items: center;
+        }
+        &-state {
+          margin-top: 5px;
+          margin-left: 6px;
           display: flex;
           align-items: center;
         }
@@ -306,6 +353,7 @@ getExam()
       -webkit-transform: scale(1.1);
       transform: scale(1.05);
     }
+
   }
 }
 .examicon {
@@ -336,5 +384,17 @@ getExam()
 }
 .el-form-item__content {
   flex-wrap: nowrap;
+}
+
+.status-gray {
+  color: gray;
+}
+
+.status-red {
+  color: #f78b55;
+}
+
+.status-blue {
+  color: #f96565;
 }
 </style>

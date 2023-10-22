@@ -46,3 +46,15 @@ export function addQuesInBank(bankid: Number, questionid: Number) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
+
+// 修改题库名称
+export function editBank(bankname: string) {
+  return service({
+    method: 'POST',
+    url: '/index/updateBank',
+    data: {
+      bankname
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}

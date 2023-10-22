@@ -110,6 +110,48 @@ const handleClose = (key: string, keyPath: string[]) => {
                   >卷子</el-menu-item
                 >
               </el-sub-menu>
+              <el-sub-menu index="5">
+                <template #title>
+                  <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
+                  <span>审核</span>
+                </template>
+                <el-sub-menu index="5-1">
+                  <template #title>初级审核</template>
+                  <el-menu-item
+                    index="5-1-1"
+                    @click="() => jumpPath($router,'aduit/junior/quesJunior')"
+                    >题目审核</el-menu-item
+                  >
+                  <el-menu-item
+                    index="5-1-2"
+                    @click="() => jumpPath($router,'aduit/junior/paperJunior')"
+                    >试卷初审</el-menu-item
+                  >
+                  <el-menu-item
+                    index="5-1-3"
+                    @click="() => jumpPath($router, 'aduit/junior/examJunior')"
+                    >考试初审</el-menu-item
+                  >
+                </el-sub-menu>
+                <el-sub-menu index="5-2">
+                  <template #title>终极审核</template>
+                  <el-menu-item
+                    index="5-2-1"
+                    @click="() => jumpPath($router, 'aduit/ultimate/bankQuesUltimate')"
+                    >题库题目审核</el-menu-item
+                  >
+                  <el-menu-item
+                    index="5-2-2"
+                    @click="() => jumpPath($router, 'aduit/ultimate/paperUltimate')"
+                    >试卷终审</el-menu-item
+                  >
+                  <el-menu-item
+                    index="5-2-3"
+                    @click="() => jumpPath($router, 'aduit/ultimate/examUtlimate')"
+                    >考试终审</el-menu-item
+                  >
+                </el-sub-menu>
+              </el-sub-menu>
             </el-menu>
           </el-col>
         </el-row>

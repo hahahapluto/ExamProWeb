@@ -1,28 +1,9 @@
 <template>
-  <div>
-    <!-- 考试记录 -->
-    MyExamRecord
-  </div>
+  <aaa></aaa>
 </template>
 
-<script>
-export default {
-  name: 'WorkspaceJsonMyExamRecord',
-
-  data() {
-    return {
-      
-    };
-  },
-
-  mounted() {
-    
-  },
-
-  methods: {
-    
-  },
-};
+<script setup lang="ts">
+import aaa from "../paper/popup/answer.vue";
 </script>
 
 <style lang="scss" scoped>

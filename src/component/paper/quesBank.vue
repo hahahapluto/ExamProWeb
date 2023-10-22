@@ -64,11 +64,9 @@ const handleEdit = (row: bank, $router: any) => {
   quesData.bankName = row.bankName;
   $router.push("/index/quesBank/add");
 }
-const handleDelete = (index: number, row: bank) => {
-  console.log(index, row)
-}
-// const dialogTableVisible = ref(false)
+
 let dialogFormVisible = ref(false)
+let dialogFormEdit = ref(false)
 // 添加题库弹窗的表格
 const dialoForm = reactive({
   inputName: ''
@@ -105,8 +103,24 @@ const rules = reactive<FormRules<ruleForm>>({
 // 重置表单
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-
   // formEl.resetFields()
+}
+// 编辑
+const editMyBank = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  console.log(dialoForm.inputName);
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      console.log('submit!')
+      // const res = await addBank(dialoForm.inputName)
+      // console.log(res)
+      console.log(dialoForm.inputName);
+      AllQuestion()
+    } else {
+      console.log('error submit!', fields)
+      return
+    }
+  })
 }
 </script>
 <template>
@@ -143,11 +157,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
           </template>
         </el-table-column>
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="300" align="center" />
-        <el-table-column label="Operations" width="330" align="center">
+        <el-table-column label="操作" width="330" align="center">
           <template #default="scope">
-            <el-button @click="handleEdit(scope.row,$router)">Details</el-button>
-            <el-button @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-            <el-button type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+            <el-button @click="handleEdit(scope.row,$router)">查看</el-button>
+            <el-button @click="dialogFormEdit = true">编辑</el-button>
+            <el-button type="danger" @click="">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -170,6 +184,20 @@ const resetForm = (formEl: FormInstance | undefined) => {
         <span class="dialog-footer">
           <el-button @click="resetForm(ruleFormRef)">重置</el-button>
           <el-button color="#626aef" type="primary" @click="addMyBank(ruleFormRef)"> 添加 </el-button>
+        </span>
+      </template>
+    </el-dialog>
+    <!-- 编辑题库 -->
+    <el-dialog v-model="dialogFormEdit" title="编辑题库" style="width: 500px">
+      <el-form :model="dialoForm" label-position="left" ref="ruleFormRef" :rules="rules">
+        <el-form-item label="题库名称" label-width="80px" prop="inputName">
+          <el-input v-model="dialoForm.inputName" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+          <el-button color="#626aef" type="primary" @click="editMyBank(ruleFormRef)"> 修改 </el-button>
         </span>
       </template>
     </el-dialog>
