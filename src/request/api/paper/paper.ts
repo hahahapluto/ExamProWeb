@@ -16,3 +16,24 @@ export function addPaper(paperName: string) {
     data: { paperName, objectiveScore: 0, subjectiveScore: 0, totalScore: 0 },
   });
 }
+
+// 向试卷里面添加题目
+export function addQuesIntoPaper(data: any) {
+  return service({
+    method: "post",
+    url: "/paper/addQuesById",
+    headers: { "Content-Type": "application/json" },
+    data,
+  });
+}
+
+// 根据试卷id获取所有题目
+// /paper/findQuesByPaperId
+export function findQuesByPaperId(paperId: Number) {
+  return service({
+    method: "post",
+    url: "/paper/findQuesByPaperId",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    data: { paperId },
+  });
+}

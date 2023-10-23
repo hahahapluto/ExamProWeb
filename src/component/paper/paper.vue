@@ -9,7 +9,7 @@ import paperStore from "../../stores/paperStore";
 const paperData = paperStore(pinia);
 
 interface paperInfo {
-  paperId: string;
+  paperId: number;
   paperName: string;
   objectiveScore: string;
   subjectiveScore: Number;
@@ -52,7 +52,11 @@ const onSearch = () => {
   }
 };
 
-const handleReg = (_index: any, row: any) => {};
+const handleReg = ($router: any, _index: any, row: paperInfo) => {
+  paperData.paperId = row.paperId;
+  paperData.paperName = row.paperName;
+  $router.push("/index/detailPaper");
+};
 
 // 获取考试列表
 const getPaperList = async () => {
@@ -105,6 +109,8 @@ const addNewPaper = async ($router: any, formEl: FormInstance | undefined) => {
       // 重新获取试卷信息
       getPaperList();
       paperData.paperName = dialoForm.inputName;
+      paperData.paperId = res.data.data.paperId;
+      console.log(paperData.paperId);
       ElMessage.success(res.data.msg);
       $router.push("/index/detailPaper");
     } else {
@@ -175,7 +181,7 @@ watchEffect(() => {});
           <el-button
             class="search"
             type="primary"
-            @click="handleReg(scope.$index, scope.row)"
+            @click="handleReg($router, scope.$index, scope.row)"
             >查看详情</el-button
           >
         </template>
