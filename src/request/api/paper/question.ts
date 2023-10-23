@@ -9,7 +9,14 @@ export const getAllQues = () => {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
 };
-
+// searchQuesPass
+export const getQuesPass = () => {
+  return service({
+    method: 'get',
+    url: '/index/searchQuesPass',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+}
 // 获取个人的题目池
 export function getMyQuestion() {
   return service({

@@ -118,6 +118,11 @@ const router = createRouter({
           path: '/index/aduit/ultimate/paperUltimate',
           name: '试卷终极审核',
           component: () => import('../component/audit/ultimate/paperUltimate.vue')
+        },
+        {
+          path: '/index/aduit/ultimate/auditQues',
+          name: '题库题目审核',
+          component: () => import('../component/audit/ultimate/auditQues.vue')
         }
       ]
     }

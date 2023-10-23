@@ -1,22 +1,25 @@
 <script lang="ts" setup>
-import { toRaw } from '@vue/reactivity'
 import { ElMessage, ElTable } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 import { computed, reactive, ref } from 'vue'
-import { addQuesInBank, getMyBank } from '../../request/api/paper/bank'
-import { getMyQuestion } from '../../request/api/paper/question'
-import '../../sass/index/paper/addQues.scss'
-import '../../sass/index/paper/question.scss'
-import { formatExamString, getOption, getQues } from '../../utils/question'
+import { setQuesUltimatePass, setQuesUltimateRefuse } from '../../../request/api/audit/audit'
+import { getMyBank, getQuesInBank } from '../../../request/api/paper/bank'
+import '../../../sass/index/paper/addQues.scss'
+import '../../../sass/index/paper/question.scss'
+import pinia from '../../../stores'
+import quesBankPinia from '../../../stores/aduitQuesBank'
+import { formatExamString, getOption, getQues } from '../../../utils/question'
 
+const aduitQuesBank = quesBankPinia(pinia)
+console.log(aduitQuesBank.auditBankId)
 interface Ques {
-  type: string
+  questionType: string
   description: string
   createTime: string
   questionId: Number
   answer: string
-  questionscore: string
-  juniorState: string
+  questionStore: string
+  ultimateState: Number
 }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
@@ -24,27 +27,29 @@ const form = reactive({
   type: '请选择题目类型'
 })
 
-// let allTableDate: any = myQuestionList.value;
 let allTableData: any = ref<Ques[]>()
-// 深拷贝，初始的表格数据时全部的个人数据
 let tableData: any = ref<Ques[]>()
 
-// tableData = myQuestionList;
 const AllQuestion = async () => {
-  allTableData = (await getMyQuestion()).data.data
+  allTableData = (await getQuesInBank(aduitQuesBank.auditBankId)).data.data
   console.log(allTableData)
-  allTableData.forEach((item: { type: string; description: string; juniorState: string }) => {
+  allTableData.forEach((item: { type: string; description: string; createTime: string }) => {
+    let date = new Date(item.createTime)
+    item.createTime = date.toLocaleString()
     if (item.type == '0') {
       item.type = '主观题'
     } else if (item.type == '1') {
+      console.log(item.description)
       item.type = '单选题'
       item.description = formatExamString(item.description)
     } else {
+      console.log(item)
+      console.log(item.description)
       item.type = '多选题'
       item.description = formatExamString(item.description)
     }
   })
-  // console.log(allTableData)
+  console.log(allTableData)
   tableData.value = cloneDeep(allTableData)
 }
 AllQuestion()
@@ -54,38 +59,10 @@ const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 // 题的类型？
 const multipleSelection = ref<Ques[]>([])
 
-// 可以用于选择固定的第几位 修改成clear all
-const toggleSelection = () => {
-  multipleTableRef.value!.clearSelection()
-}
-
-// handleSelectionChange：选中了几个题目并存放在value中
 const handleSelectionChange = (val: Ques[]) => {
   // console.log('handleSelectionChange', val)
   multipleSelection.value = val
 }
-const selectBank = ref('')
-// 将选择的试题添加到题库
-let openToAddBank = async function async() {
-  console.log(selectBank.value)
-  if (selectBank.value == '') return ElMessage.warning('未选择题目')
-  console.log(multipleSelection.value)
-  const selectQues = toRaw(multipleSelection.value)
-  if (selectQues.length == 0) return ElMessage.warning('未选择题目')
-  for (let item of selectQues) {
-    console.log(item.questionId)
-    const { data, code, msg } = (await addQuesInBank(Number.parseInt(selectBank.value), item.questionId)).data
-    console.log(data, msg)
-    if (!data || code != 0) {
-      ElMessage.warning(msg)
-    } else {
-      ElMessage.success(msg)
-    }
-  }
-  // addQuesInBank()
-  console.log(selectQues)
-}
-
 // 根据form.data搜索对应的题目
 const searchQuesByInput = function searchQuesByInput() {
   console.log(form.data)
@@ -135,6 +112,8 @@ const filteredType = computed(() => {
   })
 })
 
+// 定义表单不能为空的验证规则
+
 interface bankInterface {
   bankId: Number
   bankName: string
@@ -147,10 +126,28 @@ const getBankData = async () => {
   console.log(bankData)
 }
 getBankData()
+// 通过
+const passQues = async (scope: any) => {
+  console.log(scope.questionId)
+  const { code, msg } = (await setQuesUltimatePass(aduitQuesBank.auditBankId,scope.questionId)).data
+  if (code == 0) ElMessage.success(msg)
+  AllQuestion()
+}
+// 拒绝
+const refuseQues = async (scope: any) => {
+  console.log(scope.questionId)
+  const { code, msg } = (await setQuesUltimateRefuse(aduitQuesBank.auditBankId,scope.questionId)).data
+  if (code == 0) ElMessage.success(msg)
+  AllQuestion()
+}
 </script>
 
 <template>
   <div>
+    <div class="title">
+      <el-icon class="title-icon" @click="() => $router.push('/index/aduit/ultimate/bankQuesUltimate')"><ArrowLeftBold /></el-icon>
+      <span class="title-h2">{{ aduitQuesBank.auditBankName }} | 题库终极审核</span>
+    </div>
     <!-- 筛选试题信息 -->
     <div class="selector">
       <el-form :model="form" class="selector-form" size="large">
@@ -169,7 +166,7 @@ getBankData()
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%; height: 630px" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border>
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%; height: 700px" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border>
         <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
@@ -199,7 +196,7 @@ getBankData()
           </template>
         </el-table-column>
         <el-table-column property="questionId" label="编号" width="60" align="center" />
-        <el-table-column type="selection" width="55" align="center" />
+        <!-- <el-table-column type="selection" width="55" align="center" /> -->
         <el-table-column property="type" label="题型" width="120" align="center" />
         <el-table-column property="description" label="题目">
           <template #default="scope">
@@ -208,38 +205,48 @@ getBankData()
             </div>
           </template>
         </el-table-column>
-        <!-- :class="getStatusClass(getExamStatus(item.startTime, item.examDuration))">{{ getExamStatus(item.startTime, item.examDuration) }} -->
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
+        <el-table-column label="操作" width="230" align="center">
+          <template #default="scope">
+            <el-button type="success" @click="passQues(scope.row)" v-if="scope.row.ultimateState == 0">通过</el-button>
+            <el-button type="danger" @click="refuseQues(scope.row)" v-if="scope.row.ultimateState == 0">拒绝</el-button>
+            <span v-if="scope.row.ultimateState == 1" style="color: #67c23a; font-weight: 700; font-size: 16px">已通过</span>
+            <span v-if="scope.row.ultimateState == 2" style="color: #f56c6c; font-weight: 700; font-size: 16px">已拒绝</span>
+          </template>
+        </el-table-column>
       </el-table>
-      <div style="margin-top: 20px; display: flex; height: 40px">
-        <el-button @click="toggleSelection()" size="large">清空所有选择</el-button>
-        <el-select v-model="selectBank" placeholder="请选择要添加的题库" size="large" class="selectbox" style="margin: 0px 15px">
-          <el-option :label="item.bankName" :value="item.bankId" :id="item.bankId" v-for="item in bankData" class="selectbox-option" />
-        </el-select>
-        <el-button @click="openToAddBank" type="primary" color="#626aef" style="color: aliceblue" size="large">添加到题库</el-button>
-      </div>
     </div>
     <!-- 分页器 -->
     <!-- <div class="page">
       <el-pagination layout="prev, pager, next" :total="1000" background />
     </div> -->
     <!-- <router-view></router-view> -->
-
   </div>
 </template>
 <style scoped lang="scss">
-.status-gray {
-  color: gray;
-  font-weight: 700;
-}
-
-.status-red {
-  color: #fe4f4f;
-  font-weight: 700;
-}
-
-.status-orange {
-  color: #35d75ee7;
-  font-weight: 700;
+.title {
+  display: flex;
+  align-items: center;
+  &-icon {
+    // height: 100%;
+    width: 30px;
+    height: 30px;
+    line-height: 50px;
+    border-radius: 5px;
+    background-color: #ccc;
+  }
+  &-icon:hover {
+    background: #000;
+  }
+  &-h2 {
+    // margin-bottom: 15px;
+    color: #626aef;
+    height: 50px;
+    line-height: 50px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-left: 10px;
+    // height: 100%;
+  }
 }
 </style>
