@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ElButton, ElMessage } from "element-plus";
 import { Ref, onMounted, ref, watch } from "vue";
-import { getMyBank } from "../../../request/api/paper/bank";
+import { getMyBank, getQuesInBankPass } from "../../../request/api/paper/bank";
 import { addQuesIntoPaper } from "../../../request/api/paper/paper";
 import { getQuesPass } from "../../../request/api/paper/question";
 import "../../../sass/paper/addTopicPop.scss";
