@@ -52,7 +52,7 @@ const onSearch = () => {
   }
 };
 
-const handleReg = (_index: any, row: any) => {};
+const handleReg = (_index: any, _row: any) => {};
 
 // 获取考试列表
 const getPaperList = async () => {

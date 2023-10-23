@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import "../../../sass/paper/addTopicPop.scss";
 import { ElButton } from "element-plus";
-import { Ref, ref } from "vue";
+import { Ref, onMounted, ref, watch } from "vue";
 import { getMyBank, getQuesInBank } from "../../../request/api/paper/bank";
-import { watch } from "vue";
-import { onMounted } from "vue";
-import { formatExamString, formatExamString2 } from "../../../utils/question";
 import { getAllQues } from "../../../request/api/paper/question";
+import "../../../sass/paper/addTopicPop.scss";
 import { formatDateTime } from "../../../utils/common";
+import { formatExamString, formatExamString2 } from "../../../utils/question";
 
 const multipleSelection = ref([]);
 const handleSelectionChange = (val: any) => {
