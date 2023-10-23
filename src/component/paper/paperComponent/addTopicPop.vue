@@ -2,12 +2,12 @@
 import { ElButton, ElMessage } from "element-plus";
 import { Ref, onMounted, ref, watch } from "vue";
 import { getMyBank, getQuesInBank } from "../../../request/api/paper/bank";
-import { getAllQues } from "../../../request/api/paper/question";
+import { addQuesIntoPaper } from "../../../request/api/paper/paper";
+import { getQuesPass } from "../../../request/api/paper/question";
 import "../../../sass/paper/addTopicPop.scss";
-import { formatDateTime } from "../../../utils/common";
 import pinia from "../../../stores";
 import paperStore from "../../../stores/paperStore";
-import { addQuesIntoPaper } from "../../../request/api/paper/paper";
+import { formatDateTime } from "../../../utils/common";
 import { formatExamString, formatExamString2 } from "../../../utils/question";
 
 const paperData = paperStore(pinia);
@@ -75,7 +75,7 @@ watch(
 
 // 获取全部题目
 const getAllQuesData = async () => {
-  const res = await getAllQues();
+  const res = await getQuesPass();
   const needFormatData = res.data.data;
   let maps: question[] = [] as any[];
   needFormatData.forEach(

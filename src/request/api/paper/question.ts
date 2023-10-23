@@ -13,7 +13,7 @@ export const getAllQues = () => {
 export const getQuesPass = () => {
   return service({
     method: 'get',
-    url: '/index/searchQuesPass',
+    url: '/index/selectQuesPass',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
