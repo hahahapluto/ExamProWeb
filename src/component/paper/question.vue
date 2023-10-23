@@ -9,6 +9,7 @@ import { addQuestion, getMyQuestion } from '../../request/api/paper/question'
 import '../../sass/index/paper/addQues.scss'
 import '../../sass/index/paper/question.scss'
 import { commonRules, formatExamString, getOption, getQues } from '../../utils/question'
+
 interface Ques {
   type: string
   description: string
@@ -16,6 +17,7 @@ interface Ques {
   questionId: Number
   answer: string
   questionscore: string
+  juniorState: string
 }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
@@ -31,8 +33,8 @@ let tableData: any = ref<Ques[]>()
 // tableData = myQuestionList;
 const AllQuestion = async () => {
   allTableData = (await getMyQuestion()).data.data
-  // console.log(allTableData)
-  allTableData.forEach((item: { type: string; description: string }) => {
+  console.log(allTableData)
+  allTableData.forEach((item: { type: string; description: string; juniorState: string }) => {
     if (item.type == '0') {
       item.type = '主观题'
     } else if (item.type == '1') {
@@ -42,8 +44,9 @@ const AllQuestion = async () => {
       item.type = '多选题'
       item.description = formatExamString(item.description)
     }
+    item.juniorState = filterState(item.juniorState)
   })
-  console.log(allTableData)
+  // console.log(allTableData)
   tableData.value = cloneDeep(allTableData)
 }
 AllQuestion()
@@ -66,11 +69,11 @@ const handleSelectionChange = (val: Ques[]) => {
 const selectBank = ref('')
 // 将选择的试题添加到题库
 let openToAddBank = async function async() {
-  console.log(selectBank.value);
-  if(selectBank.value=='') return ElMessage.warning("未选择题目")
+  console.log(selectBank.value)
+  if (selectBank.value == '') return ElMessage.warning('未选择题目')
   console.log(multipleSelection.value)
   const selectQues = toRaw(multipleSelection.value)
-  if(selectQues.length==0) return ElMessage.warning("未选择题目")
+  if (selectQues.length == 0) return ElMessage.warning('未选择题目')
   for (let item of selectQues) {
     console.log(item.questionId)
     const { data, code, msg } = (await addQuesInBank(Number.parseInt(selectBank.value), item.questionId)).data
@@ -133,6 +136,29 @@ const filteredType = computed(() => {
     }
   })
 })
+
+const filterState = (juniorState: string) => {
+  if (juniorState == '0') {
+    return '未审核'
+  } else if (juniorState == '1') {
+    return '已通过'
+  }else {
+    return '未通过'
+  }
+}
+
+// 定义获取状态样式类的函数
+const getStatusClass = (status: string) => {
+  console.log(status);
+  
+  if (status === '未审核') {
+    return 'status-gray'
+  } else if (status === '已通过') {
+    return 'status-orange'
+  }else {
+    return 'status-red'
+  }
+}
 
 let dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
@@ -287,18 +313,18 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
   // formEl.resetFields()
 }
-interface bankInterface{
-  bankId: Number,
-  bankName:string
+interface bankInterface {
+  bankId: Number
+  bankName: string
 }
-let bankData:any = ref<bankInterface[]>();
+let bankData: any = ref<bankInterface[]>()
 
 // 获取题库信息
 const getBankData = async () => {
-  bankData.value = (await getMyBank()).data.data;
-  console.log(bankData);
+  bankData.value = (await getMyBank()).data.data
+  console.log(bankData)
 }
-getBankData();
+getBankData()
 </script>
 
 <template>
@@ -325,7 +351,7 @@ getBankData();
     </div>
     <!-- 试题信息 -->
     <div class="form">
-      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%; height: 630px;" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border >
+      <el-table ref="multipleTableRef" :data="tableData" style="width: 100%; height: 630px" @selection-change="handleSelectionChange" class="from-table" :row-style="{ height: '50px' }" border>
         <el-table-column type="expand" width="50" align="center">
           <template #default="props">
             <div style="display: flex; padding: 10px">
@@ -364,12 +390,20 @@ getBankData();
             </div>
           </template>
         </el-table-column>
+        <!-- :class="getStatusClass(getExamStatus(item.startTime, item.examDuration))">{{ getExamStatus(item.startTime, item.examDuration) }} -->
+        <el-table-column property="juniorState" label="审核状态" show-overflow-tooltip width="100" align="center">
+          <template #default="scope">
+              <div>
+                <span :class="getStatusClass(scope.row.juniorState)">{{ scope.row.juniorState }}</span>
+              </div>
+          </template>
+        </el-table-column>
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="250" align="center" />
       </el-table>
-      <div style="margin-top: 20px;display: flex; height: 40px;">
-        <el-button @click="toggleSelection()" size="large" >清空所有选择</el-button>
-        <el-select v-model="selectBank" placeholder="请选择要添加的题库" size="large" class="selectbox" style="margin: 0px 15px;">
-          <el-option :label="item.bankName" :value="item.bankId" :id="item.bankId" v-for="item in bankData" class="selectbox-option"/>
+      <div style="margin-top: 20px; display: flex; height: 40px">
+        <el-button @click="toggleSelection()" size="large">清空所有选择</el-button>
+        <el-select v-model="selectBank" placeholder="请选择要添加的题库" size="large" class="selectbox" style="margin: 0px 15px">
+          <el-option :label="item.bankName" :value="item.bankId" :id="item.bankId" v-for="item in bankData" class="selectbox-option" />
         </el-select>
         <el-button @click="openToAddBank" type="primary" color="#626aef" style="color: aliceblue" size="large">添加到题库</el-button>
       </div>
@@ -458,5 +492,18 @@ getBankData();
   </div>
 </template>
 <style scoped lang="scss">
+.status-gray {
+  color: gray;
+  font-weight: 700;
+}
 
+.status-red {
+  color: #fe4f4f;
+  font-weight: 700;
+}
+
+.status-orange {
+  color: #35d75ee7;
+  font-weight: 700;
+}
 </style>

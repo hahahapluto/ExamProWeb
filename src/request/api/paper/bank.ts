@@ -60,12 +60,13 @@ export function addQuesInBank(bankid: Number, questionid: Number) {
 }
 
 // 修改题库名称
-export function editBank(bankname: string) {
+export function editBank(bankname: string, bankId: Number) {
   return service({
     method: "POST",
     url: "/index/updateBank",
     data: {
       bankname,
+      bankId,
     },
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });

@@ -19,6 +19,7 @@ interface Ques {
   questionId: string
   answer: string
   questionscore: string
+  ultimateState: string
 }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
@@ -35,8 +36,8 @@ let tableData: any = ref<Ques[]>()
 const AllQuestion = async () => {
   allTableData = (await getQuesInBank(quesData.bankId)).data.data
   console.log(allTableData)
-  if(allTableData.length==0) return
-  allTableData.forEach((item: { type: string; description: string }) => {
+  if (allTableData.length == 0) return
+  allTableData.forEach((item: { type: string; description: string; ultimateState: string }) => {
     if (item.type == '0') {
       item.type = '主观题'
     } else if (item.type == '1') {
@@ -46,11 +47,22 @@ const AllQuestion = async () => {
       item.type = '多选题'
       item.description = formatExamString(item.description)
     }
+    item.ultimateState = filterState(item.ultimateState)
   })
   console.log(allTableData)
   tableData.value = cloneDeep(allTableData)
 }
 AllQuestion()
+
+const filterState = (juniorState: string) => {
+  if (juniorState == '0') {
+    return '未审核'
+  } else if (juniorState == '1') {
+    return '已通过'
+  } else {
+    return '未通过'
+  }
+}
 
 // 表格的试题信息
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
@@ -253,6 +265,19 @@ const dialogForm = reactive({
   questionscore: ''
 })
 
+// 定义获取状态样式类的函数
+const getStatusClass = (status: string) => {
+  console.log(status)
+
+  if (status === '未审核') {
+    return 'status-gray'
+  } else if (status === '已通过') {
+    return 'status-orange'
+  } else {
+    return 'status-red'
+  }
+}
+
 const rules = reactive<FormRules<RuleForm>>({
   qtype: commonRules('题目类型', 'change'),
   // 主观题
@@ -284,7 +309,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 <template>
   <div>
     <div class="title">
-      <el-icon class="title-icon" @click="()=>$router.push('/index/quesBank')"><ArrowLeftBold /></el-icon>
+      <el-icon class="title-icon" @click="() => $router.push('/index/quesBank')"><ArrowLeftBold /></el-icon>
       <span class="title-h2">{{ quesData.bankName }}</span>
     </div>
     <!-- 筛选试题信息 -->
@@ -352,6 +377,13 @@ const resetForm = (formEl: FormInstance | undefined) => {
               <div v-if="scope.row.type !== '主观题'">B : {{ getOption('B=', scope.row.description) }}</div>
               <div v-if="scope.row.type !== '主观题'">C : {{ getOption('C=', scope.row.description) }}</div>
               <div v-if="scope.row.type !== '主观题'">D : {{ getOption('D=', scope.row.description) }}</div> -->
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column property="ultimateState" label="审核状态" show-overflow-tooltip width="100" align="center">
+          <template #default="scope">
+            <div>
+              <span :class="getStatusClass(scope.row.ultimateState)">{{ scope.row.ultimateState }}</span>
             </div>
           </template>
         </el-table-column>
@@ -470,5 +502,20 @@ const resetForm = (formEl: FormInstance | undefined) => {
     margin-left: 10px;
     // height: 100%;
   }
+}
+
+.status-gray {
+  color: gray;
+  font-weight: 700;
+}
+
+.status-red {
+  color: #fe4f4f;
+  font-weight: 700;
+}
+
+.status-orange {
+  color: #35d75ee7;
+  font-weight: 700;
 }
 </style>

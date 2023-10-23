@@ -1,22 +1,22 @@
 <script setup lang="ts">
 // import type { FormInstance } from 'element-plus';
-import { FormInstance, FormRules } from 'element-plus';
-import cloneDeep from 'lodash/cloneDeep';
-import { reactive, ref } from 'vue';
-import { addBank, getMyBank } from '../../request/api/paper/bank';
-import pinia from '../../stores';
-import quesStore from '../../stores/quesStore';
+import { ElMessage, FormInstance, FormRules } from 'element-plus'
+import cloneDeep from 'lodash/cloneDeep'
+import { reactive, ref } from 'vue'
+import { addBank, editBank, getMyBank } from '../../request/api/paper/bank'
+import pinia from '../../stores'
+import quesStore from '../../stores/quesStore'
 // import { commonRules } from '../../utils/question'
 
 let isDark = true
-
+let chooseEditId: Number = 0
 interface bank {
   bankId: number
   bankName: string
   createTime: Date
 }
 // 引入问题pinia
-const quesData = quesStore(pinia);
+const quesData = quesStore(pinia)
 
 const selectForm = reactive({
   bankName: ''
@@ -52,9 +52,9 @@ const handleSelectionChange = (val: bank[]) => {
 
 const handleEdit = (row: bank, $router: any) => {
   // 跳转题库中题目信息
-  quesData.bankId = row.bankId;
-  quesData.bankName = row.bankName;
-  $router.push("/index/quesBank/add");
+  quesData.bankId = row.bankId
+  quesData.bankName = row.bankName
+  $router.push('/index/quesBank/add')
 }
 
 let dialogFormVisible = ref(false)
@@ -99,18 +99,28 @@ const resetForm = (formEl: FormInstance | undefined) => {
 // 编辑
 const editMyBank = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  console.log(dialoForm.inputName);
+  console.log(dialoForm.inputName)
+  console.log(chooseEditId)
+
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       console.log('submit!')
-      // const res = await addBank(dialoForm.inputName)
-      // console.log(res)
-      console.log(dialoForm.inputName);
+      const { data, code, msg } = (await editBank(dialoForm.inputName, chooseEditId)).data
+      console.log(data, code)
+      if (code == 0) {
+        ElMessage.success(msg)
+      } else {
+        ElMessage.error(msg)
+      }
+      
+      dialogFormEdit.value = false
+      console.log(dialoForm.inputName)
       AllQuestion()
     } else {
       console.log('error submit!', fields)
       return
     }
+    dialoForm.inputName = ""
   })
 }
 </script>
@@ -150,8 +160,8 @@ const editMyBank = async (formEl: FormInstance | undefined) => {
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip width="300" align="center" />
         <el-table-column label="操作" width="330" align="center">
           <template #default="scope">
-            <el-button @click="handleEdit(scope.row,$router)">查看</el-button>
-            <el-button @click="dialogFormEdit = true">编辑</el-button>
+            <el-button @click="handleEdit(scope.row, $router)">查看</el-button>
+            <el-button @click=";(dialogFormEdit = true), (chooseEditId = scope.row.bankId)" color="orange" plain>编辑</el-button>
             <el-button type="danger" @click="">删除</el-button>
           </template>
         </el-table-column>
