@@ -4,23 +4,7 @@ const paperStore = defineStore("paperStore", {
   state: () => {
     return {
       paperName: "",
-      quesSequenceDatas: [
-        {
-          name: "单选题",
-          score: "0分",
-          lists: [] as number[],
-        },
-        {
-          name: "多选题",
-          score: "0分",
-          lists: [] as number[],
-        },
-        {
-          name: "主观题",
-          score: "0分",
-          lists: [] as number[],
-        },
-      ],
+      paperId: -1,
     };
   },
   // 公用方法

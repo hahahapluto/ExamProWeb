@@ -1,12 +1,19 @@
 <script lang="ts" setup>
-import { ElButton } from "element-plus";
+import { ElButton, ElMessage } from "element-plus";
 import { Ref, onMounted, ref, watch } from "vue";
 import { getMyBank, getQuesInBank } from "../../../request/api/paper/bank";
 import { getAllQues } from "../../../request/api/paper/question";
 import "../../../sass/paper/addTopicPop.scss";
 import { formatDateTime } from "../../../utils/common";
+import pinia from "../../../stores";
+import paperStore from "../../../stores/paperStore";
+import { addQuesIntoPaper } from "../../../request/api/paper/paper";
 import { formatExamString, formatExamString2 } from "../../../utils/question";
 
+const paperData = paperStore(pinia);
+const props = defineProps(["cancelDialogForm", "getQuesDataByPaperId"]);
+
+// 获取当前选择的选项
 const multipleSelection = ref([]);
 const handleSelectionChange = (val: any) => {
   multipleSelection.value = val;
@@ -22,6 +29,7 @@ interface question {
   description: string;
   questionId: string;
   type: string;
+  questionStore: string;
 }
 
 // 题库
@@ -82,11 +90,13 @@ const getAllQuesData = async () => {
         description: "",
         questionId: "",
         type: "",
+        questionStore: "",
       };
       map.createTime = formatDateTime(item.createTime);
       map.description = item.questionDescription;
       map.questionId = item.questionId;
       map.type = item.questionType;
+      map.questionStore = item.questionScore;
       maps.push(map);
     }
   );
@@ -110,6 +120,35 @@ const getAllQuesData = async () => {
 // 点击获取所有题目
 const onclick_allques = () => {
   getAllQuesData();
+};
+
+// 添加选中题目进试卷
+const addQuesIntoPaperData = async () => {
+  const backendData = multipleSelection.value.map((item: question) => {
+    let type = "";
+    if (item.type === "主观题") {
+      type = "0";
+    } else if (item.type === "单选题") {
+      type = "1";
+    } else {
+      type = "2";
+    }
+    return {
+      paperid: paperData.paperId,
+      questionid: item.questionId,
+      questiontype: type,
+      score: item.questionStore,
+    };
+  });
+
+  const res = await addQuesIntoPaper(backendData);
+  if (!res.data.code) {
+    ElMessage.success(res.data.msg);
+    props.getQuesDataByPaperId(paperData.paperId);
+    props.cancelDialogForm();
+  } else {
+    ElMessage.warning(res.data.msg);
+  }
 };
 
 // 获取数据
@@ -155,12 +194,14 @@ onMounted(() => {
       <el-table-column prop="type" label="题型" width="120"> </el-table-column>
       <el-table-column prop="description" label="题目" show-overflow-tooltip>
       </el-table-column>
+      <el-table-column prop="questionStore" label="题目分数" width="120">
+      </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="200">
       </el-table-column>
     </el-table>
     <span class="addTopicPop-footer">
-      <el-button @click="">取 消</el-button>
-      <el-button type="primary" @click="">确 定</el-button>
+      <el-button @click="props.cancelDialogForm">取 消</el-button>
+      <el-button type="primary" @click="addQuesIntoPaperData">确 定</el-button>
     </span>
   </div>
 </template>
