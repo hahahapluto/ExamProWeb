@@ -24,14 +24,6 @@ const selectForm = reactive({
 // 根据form.data搜索对应的题目
 const searchBankByInput = function searchBankByInput() {
   console.log(selectForm.bankName)
-  // console.log(filteredData.value)
-  // if (form.data.length > 0) {
-  //   // 进行模糊查询并赋值给 tableData
-  //   tableData.value = filteredData.value
-  // } else {
-  //   // 当 form.data 为空时，赋值为 aqllTableDate
-  //   tableData.value = allTableData
-  // }
 }
 
 // let allTableDate: any = myQuestionList.value;
@@ -73,7 +65,6 @@ const dialoForm = reactive({
 })
 // 添加题库
 const addMyBank = async (formEl: FormInstance | undefined) => {
-  // addBank
   dialogFormVisible.value = false
   console.log(dialoForm)
   if (!formEl) return

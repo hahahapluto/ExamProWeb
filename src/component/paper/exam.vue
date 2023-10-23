@@ -97,8 +97,8 @@ import { Search } from '@element-plus/icons-vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 import { reactive, ref } from 'vue'
+import { getAllExams } from '../../request/api/exam/examRegistration'
 import { addExam, getMyExam } from '../../request/api/paper/exam'
-import { getPaper } from '../../request/api/paper/paper'
 import { commonRules } from '../../utils/question'
 
 interface examInterface {
@@ -171,7 +171,7 @@ const addExamButton = async (formEl: FormInstance | undefined) => {
 let paperData: any = ref()
 //获取试卷信息
 const getPaperData = async () => {
-  paperData = (await getPaper()).data.data
+  paperData = (await getAllExams()).data.data
   console.log(paperData)
 }
 getPaperData()
