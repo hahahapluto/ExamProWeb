@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ElButton, ElMessage } from "element-plus";
 import { Ref, onMounted, ref, watch } from "vue";
-import { getMyBank, getQuesInBank } from "../../../request/api/paper/bank";
+import { getMyBank, getQuesInBankPass } from "../../../request/api/paper/bank";
 import { getAllQues } from "../../../request/api/paper/question";
 import "../../../sass/paper/addTopicPop.scss";
 import { formatDateTime } from "../../../utils/common";
@@ -47,7 +47,7 @@ const toppicTableData: Ref<any[]> = ref([]);
 // const toppicTableData = ref([]);
 
 const getQuesInBankData = async (questionBankId: Number) => {
-  const res = await getQuesInBank(questionBankId);
+  const res = await getQuesInBankPass(questionBankId);
   toppicTableData.value = res.data.data;
   console.log(toppicTableData.value);
 

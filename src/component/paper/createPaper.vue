@@ -119,8 +119,9 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   });
 };
 
-// 选择了题目序列active
-const multipleChoice_active = (index: number, type: number) => {
+// 获取题目的答案
+const getAnswer = (index: number, type: number, answer: string) => {
+  quesSequenceDatas.value[type].answer[index] = answer;
   if (quesSequenceDatas.value[type].answer[index]) {
     if (type == 2) {
       if (quesSequenceDatas.value[type].answer[index] == "") {
@@ -134,11 +135,6 @@ const multipleChoice_active = (index: number, type: number) => {
   } else {
     quesSequenceDatas.value[type].actives[index] = false;
   }
-};
-
-// 获取题目的答案
-const getAnswer = (index: number, type: number, answer: string) => {
-  quesSequenceDatas.value[type].answer[index] = answer;
 };
 
 // 是否显示添加题目的弹出框
@@ -192,7 +188,6 @@ onMounted(() => {
       </h1>
       <multipleChoice
         v-for="(item, index) in danXuan"
-        @click="multipleChoice_active(index, 0)"
         :type="0"
         :key="index"
         :index="index"
@@ -205,7 +200,6 @@ onMounted(() => {
         }}分）
       </h1>
       <multipleChoice
-        @click="multipleChoice_active(index, 1)"
         v-for="(item, index) in duoXuan"
         :type="1"
         :key="index"
@@ -219,7 +213,6 @@ onMounted(() => {
         }}分）
       </h1>
       <subQuestions
-        @click="multipleChoice_active(index, 2)"
         v-for="(item, index) in subText"
         :type="21"
         :key="index"

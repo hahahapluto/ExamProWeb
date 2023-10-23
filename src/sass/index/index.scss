@@ -64,6 +64,16 @@
       box-shadow: 0 0 10px #ddd;
       transition: all 0.2s linear;
 
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border: 2px solid #fff;
+        border-radius: 6px;
+        background: #DDDEE0;
+      }
+
       // 导航栏整体的背景颜色
       .el-menu {
         background-color: #fff;
