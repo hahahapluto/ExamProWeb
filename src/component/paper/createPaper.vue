@@ -66,19 +66,51 @@ function extractValues(text: string) {
 }
 
 // 单选题内容
-const danXuan = ref<string[][]>([]);
+let danXuan = ref<string[][]>([]);
 // 多选题内容
-const duoXuan = ref<string[][]>([]);
+let duoXuan = ref<string[][]>([]);
 // 主观题内容
-const subText = ref<string[]>([]);
+let subText = ref<string[]>([]);
 // 试卷的题目数据
 let quesDatas: quesData[] = [];
+
+// 初始化数据
+const InitializedData = () => {
+  quesSequenceDatas.value = [
+    {
+      name: "单选题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+    {
+      name: "多选题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+    {
+      name: "主观题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+  ];
+  danXuan.value = [];
+  duoXuan.value = [];
+  subText.value = [];
+};
+
 // 获取试卷的题目数据
 const getQuesDataByPaperId = async (paperId: Number) => {
+  InitializedData();
   console.log("获取试卷题目");
   let res = await findQuesByPaperId(paperId);
   quesDatas = res.data.data;
-
+  console.log(quesDatas);
   quesDatas.map((item: quesData) => {
     if (item.questionType === "0") {
       // type = "主观题";

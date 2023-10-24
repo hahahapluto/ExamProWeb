@@ -17,6 +17,7 @@ const props = defineProps(["cancelDialogForm", "getQuesDataByPaperId"]);
 const multipleSelection = ref([]);
 const handleSelectionChange = (val: any) => {
   multipleSelection.value = val;
+  console.log(multipleSelection.value);
 };
 
 interface questionBankOption {
@@ -140,6 +141,7 @@ const addQuesIntoPaperData = async () => {
       score: item.questionStore,
     };
   });
+  console.log(backendData);
 
   const res = await addQuesIntoPaper(backendData);
   if (!res.data.code) {
