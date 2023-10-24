@@ -106,7 +106,7 @@ const handleClose = (key: string, keyPath: string[]) => {
                 </template>
                 <el-menu-item
                   index="4-1"
-                  @click="() => jumpPath($router, 'myExam')"
+                  @click="() => jumpPath($router, 'markPaper')"
                   >卷子</el-menu-item
                 >
               </el-sub-menu>
@@ -119,12 +119,12 @@ const handleClose = (key: string, keyPath: string[]) => {
                   <template #title>初级审核</template>
                   <el-menu-item
                     index="5-1-1"
-                    @click="() => jumpPath($router,'aduit/junior/quesJunior')"
+                    @click="() => jumpPath($router, 'aduit/junior/quesJunior')"
                     >题目审核</el-menu-item
                   >
                   <el-menu-item
                     index="5-1-2"
-                    @click="() => jumpPath($router,'aduit/junior/paperJunior')"
+                    @click="() => jumpPath($router, 'aduit/junior/paperJunior')"
                     >试卷初审</el-menu-item
                   >
                   <el-menu-item
@@ -137,17 +137,23 @@ const handleClose = (key: string, keyPath: string[]) => {
                   <template #title>终极审核</template>
                   <el-menu-item
                     index="5-2-1"
-                    @click="() => jumpPath($router, 'aduit/ultimate/bankQuesUltimate')"
+                    @click="
+                      () => jumpPath($router, 'aduit/ultimate/bankQuesUltimate')
+                    "
                     >题库题目审核</el-menu-item
                   >
                   <el-menu-item
                     index="5-2-2"
-                    @click="() => jumpPath($router, 'aduit/ultimate/paperUltimate')"
+                    @click="
+                      () => jumpPath($router, 'aduit/ultimate/paperUltimate')
+                    "
                     >试卷终审</el-menu-item
                   >
                   <el-menu-item
                     index="5-2-3"
-                    @click="() => jumpPath($router, 'aduit/ultimate/examUtlimate')"
+                    @click="
+                      () => jumpPath($router, 'aduit/ultimate/examUtlimate')
+                    "
                     >考试终审</el-menu-item
                   >
                 </el-sub-menu>

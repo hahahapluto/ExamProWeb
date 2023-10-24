@@ -1,83 +1,116 @@
 <template>
-  <div class="showbox">
-    <div class="showbox-exam">
-      <div class="showbox-exam-item" v-for="item in props.tableData">
-        <div class="showbox-exam-item-title">{{ item.examName }}</div>
-        <div v-if="item.examDescription" class="showbox-exam-item-describe">{{ item.examDescription }}</div>
-        <div class="showbox-exam-item-detail">
-          <div class="showbox-exam-item-detail-starttime">
-            <el-icon class="examicon" color="#626aef"><Loading /></el-icon>{{ timeTransform(item.startTime) }}
-          </div>
-          <div class="showbox-exam-item-detail-duration">
-            <el-icon class="examicon" color="#626aef"><Clock /></el-icon>限时<span style="font-weight: 700; margin: 0px 2px">{{ item.examDuration }}</span
-            >分钟
-          </div>
-          <div class="showbox-exam-item-detail-numberOfExam" v-if="item.numberOfExaminees !== null">
-            <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>考试人数：<span style="font-weight: 700; margin: 0px 2px">{{ item.numberOfExaminees }}</span
-            >人
-          </div>
-          <div class="showbox-exam-item-detail-state">
-            <el-icon class="examicon" color="#626aef"><Promotion /></el-icon>状态：<span style="font-weight: 700; margin: 0px 2px" :class="getStatusClass(getExamStatus(item.startTime, item.examDuration))">{{ getExamStatus(item.startTime, item.examDuration) }}</span>
-          </div>
-        </div>
+  <div class="showbox-exam-item">
+    <div class="showbox-exam-item-title">
+      {{ props.tableData.examName }}
+    </div>
+    <div
+      v-if="props.tableData.examDescription"
+      class="showbox-exam-item-describe"
+    >
+      {{ props.tableData.examDescription }}
+    </div>
+    <div class="showbox-exam-item-detail">
+      <div class="showbox-exam-item-detail-starttime">
+        <el-icon class="examicon" color="#626aef"><Loading /></el-icon
+        >{{ timeTransform(props.tableData.startTime) }}
+      </div>
+      <div class="showbox-exam-item-detail-duration">
+        <el-icon class="examicon" color="#626aef"><Clock /></el-icon>限时<span
+          style="font-weight: 700; margin: 0px 2px"
+          >{{ props.tableData.examDuration }}</span
+        >分钟
+      </div>
+      <div
+        class="showbox-exam-item-detail-numberOfExam"
+        v-if="props.tableData.numberOfExaminees !== null"
+      >
+        <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon
+        >考试人数：<span style="font-weight: 700; margin: 0px 2px">{{
+          props.tableData.numberOfExaminees
+        }}</span
+        >人
+      </div>
+      <div class="showbox-exam-item-detail-state">
+        <el-icon class="examicon" color="#626aef"><Promotion /></el-icon
+        >状态：<span
+          style="font-weight: 700; margin: 0px 2px"
+          :class="
+            getStatusClass(
+              getExamStatus(
+                props.tableData.startTime,
+                props.tableData.examDuration
+              )
+            )
+          "
+          >{{
+            getExamStatus(
+              props.tableData.startTime,
+              props.tableData.examDuration
+            )
+          }}</span
+        >
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 //显式声明所接受的 props
-const props = defineProps(['tableData'])
+const props = defineProps(["tableData"]);
 
 function getExamStatus(startTimeStr: string, durationMinutes: number) {
   // 将输入的开始时间字符串转换为日期对象
-  const startTime = new Date(startTimeStr)
+  const startTime = new Date(startTimeStr);
   // 获取当前时间
-  const currentTime = new Date()
+  const currentTime = new Date();
   // 计算结束时间
-  const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000)
+  const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
   if (currentTime < startTime) {
     // 考试未开始
-    return '未开始'
+    return "未开始";
   } else if (currentTime >= startTime && currentTime <= endTime) {
     // 考试进行中
-    return '考试中'
+    return "考试中";
   } else {
     // 考试已结束
-    return '已结束'
+    return "已结束";
   }
 }
 
 // 定义获取状态样式类的函数
 const getStatusClass = (status: string) => {
-  console.log(status)
-  if (status === '未开始') {
-    return 'status-gray'
-  } else if (status === '考试中') {
-    return 'status-blue'
-  } else if (status === '已结束') {
-    return 'status-red'
+  console.log(status);
+  if (status === "未开始") {
+    return "status-gray";
+  } else if (status === "考试中") {
+    return "status-blue";
+  } else if (status === "已结束") {
+    return "status-red";
   } else {
-    return 'status-default'
+    return "status-default";
   }
-}
+};
 
 function timeTransform(time: string) {
   console.log(time);
-  
-  const inputDate = new Date(time)
+
+  const inputDate = new Date(time);
   // 提取年、月、日、小时和分钟
-  const year = inputDate.getFullYear()
-  const month = inputDate.getMonth() + 1 // 月份从0开始，所以需要加1
-  const day = inputDate.getDate()
-  const hours = inputDate.getHours()
-  const minutes = inputDate.getMinutes()
+  const year = inputDate.getFullYear();
+  const month = inputDate.getMonth() + 1; // 月份从0开始，所以需要加1
+  const day = inputDate.getDate();
+  const hours = inputDate.getHours();
+  const minutes = inputDate.getMinutes();
   // 格式化为 "yyyy-mm-dd hh:mm:00" 格式
-  const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`
-  console.log(formattedDate) // 输出格式化后的日期时间
+  const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
+    .toString()
+    .padStart(2, "0")} ${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:00`;
+  console.log(formattedDate); // 输出格式化后的日期时间
   return formattedDate;
 }
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 .showbox {
   width: 100%;
   &-exam {

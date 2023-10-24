@@ -1,0 +1,249 @@
+<script lang="ts" setup>
+import { ref } from "vue";
+import "../../sass/paper/createPaper.scss";
+import quesSequence from "../paper/paperComponent/quesSequence.vue";
+import multipleChoice from "../paper/paperComponent/multipleChoice.vue";
+import subQuestions from "../paper/paperComponent/subQuestions.vue";
+import { quesSequenceType } from "../../types/paper";
+import pinia from "../../stores";
+import paperStore from "../../stores/paperStore";
+import { findQuesByPaperId } from "../../request/api/paper/paper";
+import { onMounted } from "vue";
+
+interface quesData {
+  questionId: number;
+  questionType: string;
+  questionDescription: string;
+  questionAnswer: string;
+  questionScore: string;
+}
+
+// 试卷的数据
+const paperData = paperStore(pinia);
+// 左侧-题目序列数据
+const quesSequenceDatas = ref<quesSequenceType[]>([
+  {
+    name: "单选题",
+    score: 0,
+    lists: [] as number[],
+    actives: [] as boolean[],
+    answer: [] as string[],
+  },
+  {
+    name: "多选题",
+    score: 0,
+    lists: [] as number[],
+    actives: [] as boolean[],
+    answer: [] as string[],
+  },
+  {
+    name: "主观题",
+    score: 0,
+    lists: [] as number[],
+    actives: [] as boolean[],
+    answer: [] as string[],
+  },
+]);
+
+// 将选项转换成数组
+function extractQuestionAndOptions(text: string) {
+  let all = text.split("(exampro)");
+  let question = all[0];
+  let options = extractValues(all[1]);
+  return [question, ...options];
+}
+
+function extractValues(text: string) {
+  const values = text.split("&").map((item) => {
+    const parts = item.split("=");
+    if (parts.length === 2) {
+      return parts[1];
+    }
+    return null;
+  });
+
+  return values.filter((value) => value !== null);
+}
+
+// 单选题内容
+let danXuan = ref<string[][]>([]);
+// 多选题内容
+let duoXuan = ref<string[][]>([]);
+// 主观题内容
+let subText = ref<string[]>([]);
+// 试卷的题目数据
+let quesDatas: quesData[] = [];
+
+// 初始化数据
+const InitializedData = () => {
+  quesSequenceDatas.value = [
+    {
+      name: "单选题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+    {
+      name: "多选题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+    {
+      name: "主观题",
+      score: 0,
+      lists: [] as number[],
+      actives: [] as boolean[],
+      answer: [] as string[],
+    },
+  ];
+  danXuan.value = [];
+  duoXuan.value = [];
+  subText.value = [];
+};
+
+// 获取试卷的题目数据
+const getQuesDataByPaperId = async (paperId: Number) => {
+  InitializedData();
+  console.log("获取试卷题目");
+  let res = await findQuesByPaperId(paperId);
+  quesDatas = res.data.data;
+  console.log(quesDatas);
+  quesDatas.map((item: quesData) => {
+    if (item.questionType === "0") {
+      // type = "主观题";
+      quesSequenceDatas.value[2].lists.push(item.questionId);
+      quesSequenceDatas.value[2].score += Number.parseInt(item.questionScore);
+      subText.value.push(item.questionDescription);
+    } else if (item.questionType === "1") {
+      // type = "单选题";
+      quesSequenceDatas.value[0].lists.push(item.questionId);
+      quesSequenceDatas.value[0].score += Number.parseInt(item.questionScore);
+      let questionAndOptions: any = extractQuestionAndOptions(
+        item.questionDescription
+      );
+
+      if (questionAndOptions !== null) {
+        danXuan.value.push(questionAndOptions);
+      } else {
+        // 处理无效数据，例如记录日志或发出警告
+        console.warn("Invalid question data:", item.questionDescription);
+      }
+    } else {
+      // type = "多选题";
+      quesSequenceDatas.value[1].lists.push(item.questionId);
+      quesSequenceDatas.value[1].score += Number.parseInt(item.questionScore);
+      let questionAndOptions: any = extractQuestionAndOptions(
+        item.questionDescription
+      );
+
+      if (questionAndOptions !== null) {
+        duoXuan.value.push(questionAndOptions);
+      } else {
+        // 处理无效数据，例如记录日志或发出警告
+        console.warn("Invalid question data:", item.questionDescription);
+      }
+    }
+  });
+};
+
+// 获取题目的答案
+const getAnswer = (index: number, type: number, answer: string) => {
+  quesSequenceDatas.value[type].answer[index] = answer;
+  if (quesSequenceDatas.value[type].answer[index]) {
+    if (type == 2) {
+      if (quesSequenceDatas.value[type].answer[index] == "") {
+        quesSequenceDatas.value[type].actives[index] = false;
+      } else {
+        quesSequenceDatas.value[type].actives[index] = true;
+      }
+    } else {
+      quesSequenceDatas.value[type].actives[index] = true;
+    }
+  } else {
+    quesSequenceDatas.value[type].actives[index] = false;
+  }
+};
+
+onMounted(() => {
+  getQuesDataByPaperId(paperData.paperId);
+});
+</script>
+<template>
+  <el-container>
+    <el-aside width="280px" class="quesSequenceBox">
+      <div class="quesSequenceBox-title">题目序列</div>
+      <quesSequence
+        v-for="item in quesSequenceDatas"
+        v-show="item.lists.length != 0"
+        :quesSequenceData="item"
+      />
+    </el-aside>
+    <el-main class="createPaper">
+      <div class="createPaper-info">
+        <div class="createPaper-paperName">
+          <h1>{{ paperData.paperName }}</h1>
+        </div>
+        <!-- <div class="createPaper-detail">
+          <div class="createPaper-detail-starttime createPaper-detail-common">
+            <el-icon class="examicon" color="#626aef"><Loading /></el-icon>
+            2023-15-40
+          </div>
+          <div class="createPaper-detail-duration createPaper-detail-common">
+            <el-icon class="examicon" color="#626aef"><Clock /></el-icon>
+            限时90分钟
+          </div>
+          <div
+            class="createPaper-detail-numberOfExam createPaper-detail-common"
+          >
+            <el-icon class="examicon" color="#626aef"><UserFilled /></el-icon>
+            考试人数：1人
+          </div>
+        </div> -->
+      </div>
+
+      <h1 style="margin: 20px 20px" v-if="quesSequenceDatas[0].lists.length">
+        一. 单选题（共{{ quesSequenceDatas[0].lists.length }}题，{{
+          quesSequenceDatas[0].score
+        }}分）
+      </h1>
+      <multipleChoice
+        v-for="(item, index) in danXuan"
+        :type="0"
+        :key="index"
+        :index="index"
+        :danxuan="item"
+        :getAnswer="getAnswer"
+      />
+      <h1 style="margin: 20px 20px" v-if="quesSequenceDatas[1].lists.length">
+        二. 多选题（共{{ quesSequenceDatas[1].lists.length }}题，{{
+          quesSequenceDatas[1].score
+        }}分）
+      </h1>
+      <multipleChoice
+        v-for="(item, index) in duoXuan"
+        :type="1"
+        :key="index"
+        :index="index"
+        :danxuan="item"
+        :getAnswer="getAnswer"
+      />
+      <h1 style="margin: 20px 20px" v-if="quesSequenceDatas[2].lists.length">
+        三. 主观题（共{{ quesSequenceDatas[2].lists.length }}题，{{
+          quesSequenceDatas[2].score
+        }}分）
+      </h1>
+      <subQuestions
+        v-for="(item, index) in subText"
+        :type="21"
+        :key="index"
+        :index="index"
+        :subText="item"
+        :getAnswer="getAnswer"
+        s
+      />
+    </el-main>
+  </el-container>
+</template>
