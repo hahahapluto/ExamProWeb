@@ -22,3 +22,11 @@ export function addExam(examName: string, examDescription: string, paperID: stri
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
+
+// 查询通过初审的考试 examsPassJunior
+export function getExamPassJunior() {
+  return service({
+    method: 'get',
+    url: '/exam/examsPassJunior'
+  })
+}

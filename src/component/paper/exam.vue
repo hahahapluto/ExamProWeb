@@ -24,7 +24,9 @@
       <div class="showbox-exam">
         <div class="showbox-exam-item first" @click="dialogFormVisible = true"></div>
         <div class="showbox-exam-item" v-for="item in tableData">
-          <div class="showbox-exam-item-title">{{ item.examName }}</div>
+          <div class="showbox-exam-item-title">
+            {{ item.examName }}<span :class="getAuditStatusClass(item.juniorState)" style="margin-left: 10px;">( {{ item.juniorState }} )</span>
+          </div>
           <div class="showbox-exam-item-describe">{{ item.examDescription }}</div>
           <div class="showbox-exam-item-detail">
             <div class="showbox-exam-item-detail-starttime">
@@ -109,6 +111,21 @@ interface examInterface {
   paper: string
 }
 
+// 定义获取状态样式类的函数
+const getAuditStatusClass = (status: string) => {
+  console.log(status)
+
+  if (status === '未初审') {
+    return 'status-gray'
+  } else if (status === '已通过终审') {
+    return 'status-orange'
+  } else if (status === '已通过初审') {
+    return 'status-chu'
+  } else {
+    return 'status-red'
+  }
+}
+
 const showInput = ref('')
 let dialogFormVisible = ref(false)
 const examForm = reactive<examInterface>({
@@ -190,9 +207,10 @@ console.log(examData)
 const getExam = async () => {
   examData = (await getMyExam()).data.data
   console.log(examData)
-  examData.forEach((item: { startTime: string }) => {
+  examData.forEach((item: { startTime: string; juniorState: string; ultimateState: string }) => {
     let date = new Date(item.startTime)
     item.startTime = date.toLocaleString()
+    item.juniorState = filterState(item.juniorState, item.ultimateState)
   })
   tableData.value = cloneDeep(examData)
 }
@@ -210,6 +228,17 @@ const getStatusClass = (status: string) => {
   }
 }
 
+const filterState = (juniorState: string, ultimateState: string) => {
+  if (juniorState == '0') {
+    return '未初审'
+  } else if (juniorState == '1' && ultimateState == '0') {
+    return '已通过初审'
+  } else if (ultimateState == '1') {
+    return '已通过终审'
+  } else {
+    return '未通过'
+  }
+}
 function getExamStatus(startTimeStr: string, durationMinutes: number) {
   // 将输入的开始时间字符串转换为日期对象
   const startTime = new Date(startTimeStr)
@@ -353,7 +382,6 @@ const selectedState = ref('全部')
       -webkit-transform: scale(1.1);
       transform: scale(1.05);
     }
-
   }
 }
 .examicon {
@@ -386,15 +414,18 @@ const selectedState = ref('全部')
   flex-wrap: nowrap;
 }
 
-.status-gray {
-  color: gray;
-}
-
 .status-red {
-  color: #f78b55;
+  color: #fe4f4f;
+  font-weight: 700;
 }
 
-.status-blue {
-  color: #f96565;
+.status-orange {
+  color: #35d75ee7;
+  font-weight: 700;
+}
+
+.status-chu{
+  color:rgb(73, 216, 255);
+  font-weight: 700;
 }
 </style>

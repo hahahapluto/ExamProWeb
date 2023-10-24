@@ -37,3 +37,11 @@ export function findQuesByPaperId(paperId: Number) {
     data: { paperId },
   });
 }
+
+// 查询通过初审的卷子 searchPaperPassJunior
+export function getPaperPassJunior() {
+  return service({
+    method: 'get',
+    url: '/paper/searchPaperPassJunior'
+  })
+}

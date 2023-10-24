@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ElMessage, FormInstance, FormRules } from "element-plus";
-import { getPaper, addPaper } from "../../request/api/paper/paper";
+import { computed, onMounted, reactive, ref, watchEffect } from "vue";
+import { addPaper, getPaper } from "../../request/api/paper/paper";
 import "../../sass/paper/paper.scss";
-import { reactive, ref, computed, onMounted, watchEffect } from "vue";
 import pinia from "../../stores";
 import paperStore from "../../stores/paperStore";
 
@@ -14,6 +14,8 @@ interface paperInfo {
   objectiveScore: string;
   subjectiveScore: Number;
   totalScore: string;
+  juniorState: string
+  ultimateState:string
 }
 
 // 所有试卷的信息
@@ -30,6 +32,33 @@ const clearSearch = () => {
     state.tableData = allPaperInfo.value;
   }
 };
+
+// 定义获取状态样式类的函数
+const getStatusClass = (status: string) => {
+  console.log(status);
+  
+  if (status === '未初审') {
+    return 'status-gray'
+  } else if (status === '已通过终审') {
+    return 'status-orange'
+  }else if (status === '已通过初审') {
+    return 'status-chu'
+  }else {
+    return 'status-red'
+  }
+}
+
+const filterState = (juniorState: string,ultimateState:string) => {
+  if (juniorState == '0') {
+    return '未初审'
+  } else if (juniorState == '1'&& ultimateState == '0') {
+    return '已通过初审'
+  } else if ( ultimateState == '1') {
+    return '已通过终审'
+  }else {
+    return '未通过'
+  }
+}
 
 // 定义模糊查询的 computed 属性
 const filteredData = computed(() => {
@@ -63,6 +92,10 @@ const getPaperList = async () => {
   try {
     let res = await getPaper();
     allPaperInfo.value = res.data.data;
+    console.log(res);
+    allPaperInfo.value.forEach(item => {
+      item.juniorState = filterState(item.juniorState,item.ultimateState)
+    })
   } catch (error) {
     console.log(error);
   }
@@ -176,6 +209,13 @@ watchEffect(() => {});
       </el-table-column>
       <el-table-column prop="totalScore" label="总分" align="center">
       </el-table-column>
+      <el-table-column property="juniorState" label="审核状态" show-overflow-tooltip width="100" align="center">
+          <template #default="scope">
+              <div>
+                <span :class="getStatusClass(scope.row.juniorState)">{{ scope.row.juniorState }}</span>
+              </div>
+          </template>
+        </el-table-column>
       <el-table-column fixed="right" label="操作" width="160" align="center">
         <template #default="scope">
           <el-button
@@ -220,3 +260,24 @@ watchEffect(() => {});
     </el-dialog>
   </div>
 </template>
+<style>
+.status-gray {
+  color: gray;
+  font-weight: 700;
+}
+
+.status-red {
+  color: #fe4f4f;
+  font-weight: 700;
+}
+
+.status-orange {
+  color: #35d75ee7;
+  font-weight: 700;
+}
+
+.status-chu{
+  color:rgb(73, 216, 255);
+  font-weight: 700;
+}
+</style>
