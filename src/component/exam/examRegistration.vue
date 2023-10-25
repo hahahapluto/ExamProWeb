@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { reactive, computed, ref } from "vue";
+import cloneDeep from "lodash/cloneDeep";
+import { computed, onMounted, reactive, ref, watchEffect } from "vue";
+import { getExamPassJunior } from "../../request/api/paper/exam";
 import "../../sass/exam/examRegistration.scss";
 import ExamReg from "./popup/examReg.vue";
-import cloneDeep from "lodash/cloneDeep";
-import { onMounted } from "vue";
-import { getAllExams } from "../../request/api/exam/examRegistration";
-import { watchEffect } from "vue";
 
 interface ExamRegInfo {
   examID: string;
@@ -65,7 +63,7 @@ onMounted(() => {
   // 获取考试列表
   const getExamList = async () => {
     try {
-      let res = await getAllExams();
+      let res = await getExamPassJunior();
       allExamRegInfo.value = res.data.data;
     } catch (error) {
       console.log(error);

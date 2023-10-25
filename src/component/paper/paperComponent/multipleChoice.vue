@@ -1,47 +1,49 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import "../../../sass/paper/multipleChoice.scss";
-const props = defineProps(["type", "index", "danxuan", "getAnswer"]);
+import { ref } from 'vue';
+import '../../../sass/paper/multipleChoice.scss';
+const props = defineProps(['type', 'index', 'danxuan', 'getAnswer'])
+console.log('props', props.getAnswer)
 
-const actives = ref([false, false, false, false]);
+const actives = ref([false, false, false, false])
 const onActive = (index: number) => {
-  let answer: string = "";
+  let answer: string = ''
   // 单选
-  if (props.type == "0") {
+  if (props.type == '0') {
     for (let i = 0; i < actives.value.length; i++) {
       if (i != index) {
-        actives.value[i] = false;
+        actives.value[i] = false
       } else {
-        actives.value[i] = true;
+        actives.value[i] = true
         if (i == 0) {
-          answer = "A";
+          answer = 'A'
         } else if (i == 1) {
-          answer = "B";
+          answer = 'B'
         } else if (i == 2) {
-          answer = "C";
+          answer = 'C'
         } else {
-          answer = "D";
+          answer = 'D'
         }
       }
     }
   } else {
-    actives.value[index] = !actives.value[index];
+    actives.value[index] = !actives.value[index]
     for (let i = 0; i < actives.value.length; i++) {
       if (actives.value[i] == true) {
+        if (answer.length != 0) answer += ','
         if (i == 0) {
-          answer += "A";
+          answer += 'A'
         } else if (i == 1) {
-          answer += "B";
+          answer += 'B'
         } else if (i == 2) {
-          answer += "C";
+          answer += 'C'
         } else {
-          answer += "D";
+          answer += 'D'
         }
       }
     }
   }
-  props.getAnswer(props.index, props.type, answer);
-};
+  props.getAnswer(props.index, props.type, answer)
+}
 </script>
 <template>
   <div class="multipleChoice">
@@ -52,31 +54,23 @@ const onActive = (index: number) => {
       </span>
     </div>
     <div class="multipleChoice-options" @click="onActive(0)">
-      <span class="multipleChoice-options-label" :class="{ active: actives[0] }"
-        >A</span
-      >
+      <span class="multipleChoice-options-label" :class="{ active: actives[0] }">A</span>
       <span class="multipleChoice-options-option">
         {{ props.danxuan[1] }}
       </span>
     </div>
     <div class="multipleChoice-options" @click="onActive(1)">
-      <span class="multipleChoice-options-label" :class="{ active: actives[1] }"
-        >B</span
-      >
+      <span class="multipleChoice-options-label" :class="{ active: actives[1] }">B</span>
       <span class="multipleChoice-options-option">
         {{ props.danxuan[2] }}
       </span>
     </div>
     <div class="multipleChoice-options" @click="onActive(2)">
-      <span class="multipleChoice-options-label" :class="{ active: actives[2] }"
-        >C</span
-      >
+      <span class="multipleChoice-options-label" :class="{ active: actives[2] }">C</span>
       <span class="multipleChoice-options-option"> {{ props.danxuan[3] }}</span>
     </div>
     <div class="multipleChoice-options" @click="onActive(3)">
-      <span class="multipleChoice-options-label" :class="{ active: actives[3] }"
-        >D</span
-      >
+      <span class="multipleChoice-options-label" :class="{ active: actives[3] }">D</span>
       <span class="multipleChoice-options-option">
         {{ props.danxuan[4] }}
       </span>

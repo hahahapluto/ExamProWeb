@@ -146,7 +146,7 @@ const confirm = ($router) => {
         sessionSaveData("token", loginData.data.token);
         sessionSaveData("username", loginData.data.username);
         sessionSaveData("userid", loginData.data.userid);
-        $router.push("/index");
+        $router.push("/index/topicPool");
       }
     } else {
       ElMessage.success(changeState.confirmName + "异常，请重试！");

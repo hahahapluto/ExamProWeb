@@ -149,8 +149,6 @@ const filterState = (juniorState: string) => {
 
 // 定义获取状态样式类的函数
 const getStatusClass = (status: string) => {
-  console.log(status);
-  
   if (status === '未审核') {
     return 'status-gray'
   } else if (status === '已通过') {

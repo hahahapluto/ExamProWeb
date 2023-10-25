@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { getMyExams } from "../../request/api/exam/examRegistration";
-import examItem from "../paper/exam/examItem.vue";
-import { myExamType } from "../../types/exam";
+// import { isUserDoneExam } from '../../request/api/record/userExamRecord';
 import pinia from "../../stores";
 import paperStore from "../../stores/paperStore";
+import { myExamType } from "../../types/exam";
+import examItem from "../paper/exam/examItem.vue";
 const paperData = paperStore(pinia);
 let examData: myExamType[] = [];
 let tableData = ref<myExamType[]>([]);
@@ -56,9 +57,16 @@ const enterExam = ($router: any, index: number) => {
     console.log("进入考试");
     paperData.paperId = tableData.value[index].paperID;
     paperData.paperName = tableData.value[index].examName;
+    paperData.scoreExamId = tableData.value[index].examID;
     $router.push("/index/enterExam");
+  } else {
+    paperData.paperId = tableData.value[index].paperID;
+    paperData.scoreExamId = tableData.value[index].examID;
+    $router.push("/index/registUser");
   }
 };
+
+
 </script>
 <template>
   <div>

@@ -4,7 +4,7 @@
       <div class="box-myanswer-top">我的答案：</div>
       <div class="box-myanswer-bottom">{{props.answerData.myanswer}}</div>
     </div>
-    <div class="box-status item">
+    <div class="box-status item" v-if="props.answerData.res">
       <img src="../../../assets/true.png" alt="" v-if="props.answerData.res=='true'"/>
       <img src="../../../assets/false.png" alt="" v-if="props.answerData.res=='false'"/>
     </div>

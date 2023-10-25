@@ -78,7 +78,6 @@ function getExamStatus(startTimeStr: string, durationMinutes: number) {
 
 // 定义获取状态样式类的函数
 const getStatusClass = (status: string) => {
-  console.log(status);
   if (status === "未开始") {
     return "status-gray";
   } else if (status === "考试中") {
@@ -91,7 +90,6 @@ const getStatusClass = (status: string) => {
 };
 
 function timeTransform(time: string) {
-  console.log(time);
 
   const inputDate = new Date(time);
   // 提取年、月、日、小时和分钟
@@ -106,7 +104,6 @@ function timeTransform(time: string) {
     .padStart(2, "0")} ${hours.toString().padStart(2, "0")}:${minutes
     .toString()
     .padStart(2, "0")}:00`;
-  console.log(formattedDate); // 输出格式化后的日期时间
   return formattedDate;
 }
 </script>

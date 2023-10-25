@@ -4,20 +4,28 @@ import { ElMessage, ElTable } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 import { computed, reactive, ref } from 'vue'
 import { addQuesInBank, getMyBank } from '../../request/api/paper/bank'
-import { getMyQuestion } from '../../request/api/paper/question'
+import { getQuesPass } from '../../request/api/paper/question'
 import '../../sass/index/paper/addQues.scss'
 import '../../sass/index/paper/question.scss'
 import { formatExamString, getOption, getQues } from '../../utils/question'
-
 interface Ques {
-  type: string
-  description: string
+  questionType: string
+  questionDescription: string
   createTime: string
   questionId: Number
-  answer: string
-  questionscore: string
-  juniorState: string
+  questionAnswer: string
+  questionScore: string
+  juniorState: Number
 }
+// interface Ques {
+//   type: string
+//   description: string
+//   createTime: string
+//   questionId: Number
+//   answer: string
+//   questionscore: string
+//   juniorState: string
+// }
 // 上面筛选的两个表格的信息 data:搜索内容 type:题目类型
 const form = reactive({
   data: '',
@@ -28,20 +36,23 @@ const form = reactive({
 let allTableData: any = ref<Ques[]>()
 // 深拷贝，初始的表格数据时全部的个人数据
 let tableData: any = ref<Ques[]>()
-
+// let date = new Date(item.createTime)
+// item.createTime = date.toLocaleString()
 // tableData = myQuestionList;
 const AllQuestion = async () => {
-  allTableData = (await getMyQuestion()).data.data
+  allTableData = (await getQuesPass()).data.data
   console.log(allTableData)
-  allTableData.forEach((item: { type: string; description: string; juniorState: string }) => {
-    if (item.type == '0') {
-      item.type = '主观题'
-    } else if (item.type == '1') {
-      item.type = '单选题'
-      item.description = formatExamString(item.description)
+  allTableData.forEach((item: { questionType: string; questionDescription: string; juniorState: string,createTime:string }) => {
+    let date = new Date(item.createTime)
+    item.createTime = date.toLocaleString()
+    if (item.questionType == '0') {
+      item.questionType = '主观题'
+    } else if (item.questionType == '1') {
+      item.questionType = '单选题'
+      item.questionDescription = formatExamString(item.questionDescription)
     } else {
-      item.type = '多选题'
-      item.description = formatExamString(item.description)
+      item.questionType = '多选题'
+      item.questionDescription = formatExamString(item.questionDescription)
     }
   })
   // console.log(allTableData)
@@ -114,7 +125,7 @@ const filteredData = computed(() => {
   const searchData = form.data.toLowerCase() // 将查询字符串转换为小写
   return tableData.value.filter((item: Ques) => {
     // 根据题目内容和题目类型进行模糊查询
-    return item.description.toLowerCase().includes(searchData)
+    return item.questionDescription.toLowerCase().includes(searchData)
   })
 })
 
@@ -124,11 +135,11 @@ const filteredType = computed(() => {
   const searchData = form.type // 将查询字符串转换为小写
   return allTableData.filter((item: any) => {
     if (searchData == '1') {
-      return item.type == '主观题'
+      return item.questionType == '主观题'
     } else if (searchData == '2') {
-      return item.type == '单选题'
+      return item.questionType == '单选题'
     } else if (searchData == '3') {
-      return item.type == '多选题'
+      return item.questionType == '多选题'
     } else {
       return ''
     }
@@ -176,22 +187,22 @@ getBankData()
               <div class="des">
                 <div class="des-left">题干</div>
                 <div class="des-right">
-                  <p class="des-right-pp">{{ getQues(props.row.description) }}</p>
-                  <p v-if="props.row.type !== '主观题'" class="des-right-p">A、 {{ getOption('A=', props.row.description) }}</p>
-                  <p v-if="props.row.type !== '主观题'" class="des-right-p">B、 {{ getOption('B=', props.row.description) }}</p>
-                  <p v-if="props.row.type !== '主观题'" class="des-right-p">C、 {{ getOption('C=', props.row.description) }}</p>
-                  <p v-if="props.row.type !== '主观题'" class="des-right-p">D、 {{ getOption('D=', props.row.description) }}</p>
+                  <p class="des-right-pp">{{ getQues(props.row.questionDescription) }}</p>
+                  <p v-if="props.row.questionType !== '主观题'" class="des-right-p">A、 {{ getOption('A=', props.row.questionDescription) }}</p>
+                  <p v-if="props.row.questionType !== '主观题'" class="des-right-p">B、 {{ getOption('B=', props.row.questionDescription) }}</p>
+                  <p v-if="props.row.questionType !== '主观题'" class="des-right-p">C、 {{ getOption('C=', props.row.questionDescription) }}</p>
+                  <p v-if="props.row.questionType !== '主观题'" class="des-right-p">D、 {{ getOption('D=', props.row.questionDescription) }}</p>
                 </div>
               </div>
               <div class="answ">
                 <div class="answ-box score">
                   <div class="answ-box-left">分值</div>
-                  <p class="answ-box-right-p">{{ props.row.questionStore }}</p>
+                  <p class="answ-box-right-p">{{ props.row.questionScore }}</p>
                 </div>
                 <div class="answ-box">
                   <div class="answ-box-left">答案</div>
                   <div class="answ-box-right">
-                    <p class="answ-box-right-p">{{ props.row.answer }}</p>
+                    <p class="answ-box-right-p">{{ props.row.questionAnswer }}</p>
                   </div>
                 </div>
               </div>
@@ -200,11 +211,11 @@ getBankData()
         </el-table-column>
         <el-table-column property="questionId" label="编号" width="60" align="center" />
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column property="type" label="题型" width="120" align="center" />
-        <el-table-column property="description" label="题目">
+        <el-table-column property="questionType" label="题型" width="120" align="center" />
+        <el-table-column property="questionDescription" label="题目">
           <template #default="scope">
             <div style="display: flex; flex-direction: column">
-              <div>{{ getQues(scope.row.description) }}</div>
+              <div>{{ getQues(scope.row.questionDescription) }}</div>
             </div>
           </template>
         </el-table-column>
@@ -224,7 +235,6 @@ getBankData()
       <el-pagination layout="prev, pager, next" :total="1000" background />
     </div> -->
     <!-- <router-view></router-view> -->
-
   </div>
 </template>
 <style scoped lang="scss">

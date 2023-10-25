@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { findQuesByPaperId } from "../../request/api/paper/paper";
 import "../../sass/paper/createPaper.scss";
-import quesSequence from "./paperComponent/quesSequence.vue";
-import addTopicPop from "./paperComponent/addTopicPop.vue";
-import multipleChoice from "./paperComponent/multipleChoice.vue";
-import subQuestions from "./paperComponent/subQuestions.vue";
-import { quesSequenceType } from "../../types/paper";
 import pinia from "../../stores";
 import paperStore from "../../stores/paperStore";
-import { findQuesByPaperId } from "../../request/api/paper/paper";
-import { onMounted } from "vue";
+import { quesSequenceType } from "../../types/paper";
+import addTopicPop from "./paperComponent/addTopicPop.vue";
+import multipleChoice from "./paperComponent/multipleChoice.vue";
+import quesSequence from "./paperComponent/quesSequence.vue";
+import subQuestions from "./paperComponent/subQuestions.vue";
 
 interface quesData {
   questionId: number;
