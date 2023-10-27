@@ -2,14 +2,13 @@
 import { onMounted, ref } from 'vue';
 import '../../../sass/paper/multipleChoice.scss';
 import answer from '../popup/answer.vue';
-const props = defineProps(['type', 'index', 'danxuan', 'getAnswer', 'userAnswer', 'quesAnswer','totalScore','getAnswer','danflag'])
+const props = defineProps(['type', 'index', 'danxuan', 'getAnswer', 'userAnswer', 'quesAnswer', 'totalScore', 'getAnswer', 'danflag'])
 
 const actives = ref([false, false, false, false])
 
-
-let res:String = (props.quesAnswer == props.userAnswer).toString()
+let res: String = (props.quesAnswer == props.userAnswer).toString()
 let resScore = 0
-if (res == "true") {
+if (res == 'true') {
   resScore = props.totalScore
 } else {
   resScore = 0
@@ -20,10 +19,14 @@ const answerData = {
   res: (props.quesAnswer == props.userAnswer).toString()
 }
 onMounted(() => {
-  if (props.danflag=='true') {
-    props.getAnswer(props.index, 0, resScore)
+  if (props.danflag == 'true') {
+    if (props.getAnswer) {
+      props.getAnswer(props.index, 0, resScore)
+    }
   } else {
-    props.getAnswer(props.index, 1, resScore)
+    if (props.getAnswer) {
+      props.getAnswer(props.index, 1, resScore)
+    }
   }
 })
 </script>
@@ -60,9 +63,7 @@ onMounted(() => {
     <div class="answerBox">
       <answer :answerData="answerData"></answer>
     </div>
-    <div class="getScore">
-      {{resScore}} 分
-    </div>
+    <div class="getScore">{{ resScore }} 分</div>
   </div>
 </template>
 <style lang="scss" scoped>

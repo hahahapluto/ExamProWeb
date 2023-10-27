@@ -3,12 +3,12 @@ import { Search } from "@element-plus/icons-vue";
 import { ElMessage, FormInstance, FormRules } from "element-plus";
 import cloneDeep from "lodash/cloneDeep";
 import { reactive, ref } from "vue";
-import { addExam, getMyExam } from "../../request/api/paper/exam";
 import {
-  addExamProctors,
-  getAllProctors,
+addExamProctors,
+getAllProctors,
 } from "../../request/api/invigilate/invigilate";
-import { getPaper } from "../../request/api/paper/paper";
+import { addExam, getMyExam } from "../../request/api/paper/exam";
+import { getPaperPassAll } from "../../request/api/paper/paper";
 import { commonRules } from "../../utils/question";
 
 interface examInterface {
@@ -120,7 +120,7 @@ const addExamButton = async (formEl: FormInstance | undefined) => {
 let paperData: any = ref();
 //获取试卷信息
 const getPaperData = async () => {
-  paperData = (await getPaper()).data.data;
+  paperData = (await getPaperPassAll()).data.data;
   console.log(paperData);
 };
 getPaperData();

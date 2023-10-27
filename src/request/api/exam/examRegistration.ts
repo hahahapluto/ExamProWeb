@@ -21,11 +21,20 @@ export function registerExam(examID: Number) {
   })
 }
 
-// 查询个人报名的考试
+// 通过用户id查询所拥有的考试
 export function getMyExams() {
   return service({
     method: 'get',
     url: 'exam/userExams'
+  })
+}
+
+
+// findExamineeExams 查询用户报名的考试
+export function getExamineeExams() {
+  return service({
+    method: 'get',
+    url: 'exam/findExamineeExams'
   })
 }
 

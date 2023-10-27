@@ -7,6 +7,14 @@ export function getPaper() {
   });
 }
 
+//  searchPaperPassAll 查询通过初审和终审的卷子
+export function getPaperPassAll() {
+  return service({
+    method: 'get',
+    url: '/paper/searchPaperPassAll'
+  })
+}
+
 // 添加试卷
 export function addPaper(paperName: string) {
   return service({

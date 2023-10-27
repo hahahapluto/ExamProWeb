@@ -7,6 +7,14 @@ export function getMyExam() {
   })
 }
 
+
+// userExamsPassAll 查询通过的全部考试
+export function userExamsPassAll() {
+  return service({
+    method: 'get',
+    url: '/exam/userExamsPassAll'
+  })
+}
 // 创建考试
 export function addExam(examName: string, examDescription: string, paperID: string, startTime: string, examDuration: Number) {
   return service({

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { findQuesByPaperId } from '../../request/api/paper/paper'
-import { getAllExamRecord, updateUserExamScore } from '../../request/api/record/userExamRecord'
+import { getAllExamRecord } from '../../request/api/record/userExamRecord'
 import '../../sass/paper/createPaper.scss'
 import pinia from '../../stores'
 import paperStore from '../../stores/paperStore'
@@ -133,6 +132,8 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   InitializedData()
   let res = await findQuesByPaperId(paperId)
   let userAnswerData = (await getAllExamRecord(paperData.scoreExamId)).data.data
+  console.log(userAnswerData);
+  
   quesDatas = res.data.data
   console.log(quesDatas)
   if (!quesDatas) return
@@ -141,6 +142,7 @@ const getQuesDataByPaperId = async (paperId: Number) => {
       // type = "主观题";
       quesSequenceDatas.value[2].lists.push(item.questionId)
       quesSequenceDatas.value[2].quesAnswer.push(item.questionAnswer)
+      // quesSequenceDatas.value[2].userGetScore.push(item.questionAnswer)
       quesSequenceDatas.value[2].score += Number.parseInt(item.questionScore)
       subText.value.push(item.questionDescription)
     } else if (item.questionType === '1') {
@@ -177,11 +179,11 @@ const getQuesDataByPaperId = async (paperId: Number) => {
     category.lists.forEach(item => {
       // 查找匹配的记录
       const matchingRecord = userAnswerData.find((record: { questionId: any }) => record.questionId === item)
-
       // 如果找到匹配的记录，将答案存入对应的 userAnswer 字段
       if (matchingRecord) {
         category.userAnswer.push(matchingRecord.studentAnswer)
         category.totalScore.push(matchingRecord.totalScore)
+        category.userGetScore.push(matchingRecord.score)
       }
     })
   }
@@ -189,37 +191,38 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   // 现在，questionArray 中的每个题目对象都有了对应的 userAnswer 字段
   console.log(quesSequenceDatas.value)
 }
-
+// quesSequenceDatas.value[type].userGetScore[index] = userGetScore
 // 获取题目的答案
-const getAnswer = (index: number, type: number, userGetScore: number) => {
-  quesSequenceDatas.value[type].userGetScore[index] = userGetScore
-}
+// const getAnswer = (index: number, type: number, userGetScore: number) => {
+//   console.log(userGetScore);
+  
+// }
 
 onMounted(() => {
   getQuesDataByPaperId(paperData.paperId)
 })
 
-const finishGetScore = async () => {
-  // updateUserExamScore(paperData.scoreExamId,)
-  for (const category of quesSequenceDatas.value) {
-    for (let i = 0; i < category.lists.length; i++) {
-      // console.log(paperData.scoreExamId, category.lists[i], category.userGetScore[i])
-      const { code } = (await updateUserExamScore(paperData.scoreExamId, category.lists[i], category.userGetScore[i])).data
-      if (code == 1) {
-        ElMessage.error('上传错误,请重新上传')
-        break
-      }
-    }
-  }
-  ElMessage.success('评卷成功')
-}
+// const finishGetScore = async () => {
+//   // updateUserExamScore(paperData.scoreExamId,)
+//   for (const category of quesSequenceDatas.value) {
+//     for (let i = 0; i < category.lists.length; i++) {
+//       // console.log(paperData.scoreExamId, category.lists[i], category.userGetScore[i])
+//       const { code } = (await updateUserExamScore(paperData.scoreExamId, category.lists[i], category.userGetScore[i])).data
+//       if (code == 1) {
+//         ElMessage.error('上传错误,请重新上传')
+//         break
+//       }
+//     }
+//   }
+//   ElMessage.success('评卷成功')
+// }
 </script>
 <template>
   <el-container>
     <el-aside width="280px" class="quesSequenceBox">
       <div class="quesSequenceBox-title">题目序列</div>
       <quesSequence v-for="item in quesSequenceDatas" v-show="item.lists.length != 0" :quesSequenceData="item" />
-      <el-button @click="finishGetScore()">评卷完成</el-button>
+      <!-- <el-button @click="finishGetScore()">评卷完成</el-button> -->
     </el-aside>
     <el-main class="createPaper">
       <div class="createPaper-info">
@@ -235,7 +238,6 @@ const finishGetScore = async () => {
         :key="index"
         :index="index"
         :danxuan="item"
-        :getAnswer="getAnswer"
         :userAnswer="quesSequenceDatas[0].userAnswer[index]"
         :quesAnswer="quesSequenceDatas[0].quesAnswer[index]"
         danflag="true"
@@ -247,13 +249,12 @@ const finishGetScore = async () => {
         :key="index"
         :index="index"
         :danxuan="item"
-        :getAnswer="getAnswer"
         :userAnswer="quesSequenceDatas[1].userAnswer[index]"
         :quesAnswer="quesSequenceDatas[1].quesAnswer[index]"
         danflag="false"
         :totalScore="quesSequenceDatas[1].totalScore[index]" />
       <h1 style="margin: 20px 20px" v-if="quesSequenceDatas[2].lists.length">三. 主观题（共{{ quesSequenceDatas[2].lists.length }}题，{{ quesSequenceDatas[2].score }}分）</h1>
-      <subShowQues v-for="(item, index) in subText" :type="21" :key="index" :index="index" :subText="item" :getAnswer="getAnswer" :userAnswer="quesSequenceDatas[2].userAnswer[index]" :quesAnswer="quesSequenceDatas[2].quesAnswer[index]" :isShowInput="true"/>
+      <subShowQues v-for="(item, index) in subText" :type="21" :key="index" :index="index" :subText="item" :userAnswer="quesSequenceDatas[2].userAnswer[index]" :quesAnswer="quesSequenceDatas[2].quesAnswer[index]" :isShowInput="false" :isresScore="quesSequenceDatas[2].userGetScore[index]"/>
     </el-main>
   </el-container>
 </template>

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import cloneDeep from "lodash/cloneDeep";
 import { computed, onMounted, reactive, ref, watchEffect } from "vue";
-import { getExamPassJunior } from "../../request/api/paper/exam";
+import { userExamsPassAll } from "../../request/api/paper/exam";
 import "../../sass/exam/examRegistration.scss";
+import { transTime } from "../../utils/common";
 import ExamReg from "./popup/examReg.vue";
 
 interface ExamRegInfo {
@@ -14,6 +15,7 @@ interface ExamRegInfo {
   objectiveScore: Number;
   subjectiveScore: Number;
   createdBy: string;
+  examState: Boolean;
 }
 
 const allExamRegInfo = ref<ExamRegInfo[]>([]);
@@ -59,12 +61,27 @@ const filteredData = computed(() => {
   });
 });
 
+
 onMounted(() => {
   // 获取考试列表
   const getExamList = async () => {
     try {
-      let res = await getExamPassJunior();
+      let currentTime = new Date();
+      let res = await userExamsPassAll();
       allExamRegInfo.value = res.data.data;
+      allExamRegInfo.value.forEach(exam => {
+        console.log(new Date(exam.endTime) < currentTime);
+        // let date1 = new Date(exam.startTime)
+        let date2 = new Date(exam.endTime)
+        exam.startTime = transTime(exam.startTime)
+        exam.endTime = date2.toLocaleString()
+        if (new Date(exam.endTime) < currentTime) {
+          exam.examState = false;
+        } else {
+          exam.examState = true;
+        }
+      })
+      console.log(allExamRegInfo.value);
     } catch (error) {
       console.log(error);
     }
@@ -139,8 +156,10 @@ watchEffect(() => {
               class="search"
               type="primary"
               @click="handleReg(scope.$index, scope.row)"
+              v-if="scope.row.examState"
               >报名</el-button
             >
+            <span v-if="!scope.row.examState" style="color: red;font-weight: 700;">已结束</span>
           </template>
         </el-table-column>
       </el-table>
