@@ -9,14 +9,20 @@ export const getAllQues = () => {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
 };
-// searchQuesPass
-export const getQuesPass = () => {
+
+// 分页获取通过的题目
+export const getQuesPass = (page: number, pageSize: number) => {
   return service({
-    method: 'get',
-    url: '/index/selectQuesPass',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  })
-}
+    method: "post",
+    url: "/index/selectQuesPass",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    data: {
+      page,
+      pageSize,
+    },
+  });
+};
+
 // 获取个人的题目池
 export function getMyQuestion() {
   return service({
@@ -45,6 +51,18 @@ export function addQuestion(
       userid: sessionGetData("userid"),
       questionanswer,
       questionscore: questionscore,
+    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
+}
+
+// 获取题目池的页数
+export function getQuestionPoolPageCount(pageSize: number) {
+  return service({
+    method: "post",
+    url: "/index/getQuestionPoolPageCount",
+    data: {
+      pageSize,
     },
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });

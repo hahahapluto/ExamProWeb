@@ -1,5 +1,95 @@
-<script>
+<script lang="ts" setup>
+import { ElMessage } from "element-plus";
+import { onMounted, ref, onBeforeUnmount } from "vue";
 import "../../sass/invigilate/InvigilationChat.scss";
+import pinia from "../../stores";
+import paperStore from "../../stores/paperStore";
+import {
+  addProctoringRecord,
+  findProctorsByExamID,
+  getProctoringRecords,
+} from "../../request/api/invigilate/invigilate";
+import { sessionGetData } from "../../hooks/useStorage";
+import { ProctoringRecord } from "../../types/invigilate";
+
+// 试卷的数据
+const paperData = paperStore(pinia);
+// 获取消息框里面的内容
+const last_textarea = ref();
+// 获取聊天框盒子
+const chatBox = ref();
+// 发送消息
+const sendMsg = async () => {
+  const issueContent = last_textarea.value.value;
+  if (issueContent != "") {
+    let examineeID = sessionGetData("userid");
+    let examID = paperData.scoreExamId;
+    let proctorID = (await findProctorsByExamID(examID)).data.data.proctorId;
+    const res = await addProctoringRecord(
+      examineeID,
+      examID,
+      proctorID,
+      issueContent,
+      proctorID
+    );
+    // 发送成功的话
+    if (!res.data.code) {
+      last_textarea.value.value = "";
+      // 重新获取消息列表
+      getProctoringRecordsData();
+    } else {
+      ElMessage.warning("发送消息失败！");
+    }
+  } else {
+    ElMessage.info("消息不能为空！");
+  }
+};
+
+// 监考消息
+const invigilatedMsy = ref<ProctoringRecord[]>([
+  {
+    ExamineeID: 1,
+    ExamID: 1,
+    proctorID: 3,
+    issueContent: "怎么办",
+    Time: "2023-10-27 04:08:27",
+    senderID: 1,
+  },
+  {
+    ExamineeID: 1,
+    ExamID: 1,
+    proctorID: 3,
+    issueContent: "就这样",
+    Time: "2023-10-27 04:08:27",
+    senderID: 3,
+  },
+]);
+
+let timer = setInterval(() => {
+  getProctoringRecordsData();
+}, 1000);
+
+// 获取监考记录
+const getProctoringRecordsData = async () => {
+  const res = await getProctoringRecords(paperData.scoreExamId);
+  console.log(res);
+  await waitData(res);
+  chatBox.value.scrollTop = chatBox.value.scrollHeight;
+};
+
+const waitData = (res: any) => {
+  invigilatedMsy.value = res.data.data;
+};
+
+onMounted(async () => {
+  getProctoringRecordsData();
+  clearInterval(timer);
+});
+
+onBeforeUnmount(() => {
+  console.log("结束轮询");
+  clearInterval(timer);
+});
 </script>
 <template>
   <div class="InvigilationChat">
@@ -38,7 +128,9 @@ import "../../sass/invigilate/InvigilationChat.scss";
 
       <div class="chat_message_box">
         <div class="first">
-          <div class="left" id="chatUsername">考试名字</div>
+          <div class="left" id="chatUsername">
+            {{ paperData.paperName }}
+          </div>
           <div class="right">
             <svg
               t="1666856821084"
@@ -64,40 +156,33 @@ import "../../sass/invigilate/InvigilationChat.scss";
           </div>
         </div>
         <div class="second_send">
-          <div class="container">
-            <div class="message_wrapper">
+          <div class="container" ref="chatBox">
+            <div
+              class="message_wrapper"
+              v-for="item in invigilatedMsy"
+              :class="{
+                message_wrapper2: item.senderID == sessionGetData('userid'),
+              }"
+            >
               <div class="message">
                 <div class="left">
                   <a href="">
-                    <img src="../../assets/anchor-1.png" alt="" />
+                    <img
+                      v-if="item.proctorID != item.senderID"
+                      src="../../assets/anchor-1.png"
+                      alt=""
+                    />
+                    <img
+                      v-if="item.proctorID == item.senderID"
+                      src="../../assets/teather.png"
+                      alt=""
+                    />
                   </a>
                 </div>
                 <div class="right">
                   <div class="textmess_box">
                     <div class="text">
-                      1234793479 white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space: pre-wrap;
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="message_wrapper2 message_wrapper">
-              <div class="message">
-                <div class="left">
-                  <a href="">
-                    <img src="../../assets/anchor-2.png" alt="" />
-                  </a>
-                </div>
-                <div class="right">
-                  <div class="textmess_box">
-                    <div class="text">
-                      1234793479 white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space:
-                      pre-wrap;white-space: pre-wrap;white-space: pre-wrap;
+                      {{ item.issueContent }}
                     </div>
                   </div>
                 </div>
@@ -181,11 +266,11 @@ import "../../sass/invigilate/InvigilationChat.scss";
             <div class="last_textarea">
               <textarea
                 name=""
-                id="last_textarea"
+                ref="last_textarea"
                 cols="30"
                 rows="10"
               ></textarea>
-              <div class="send" id="last_textarea_send">发送</div>
+              <div class="send" @click="sendMsg">发送</div>
             </div>
           </div>
         </div>

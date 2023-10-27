@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import "../../sass/invigilate/invigilate.scss";
-import { getMyExams } from "../../request/api/exam/examRegistration";
 import pinia from "../../stores";
 import paperStore from "../../stores/paperStore";
 import { myExamType } from "../../types/exam";
 import examItem from "../paper/exam/examItem.vue";
+import { getExamsByProctorID } from "../../request/api/invigilate/invigilate";
+
 const paperData = paperStore(pinia);
 let examData: myExamType[] = [];
 let tableData = ref<myExamType[]>([]);
 
 const getExamData = async () => {
   // 获取个人的考试
-  examData = (await getMyExams()).data.data;
+  examData = (await getExamsByProctorID()).data.data;
   tableData.value = examData;
-  console.log(tableData);
 };
 
 function getExamStatus(startTimeStr: string, durationMinutes: number) {
@@ -53,6 +53,11 @@ const chooseStates = (state: string) => {
 
 // 进入监考聊天框
 const enterInvigilationChat = ($router: any, index: number) => {
+  paperData.paperId = tableData.value[index].paperID;
+  paperData.paperName = tableData.value[index].examName;
+  paperData.scoreExamId = tableData.value[index].examID;
+  console.log("???" + paperData.paperName);
+
   $router.push("/index/InvigilationChat");
 };
 </script>
