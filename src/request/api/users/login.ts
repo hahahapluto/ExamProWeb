@@ -20,7 +20,7 @@ export function reguser(username: String, password: String, role: Number) {
     data: {
       username: username,
       password: password,
-      role: role,
+      roleid: role,
     },
   });
 }

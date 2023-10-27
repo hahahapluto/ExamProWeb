@@ -1,0 +1,245 @@
+.InvigilationChat {
+    height: 100%;
+    overflow: hidden;
+    // background-color: rgb(250, 141, 141);
+    margin: 0 auto;
+
+    &-container {
+        height: 100%;
+        background-color: #FAF9FE;
+        width: 100%;
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+
+        .chat_list_left {
+            width: 88px;
+            height: 100%;
+            // background-color: rgb(155, 239, 99);
+        }
+
+        .chat_function {
+            width: 100%;
+        }
+
+        .chat_function ul {
+            margin-top: 20px;
+        }
+
+        .chat_function li {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .chat_function li.block a {
+            background-color: antiquewhite;
+        }
+
+        .chat_function li a {
+            width: 30px;
+            height: 30px;
+            padding: 10px;
+            transition: .3s;
+            border-radius: 8px;
+        }
+
+        .chat_function li a svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chat_message_box {
+            width: 100%;
+            background-color: #FAF9FE;
+            height: 100%;
+            display: flex;
+            padding-right: 20px;
+            flex-direction: column;
+        }
+
+        .chat_message_box .first {
+            height: 90px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            // background-color: rgb(228, 72, 72);
+        }
+
+        .chat_message_box .first .left {
+            margin-left: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 90px;
+            /* background-color: rgb(140, 197, 36); */
+        }
+
+        .chat_message_box .first .right {
+            margin-right: 25px;
+            cursor: pointer;
+        }
+
+        .chat_message_box .first .right svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .second_send {
+            padding-left: 8px;
+            background-color: #fff;
+            overflow-y: scroll;
+            flex: 1;
+
+            &::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border: 2px solid #fff;
+                border-radius: 6px;
+                background: #DDDEE0;
+            }
+        }
+
+        .second_send .container {
+            overflow-y: scroll;
+            width: 100%;
+            height: 100%;
+            transition: 1s;
+            max-height: 400px;
+            min-height: 250px;
+
+            &::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                border: 2px solid #fff;
+                border-radius: 6px;
+                background: #DDDEE0;
+            }
+        }
+
+        .second_send .message {
+            display: flex;
+            margin: 20px;
+            /* background-color: rgb(236, 86, 86); */
+        }
+
+        .second_send .message_wrapper .message .left {
+            display: flex;
+        }
+
+        .message_wrapper .message .left img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .message_wrapper .message .right {
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message_wrapper .message .right .textmess_box {
+            background-color: #f6f6f6;
+            color: #444;
+            max-width: 388px;
+            font-size: 14px;
+            letter-spacing: .4px;
+            position: relative;
+            margin-left: 8px;
+            /* min-height: 40px; */
+            /* line-height: 23px; */
+            padding: 10px 12px;
+            border-radius: 8px;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+
+        // 自己的对话框
+        .message_wrapper2 .message {
+            display: flex;
+            margin: 20px;
+            align-items: flex-start;
+            flex-direction: row-reverse;
+        }
+
+        .message_wrapper2 .message .right {
+            flex-direction: row-reverse;
+        }
+
+        .message_wrapper2 .message .right .textmess_box {
+            background: rgba(158, 167, 247);
+            /* color: white; */
+        }
+
+        // 发送底部
+        .send_bottom {
+            position: relative;
+            bottom: 0;
+            height: 200px;
+            width: 100%;
+            background-color: rgb(250, 249, 254);
+        }
+
+        .send_bottom .container {
+            margin: 5px;
+            padding: 8px 0;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .send_bottom .container .set {
+            height: 35px;
+            /* background-color: rgb(230, 29, 29); */
+        }
+
+        .send_bottom .container .set .icon {
+            margin-right: 5px;
+            display: inline-block;
+        }
+
+        .send_bottom .container .set .icon svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .send_bottom .container .last_textarea {
+            width: 100%;
+            height: 114px;
+            margin-right: 20px;
+            border-radius: 5px;
+            position: relative;
+            background-color: rgb(255, 255, 255);
+        }
+
+        .send_bottom .container .last_textarea textarea {
+            resize: none;
+            outline: none;
+            border: none;
+            box-sizing: border-box;
+            padding: 10px 20px;
+            width: 100%;
+            height: 114px;
+            font-size: 18px;
+        }
+
+        .send_bottom .container .send {
+            padding: 5px 20px;
+            border-radius: 15px;
+            display: inline-block;
+            background-color: #9ea7f7;
+            right: 15px;
+            position: absolute;
+            bottom: 15px;
+            cursor: pointer;
+            transition: .3s;
+        }
+    }
+}

@@ -206,8 +206,12 @@ const confirm = ($router) => {
           ></ElInput>
         </el-form-item>
         <el-form-item v-if="changeState.isRegister">
-          <el-radio v-model="form.role" label="1">我是学生</el-radio>
-          <el-radio v-model="form.role" label="2">我是老师</el-radio>
+          <el-radio v-model="form.role" label="4">考生</el-radio>
+          <el-radio v-model="form.role" label="3">考试管理员</el-radio>
+          <el-radio v-model="form.role" label="5">出卷人</el-radio>
+          <el-radio v-model="form.role" label="6">监考人</el-radio>
+          <el-radio v-model="form.role" label="1">初级审核员</el-radio>
+          <el-radio v-model="form.role" label="2">终级审核员</el-radio>
         </el-form-item>
         <el-form-item class="login-box-form-btns">
           <button type="button" class="confirm" @click="confirm($router)">

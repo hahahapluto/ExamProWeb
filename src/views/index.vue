@@ -158,6 +158,17 @@ const handleClose = (key: string, keyPath: string[]) => {
                   >
                 </el-sub-menu>
               </el-sub-menu>
+              <el-sub-menu index="6">
+                <template #title>
+                  <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
+                  <span>监考管理</span>
+                </template>
+                <el-menu-item
+                  index="6-1"
+                  @click="() => jumpPath($router, 'invigilate')"
+                  >监考列表</el-menu-item
+                >
+              </el-sub-menu>
             </el-menu>
           </el-col>
         </el-row>

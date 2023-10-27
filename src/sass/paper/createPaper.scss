@@ -17,6 +17,12 @@
         font-size: 14px;
     }
 
+    .el-button {
+        width: 70px;
+        margin: 0 auto !important;
+    }
+
+
     &::-webkit-scrollbar {
         width: 12px;
         height: 7px;
@@ -53,6 +59,20 @@
         text-align: center;
         line-height: 60px;
         // padding-top: 20px;
+        position: relative;
+
+        .right {
+            position: absolute;
+            right: 0;
+            top: 10px;
+            margin-right: 25px;
+            cursor: pointer;
+        }
+
+        .right svg {
+            width: 30px;
+            height: 30px;
+        }
     }
 
     &-detail {
