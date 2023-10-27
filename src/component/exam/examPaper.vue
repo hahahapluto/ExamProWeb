@@ -17,8 +17,10 @@ import subQuestions from "../paper/paperComponent/subQuestions.vue";
 import {
   addProctoringRecord,
   findProctorsByExamID,
+  getProctoringRecords,
 } from "../../request/api/invigilate/invigilate";
 import { sessionGetData } from "../../hooks/useStorage";
+import { ProctoringRecord } from "../../types/invigilate";
 
 interface quesData {
   questionId: number;
@@ -27,17 +29,6 @@ interface quesData {
   questionAnswer: string;
   questionScore: string;
 }
-
-interface ProctoringRecord {
-  ExamineeID: number;
-  ExamID: number;
-  ProctorID: number;
-  IssueContent: string;
-  Time: string;
-  SenderID: number;
-}
-
-// 这个接口表示监考记录表的结构
 
 // 试卷的数据
 const paperData = paperStore(pinia);
@@ -247,27 +238,34 @@ const getShowFlag = async (scoreExamId: Number) => {
   paperData.showFlag = (await isUserDoneExam(scoreExamId)).data.data;
 };
 
+// 获取消息框里面的内容
 const last_textarea = ref();
+// 获取聊天框盒子
+const chatBox = ref();
 // 发送消息
 const sendMsg = async () => {
   const issueContent = last_textarea.value.value;
-  let examineeID = sessionGetData("userid");
-  let examID = paperData.scoreExamId;
-  let proctorID = (await findProctorsByExamID(examID)).data.data.proctorId;
-  const res = await addProctoringRecord(
-    examineeID,
-    examID,
-    proctorID,
-    issueContent,
-    examineeID
-  );
-  console.log(res);
-  // 发送成功的话
-  if (!res.data.code) {
-    last_textarea.value.value = "";
-    // 重新获取消息列表
+  if (issueContent != "") {
+    let examineeID = sessionGetData("userid");
+    let examID = paperData.scoreExamId;
+    let proctorID = (await findProctorsByExamID(examID)).data.data.proctorId;
+    const res = await addProctoringRecord(
+      examineeID,
+      examID,
+      proctorID,
+      issueContent,
+      examineeID
+    );
+    // 发送成功的话
+    if (!res.data.code) {
+      last_textarea.value.value = "";
+      // 重新获取消息列表
+      getProctoringRecordsData();
+    } else {
+      ElMessage.warning("发送消息失败！");
+    }
   } else {
-    ElMessage.warning("发送消息失败！");
+    ElMessage.info("消息不能为空！");
   }
 };
 
@@ -276,26 +274,51 @@ const invigilatedMsy = ref<ProctoringRecord[]>([
   {
     ExamineeID: 1,
     ExamID: 1,
-    ProctorID: 3,
-    IssueContent: "怎么办",
+    proctorID: 3,
+    issueContent: "怎么办",
     Time: "2023-10-27 04:08:27",
-    SenderID: 1,
+    senderID: 1,
   },
   {
     ExamineeID: 1,
     ExamID: 1,
-    ProctorID: 3,
-    IssueContent: "就这样",
+    proctorID: 3,
+    issueContent: "就这样",
     Time: "2023-10-27 04:08:27",
-    SenderID: 3,
+    senderID: 3,
   },
 ]);
 
+// 获取监考记录
+const getProctoringRecordsData = async () => {
+  const res = await getProctoringRecords(paperData.scoreExamId);
+  console.log(res);
+  await waitData(res);
+  chatBox.value.scrollTop = chatBox.value.scrollHeight;
+};
+
+const waitData = (res: any) => {
+  invigilatedMsy.value = res.data.data;
+};
+let timer: any;
+
+const showPopover = () => {
+  timer = setInterval(() => {
+    getProctoringRecordsData();
+  }, 1000);
+};
+
 onMounted(async () => {
   getQuesDataByPaperId(paperData.paperId);
-  console.log("paperData.scoreExamId", paperData.scoreExamId);
   getShowFlag(paperData.scoreExamId);
+  getProctoringRecordsData();
 });
+
+// 在弹出框隐藏后触发的自定义操作
+const popoverHiddenHandler = () => {
+  console.log("结束轮询");
+  clearInterval(timer);
+};
 </script>
 <template>
   <el-container v-if="!paperData.showFlag">
@@ -312,9 +335,15 @@ onMounted(async () => {
       <div class="createPaper-info">
         <div class="createPaper-paperName">
           <h1>{{ paperData.paperName }}</h1>
-          <el-popover placement="right" :width="700" trigger="click">
+          <el-popover
+            placement="right"
+            :width="700"
+            trigger="click"
+            @hide="popoverHiddenHandler"
+            @show="showPopover"
+          >
             <template #reference>
-              <div class="right">
+              <div class="right" @click="getProctoringRecordsData">
                 <svg
                   t="1667993211879"
                   class="icon"
@@ -402,24 +431,34 @@ onMounted(async () => {
                     </div>
                   </div>
                   <div class="second_send">
-                    <div class="container">
+                    <div class="container" ref="chatBox">
                       <div
                         class="message_wrapper"
                         v-for="item in invigilatedMsy"
                         :class="{
-                          message_wrapper2: item.ExamineeID == item.SenderID,
+                          message_wrapper2:
+                            item.senderID == sessionGetData('userid'),
                         }"
                       >
                         <div class="message">
                           <div class="left">
                             <a href="">
-                              <img src="../../assets/anchor-1.png" alt="" />
+                              <img
+                                v-if="item.proctorID != item.senderID"
+                                src="../../assets/anchor-1.png"
+                                alt=""
+                              />
+                              <img
+                                v-if="item.proctorID == item.senderID"
+                                src="../../assets/teather.png"
+                                alt=""
+                              />
                             </a>
                           </div>
                           <div class="right">
                             <div class="textmess_box">
                               <div class="text">
-                                {{ item.IssueContent }}
+                                {{ item.issueContent }}
                               </div>
                             </div>
                           </div>

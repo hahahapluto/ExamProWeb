@@ -91,27 +91,19 @@
         .second_send {
             padding-left: 8px;
             background-color: #fff;
-            overflow-y: scroll;
             flex: 1;
+            transition: all 0.3s ease;
 
-            &::-webkit-scrollbar {
-                width: 10px;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                border: 2px solid #fff;
-                border-radius: 6px;
-                background: #DDDEE0;
-            }
         }
 
         .second_send .container {
             overflow-y: scroll;
-            width: 100%;
+            height: 300px;
             height: 100%;
             transition: 1s;
-            max-height: 400px;
+            max-height: 350px;
             min-height: 250px;
+            transition: all 0.3s ease;
 
             &::-webkit-scrollbar {
                 width: 10px;

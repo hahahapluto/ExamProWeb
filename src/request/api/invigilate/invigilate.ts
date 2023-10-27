@@ -1,6 +1,6 @@
 import service from "../..";
 
-// 获取所有考试数据
+// 获取所有监考人信息
 export function getAllProctors() {
   return service({
     method: "get", // 使用GET请求
@@ -8,7 +8,7 @@ export function getAllProctors() {
   });
 }
 
-// 获取所有考试数据
+// 添加考试监考人
 export function addExamProctors(proctorID: number, examID: number) {
   return service({
     method: "post",
@@ -44,6 +44,18 @@ export function addProctoringRecord(
 }
 
 // 根据考试ID查找监考人
+export function getProctoringRecords(examID: number) {
+  return service({
+    method: "post",
+    url: "/invigilate/proctoringRecordsByExamID",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    data: {
+      examID,
+    },
+  });
+}
+
+//根据考试ID查找监考记录
 export function findProctorsByExamID(examID: number) {
   return service({
     method: "post",
@@ -52,5 +64,14 @@ export function findProctorsByExamID(examID: number) {
     data: {
       examID,
     },
+  });
+}
+
+// 根据监考人ID查找要监考的考试信息
+//根据考试ID查找监考记录
+export function getExamsByProctorID() {
+  return service({
+    method: "post",
+    url: "/invigilate/examsByProctorID",
   });
 }
