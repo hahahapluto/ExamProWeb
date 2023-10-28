@@ -353,7 +353,7 @@ const popoverHiddenHandler = () => {
     <el-main class="createPaper">
       <div class="createPaper-info">
         <div class="createPaper-paperName">
-          <h1>{{ paperData.paperName }}</h1>
+          <h1>{{ paperData.examName }}</h1>
           <el-popover
             placement="right"
             :width="700"
@@ -423,7 +423,7 @@ const popoverHiddenHandler = () => {
                 <div class="chat_message_box">
                   <div class="first">
                     <div class="left" id="chatUsername">
-                      {{ paperData.paperName }}
+                      {{ paperData.examName }}
                     </div>
                     <div class="right">
                       <svg

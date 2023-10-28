@@ -51,22 +51,13 @@ const chooseStates = (state: string) => {
   );
 };
 
-// 进入考试
-const enterExam = ($router: any, index: number) => {
-  if ($router.currentRoute.value.fullPath == "/index/myExam") {
-    console.log("进入考试");
-    paperData.paperId = tableData.value[index].paperID;
-    paperData.paperName = tableData.value[index].examName;
-    paperData.scoreExamId = tableData.value[index].examID;
-    $router.push("/index/enterExam");
-  } else {
-    paperData.paperId = tableData.value[index].paperID;
-    paperData.scoreExamId = tableData.value[index].examID;
-    $router.push("/index/registUser");
-  }
+const enterMarkPaper = ($router: any, index: number) => {
+  console.log("enterMarkPaper");
+  paperData.paperId = tableData.value[index].paperID;
+  paperData.examName = tableData.value[index].examName;
+  paperData.scoreExamId = tableData.value[index].examID;
+  $router.push("/index/registUser");
 };
-
-
 </script>
 <template>
   <div>
@@ -124,7 +115,7 @@ const enterExam = ($router: any, index: number) => {
         <examItem
           v-for="(item, index) in tableData"
           :tableData="item"
-          @click="enterExam($router, index)"
+          @click="enterMarkPaper($router, index)"
         ></examItem>
       </div>
     </div>

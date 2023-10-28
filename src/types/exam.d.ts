@@ -24,7 +24,6 @@ export type myExamType = {
   userID: number;
 };
 
-
 /** 考试信息 */
 export type myExamRecord = {
   /** 考试ID */

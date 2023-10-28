@@ -3,12 +3,13 @@ const paperStore = defineStore("paperStore", {
   // 公用数据
   state: () => {
     return {
-      paperName: '',
+      examName: "",
+      paperName: "",
       paperId: -1,
       scoreExamId: -1,
       scoreUserId: -1,
-      showFlag: false
-    }
+      showFlag: false,
+    };
   },
   // 公用方法
   actions: {},

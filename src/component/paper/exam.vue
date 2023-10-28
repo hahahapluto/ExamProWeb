@@ -4,8 +4,8 @@ import { ElMessage, FormInstance, FormRules } from "element-plus";
 import cloneDeep from "lodash/cloneDeep";
 import { reactive, ref } from "vue";
 import {
-addExamProctors,
-getAllProctors,
+  addExamProctors,
+  getAllProctors,
 } from "../../request/api/invigilate/invigilate";
 import { addExam, getMyExam } from "../../request/api/paper/exam";
 import { getPaperPassAll } from "../../request/api/paper/paper";
@@ -226,7 +226,7 @@ const chooseStates = (state: string) => {
 const selectedState = ref("全部");
 
 // 进入考试
-const enterExam = ($router: any, item:any) => {
+const enterExam = ($router: any, item: any) => {
   // console.log('进入考试')
   console.log(item);
   // if (tableData.value[index].isEnd) {
@@ -237,12 +237,12 @@ const enterExam = ($router: any, item:any) => {
   //   ElMessage.error('考试未开始')
   //   return
   // }
-  paperDataPinia.paperId = item.paperID
+  paperDataPinia.paperId = item.paperID;
   // paperData.paperName = item.
-  paperDataPinia.scoreExamId = item.examID
+  paperDataPinia.scoreExamId = item.examID;
   // console.log(paperData.paperId, paperData.paperName, paperData.scoreExamId)
-  $router.push('/index/enterExam')
-}
+  $router.push("/index/enterExam");
+};
 </script>
 
 <template>
@@ -308,8 +308,12 @@ const enterExam = ($router: any, item:any) => {
           class="showbox-exam-item first"
           @click="dialogFormVisible = true"
         ></div>
-        
-        <div class="showbox-exam-item" v-for="item in tableData" @click="enterExam($router, item)">
+
+        <div
+          class="showbox-exam-item"
+          v-for="item in tableData"
+          @click="enterExam($router, item)"
+        >
           <div class="showbox-exam-item-title">
             {{ item.examName
             }}<span
@@ -621,7 +625,7 @@ const enterExam = ($router: any, item:any) => {
   font-weight: 700;
 }
 
-.status-blue{
+.status-blue {
   color: coral;
   font-weight: 700;
 }
