@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { ElTable } from "element-plus";
 import cloneDeep from "lodash/cloneDeep";
-import { computed, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { getMyBank } from "../../request/api/paper/bank";
 import {
-  getQuesPass,
-  getQuestionPoolPageCount,
+getQuesPass,
+getQuestionPoolPageCount,
 } from "../../request/api/paper/question";
 import "../../sass/index/paper/addQues.scss";
 import "../../sass/index/paper/question.scss";
 import { formatExamString, getOption, getQues } from "../../utils/question";
-import { onMounted } from "vue";
 interface Ques {
   questionType: string;
   questionDescription: string;
@@ -207,7 +206,7 @@ onMounted(() => {
       <el-table
         ref="multipleTableRef"
         :data="tableData"
-        style="width: 100%; height: 480px"
+        style="width: 100%; height: 600px"
         @selection-change="handleSelectionChange"
         class="from-table"
         :row-style="{ height: '50px' }"

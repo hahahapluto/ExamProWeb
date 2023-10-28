@@ -95,7 +95,7 @@ onMounted(() => {
 // 跳转
 const handleEdit = (row: paperInfo, $router: any) => {
   console.log(row)
-  $router.push('/index/paper')
+  $router.push('/index/enterExam')
 }
 
 // 通过

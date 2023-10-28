@@ -56,13 +56,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import { onMounted, reactive, ref } from 'vue';
-import { setPaperUltimatePass, setPaperUltimateRefuse } from '../../../request/api/audit/audit';
-import { getPaperPassJunior } from '../../../request/api/paper/paper';
+import { ElMessage } from 'element-plus'
+import { onMounted, reactive, ref } from 'vue'
+import { setPaperUltimatePass, setPaperUltimateRefuse } from '../../../request/api/audit/audit'
+import { getPaperPassJunior } from '../../../request/api/paper/paper'
+import pinia from '../../../stores'
+import paperStore from '../../../stores/paperStore'
 
+const paperDataPinia = paperStore(pinia)
 interface paperInfo {
-  paperId: string
+  paperId: number
   paperName: string
   objectiveScore: string
   subjectiveScore: Number
@@ -95,7 +98,8 @@ onMounted(() => {
 // 跳转
 const handleEdit = (row: paperInfo, $router: any) => {
   console.log(row)
-  $router.push('/index/paper')
+  paperDataPinia.paperId = row.paperId
+  $router.push('/index/enterExam')
 }
 
 // 通过

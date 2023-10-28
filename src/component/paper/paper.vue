@@ -148,7 +148,7 @@ const addNewPaper = async ($router: any, formEl: FormInstance | undefined) => {
       $router.push("/index/detailPaper");
     } else {
       console.log("error submit!", fields);
-      ElMessage.warning("添加考试失败！");
+      ElMessage.warning("添加试卷失败！");
       return;
     }
   });
@@ -165,10 +165,10 @@ watchEffect(() => {});
       class="examRegistration-form"
       size="large"
     >
-      <el-form-item label="查询考试：">
+      <el-form-item label="查询试卷：">
         <el-input
           v-model="state.search"
-          placeholder="请输入相关考试名称"
+          placeholder="请输入相关试卷名称"
           @input="clearSearch"
         ></el-input>
       </el-form-item>

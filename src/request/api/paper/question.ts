@@ -23,6 +23,15 @@ export const getQuesPass = (page: number, pageSize: number) => {
   });
 };
 
+// selectQuesPassAll
+export const getQuesPassAll = () => {
+  return service({
+    method: 'get',
+    url: '/index/selectQuesPassAll',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
+}
+
 // 获取个人的题目池
 export function getMyQuestion() {
   return service({

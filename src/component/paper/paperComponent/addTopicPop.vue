@@ -3,7 +3,7 @@ import { ElButton, ElMessage } from "element-plus";
 import { Ref, onMounted, ref, watch } from "vue";
 import { getMyBank, getQuesInBankPass } from "../../../request/api/paper/bank";
 import { addQuesIntoPaper } from "../../../request/api/paper/paper";
-import { getQuesPass } from "../../../request/api/paper/question";
+import { getQuesPassAll } from "../../../request/api/paper/question";
 import "../../../sass/paper/addTopicPop.scss";
 import pinia from "../../../stores";
 import paperStore from "../../../stores/paperStore";
@@ -76,7 +76,7 @@ watch(
 
 // 获取全部题目
 const getAllQuesData = async () => {
-  const res = await getQuesPass();
+  const res = await getQuesPassAll();
   const needFormatData = res.data.data;
   let maps: question[] = [] as any[];
   needFormatData.forEach(
@@ -200,6 +200,7 @@ onMounted(() => {
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="200">
       </el-table-column>
+      
     </el-table>
     <span class="addTopicPop-footer">
       <el-button @click="props.cancelDialogForm">取 消</el-button>

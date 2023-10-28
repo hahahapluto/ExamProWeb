@@ -74,10 +74,13 @@
 import { ElMessage } from 'element-plus';
 import { onMounted, reactive, ref } from 'vue';
 import { setExamJuniorPass, setExamJuniorRefuse } from '../../../request/api/audit/audit';
-import { getMyExam } from '../../../request/api/paper/exam';
+import { getAllExam } from '../../../request/api/paper/exam';
+import pinia from "../../../stores";
+import paperStore from "../../../stores/paperStore";
 
+const paperDataPinia = paperStore(pinia);
 interface examInterface {
-  examID: Number
+  examID: number
   examName: string
   startTime: string
   examDuration: Number
@@ -96,7 +99,7 @@ const allPaperInfo = ref<examInterface[]>([])
 // 获取考试列表
 const getExamList = async () => {
   try {
-    let res = await getMyExam()
+    let res = await getAllExam()
     allPaperInfo.value = res.data.data
     allPaperInfo.value.forEach((item: examInterface) => {
       let date = new Date(item.startTime)
@@ -115,7 +118,8 @@ onMounted(() => {
 // 跳转
 const handleEdit = (row: examInterface, $router: any) => {
   console.log(row)
-  $router.push('/index/paper')
+  paperDataPinia.scoreExamId = row.examID
+  $router.push('/index/enterExam')
 }
 
 // 通过

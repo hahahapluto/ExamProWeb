@@ -2,7 +2,7 @@
 // import type { FormInstance } from 'element-plus';
 import cloneDeep from 'lodash/cloneDeep';
 import { reactive, ref } from 'vue';
-import { getMyBank } from '../../../request/api/paper/bank';
+import { getAllBank } from '../../../request/api/paper/bank';
 import pinia from '../../../stores';
 import quesBankPinia from '../../../stores/aduitQuesBank';
 // import { commonRules } from '../../utils/question'
@@ -32,7 +32,7 @@ let tableData: any = ref<bank[]>()
 
 // tableData = myQuestionList;
 const AllQuestion = async () => {
-  allTableData = (await getMyBank()).data.data
+  allTableData = (await getAllBank()).data.data
   console.log(allTableData)
   allTableData.forEach((item: { createTime: string }) => {
     let date = new Date(item.createTime)

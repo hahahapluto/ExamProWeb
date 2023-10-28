@@ -9,6 +9,14 @@ export function getMyBank() {
   });
 }
 
+// searchAllBank
+export function getAllBank() {
+  return service({
+    method: 'get',
+    url: `/index/searchAllBank`
+  })
+}
+
 // 新增题库
 export function addBank(bankname: string) {
   return service({

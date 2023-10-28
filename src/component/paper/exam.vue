@@ -9,8 +9,11 @@ getAllProctors,
 } from "../../request/api/invigilate/invigilate";
 import { addExam, getMyExam } from "../../request/api/paper/exam";
 import { getPaperPassAll } from "../../request/api/paper/paper";
+import pinia from "../../stores";
+import paperStore from "../../stores/paperStore";
 import { commonRules } from "../../utils/question";
 
+const paperDataPinia = paperStore(pinia);
 interface examInterface {
   name: string;
   describe: string;
@@ -221,6 +224,25 @@ const chooseStates = (state: string) => {
 
 // 响应式变量，用于存储当前选择的状态，默认为"全部"
 const selectedState = ref("全部");
+
+// 进入考试
+const enterExam = ($router: any, item:any) => {
+  // console.log('进入考试')
+  console.log(item);
+  // if (tableData.value[index].isEnd) {
+  //   ElMessage.error('考试已经结束')
+  //   return
+  // }
+  // if (tableData.value[index].isBegin) {
+  //   ElMessage.error('考试未开始')
+  //   return
+  // }
+  paperDataPinia.paperId = item.paperID
+  // paperData.paperName = item.
+  paperDataPinia.scoreExamId = item.examID
+  // console.log(paperData.paperId, paperData.paperName, paperData.scoreExamId)
+  $router.push('/index/enterExam')
+}
 </script>
 
 <template>
@@ -286,7 +308,8 @@ const selectedState = ref("全部");
           class="showbox-exam-item first"
           @click="dialogFormVisible = true"
         ></div>
-        <div class="showbox-exam-item" v-for="item in tableData">
+        
+        <div class="showbox-exam-item" v-for="item in tableData" @click="enterExam($router, item)">
           <div class="showbox-exam-item-title">
             {{ item.examName
             }}<span
@@ -595,6 +618,11 @@ const selectedState = ref("全部");
 
 .status-orange {
   color: #35d75ee7;
+  font-weight: 700;
+}
+
+.status-blue{
+  color: coral;
   font-weight: 700;
 }
 

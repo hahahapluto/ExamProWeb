@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ElPopover } from "element-plus";
+import { ref } from "vue";
 import PopUp from "../component/index/popUp.vue";
-import { jumpPath } from "../hooks/useStorage";
+import { jumpPath, sessionGetData } from "../hooks/useStorage";
 import "../sass/index/index.scss";
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
@@ -9,10 +10,10 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
-// 点击跳转对应路由
-// const jumpPath = function ($router: any, path: String) {
-//   $router.push("/index/" + path);
-// };
+
+let curRole = ref(1);
+curRole.value = sessionGetData("role");
+console.log(curRole);
 </script>
 
 <template>
@@ -30,7 +31,8 @@ const handleClose = (key: string, keyPath: string[]) => {
               @open="handleOpen"
               @close="handleClose"
             >
-              <el-sub-menu index="1">
+            <!-- 考试 -->
+              <el-sub-menu index="1" v-if="curRole == 4">
                 <template #title>
                   <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
                   <span>考试</span>
@@ -54,17 +56,19 @@ const handleClose = (key: string, keyPath: string[]) => {
                   >
                 </el-sub-menu>
               </el-sub-menu>
+              <!-- 题目池 -->
               <el-menu-item
                 index="2"
                 @click="() => jumpPath($router, 'topicPool')"
-              >
+              v-if="curRole != 3 && curRole != 5">
                 <el-icon
                   ><el-icon
                     ><i class="icon iconfont icon-timujindu"></i></el-icon
                 ></el-icon>
                 <span>题目池</span>
               </el-menu-item>
-              <el-sub-menu index="3">
+              <!-- 考卷管理 -->
+              <el-sub-menu index="3" v-if="curRole == 3 || curRole == 5">
                 <template #title>
                   <el-icon
                     ><i class="icon iconfont icon-kaojuanguanli"></i
@@ -94,10 +98,12 @@ const handleClose = (key: string, keyPath: string[]) => {
                 <el-menu-item
                   index="3-5"
                   @click="() => jumpPath($router, 'exam')"
+                  v-if="curRole == 3"
                   >考试管理</el-menu-item
                 >
               </el-sub-menu>
-              <el-sub-menu index="4">
+              <!-- 评卷管理 -->
+              <el-sub-menu index="4" v-if="curRole == 3">
                 <template #title>
                   <el-icon
                     ><i class="icon iconfont icon-pingfenbiaozhun"></i
@@ -110,12 +116,13 @@ const handleClose = (key: string, keyPath: string[]) => {
                   >卷子</el-menu-item
                 >
               </el-sub-menu>
-              <el-sub-menu index="5">
+              <!-- 审核 -->
+              <el-sub-menu index="5" v-if="curRole == 1 || curRole == 2">
                 <template #title>
                   <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
                   <span>审核</span>
                 </template>
-                <el-sub-menu index="5-1">
+                <el-sub-menu index="5-1" v-if="curRole == 1">
                   <template #title>初级审核</template>
                   <el-menu-item
                     index="5-1-1"
@@ -133,7 +140,7 @@ const handleClose = (key: string, keyPath: string[]) => {
                     >考试初审</el-menu-item
                   >
                 </el-sub-menu>
-                <el-sub-menu index="5-2">
+                <el-sub-menu index="5-2" v-if="curRole == 2">
                   <template #title>终极审核</template>
                   <el-menu-item
                     index="5-2-1"
@@ -158,7 +165,8 @@ const handleClose = (key: string, keyPath: string[]) => {
                   >
                 </el-sub-menu>
               </el-sub-menu>
-              <el-sub-menu index="6">
+              <!-- 监考管理 -->
+              <el-sub-menu index="6" v-if="curRole == 6">
                 <template #title>
                   <el-icon><i class="icon iconfont icon-kaoshi"></i></el-icon>
                   <span>监考管理</span>

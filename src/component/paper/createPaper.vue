@@ -110,6 +110,7 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   let res = await findQuesByPaperId(paperId);
   quesDatas = res.data.data;
   console.log(quesDatas);
+  if(!quesDatas) return
   quesDatas.map((item: quesData) => {
     if (item.questionType === "0") {
       // type = "主观题";
