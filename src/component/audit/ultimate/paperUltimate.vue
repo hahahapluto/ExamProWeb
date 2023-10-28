@@ -3,10 +3,18 @@
   <div class="selector">
     <el-form :model="selectForm" class="selector-form" size="large">
       <el-form-item class="selector-form-item">
-        <el-input v-model="selectForm.data" class="selector-form-item-input" placeholder="搜索试卷内容" />
+        <el-input
+          v-model="selectForm.data"
+          class="selector-form-item-input"
+          placeholder="搜索试卷内容"
+        />
       </el-form-item>
       <el-form-item class="selector-form-item">
-        <el-select v-model="selectForm.type" placeholder="please select your zone" class="selector-form-item-select">
+        <el-select
+          v-model="selectForm.type"
+          placeholder="please select your zone"
+          class="selector-form-item-select"
+        >
           <el-option label="全部" value="0" />
           <el-option label="未审核" value="1" />
           <el-option label="已通过" value="2" />
@@ -17,9 +25,16 @@
   </div>
   <div class="showTable">
     <el-table :data="allPaperInfo" style="width: 100%">
-      <el-table-column property="paperId" label="试卷id" width="200" align="center">
+      <el-table-column
+        property="paperId"
+        label="试卷id"
+        width="200"
+        align="center"
+      >
         <template #default="scope">
-          <div style="display: flex; align-items: center; justify-content: center">
+          <div
+            style="display: flex; align-items: center; justify-content: center"
+          >
             <!-- <el-icon><timer /></el-icon> -->
             <span>{{ scope.row.paperId }}</span>
           </div>
@@ -43,12 +58,42 @@
       </el-table-column>
       <el-table-column label="操作" width="330" align="center">
         <template #default="scope">
-          <div style="display: flex; align-items: center; justify-content: center">
+          <div
+            style="display: flex; align-items: center; justify-content: center"
+          >
             <el-button @click="handleEdit(scope.row, $router)">查看</el-button>
-            <span v-if="scope.row.ultimateState == 1" style="color: #67c23a; font-weight: 700; font-size: 16px; margin-left: 20px">已通过</span>
-            <span v-if="scope.row.ultimateState == 2" style="color: #f56c6c; font-weight: 700; font-size: 16px; margin-left: 20px">已拒绝</span>
-            <el-button type="success" @click="passQues(scope.row)" v-if="scope.row.ultimateState == 0">通过</el-button>
-            <el-button type="danger" @click="refuseQues(scope.row)" v-if="scope.row.ultimateState == 0">拒绝</el-button>
+            <span
+              v-if="scope.row.ultimateState == 1"
+              style="
+                color: #67c23a;
+                font-weight: 700;
+                font-size: 16px;
+                margin-left: 20px;
+              "
+              >已通过</span
+            >
+            <span
+              v-if="scope.row.ultimateState == 2"
+              style="
+                color: #f56c6c;
+                font-weight: 700;
+                font-size: 16px;
+                margin-left: 20px;
+              "
+              >已拒绝</span
+            >
+            <el-button
+              type="success"
+              @click="passQues(scope.row)"
+              v-if="scope.row.ultimateState == 0"
+              >通过</el-button
+            >
+            <el-button
+              type="danger"
+              @click="refuseQues(scope.row)"
+              v-if="scope.row.ultimateState == 0"
+              >拒绝</el-button
+            >
           </div>
         </template>
       </el-table-column>
@@ -56,66 +101,70 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
-import { onMounted, reactive, ref } from 'vue'
-import { setPaperUltimatePass, setPaperUltimateRefuse } from '../../../request/api/audit/audit'
-import { getPaperPassJunior } from '../../../request/api/paper/paper'
-import pinia from '../../../stores'
-import paperStore from '../../../stores/paperStore'
+import { ElMessage } from "element-plus";
+import { onMounted, reactive, ref } from "vue";
+import {
+  setPaperUltimatePass,
+  setPaperUltimateRefuse,
+} from "../../../request/api/audit/audit";
+import { getPaperPassJunior } from "../../../request/api/paper/paper";
+import pinia from "../../../stores";
+import paperStore from "../../../stores/paperStore";
 
-const paperDataPinia = paperStore(pinia)
+const paperDataPinia = paperStore(pinia);
 interface paperInfo {
-  paperId: number
-  paperName: string
-  objectiveScore: string
-  subjectiveScore: Number
-  totalScore: string
+  paperId: number;
+  paperName: string;
+  objectiveScore: string;
+  subjectiveScore: Number;
+  totalScore: string;
 }
 
 const selectForm = reactive({
-  data: '',
-  type: '请选择试卷状态'
-})
+  data: "",
+  type: "请选择试卷状态",
+});
 
 // 所有试卷的信息
-const allPaperInfo = ref<paperInfo[]>([])
+const allPaperInfo = ref<paperInfo[]>([]);
 
 // 获取考试列表
 const getPaperList = async () => {
   try {
-    let res = await getPaperPassJunior()
-    allPaperInfo.value = res.data.data
-    console.log(allPaperInfo.value)
+    let res = await getPaperPassJunior();
+    allPaperInfo.value = res.data.data;
+    console.log(allPaperInfo.value);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 onMounted(() => {
-  getPaperList()
-})
+  getPaperList();
+});
 
 // 跳转
 const handleEdit = (row: paperInfo, $router: any) => {
-  console.log(row)
-  paperDataPinia.paperId = row.paperId
-  $router.push('/index/enterExam')
-}
+  console.log(row);
+  paperDataPinia.paperName = row.paperName;
+  paperDataPinia.paperId = row.paperId;
+  $router.push("/index/enterExam");
+};
 
 // 通过
 const passQues = async (scope: any) => {
-  console.log(scope.paperId)
-  const { code, msg } = (await setPaperUltimatePass(scope.paperId)).data
-  if (code == 0) ElMessage.success(msg)
-  getPaperList()
-}
+  console.log(scope.paperId);
+  const { code, msg } = (await setPaperUltimatePass(scope.paperId)).data;
+  if (code == 0) ElMessage.success(msg);
+  getPaperList();
+};
 // 拒绝
 const refuseQues = async (scope: any) => {
-  console.log(scope.paperId)
-  const { code, msg } = (await setPaperUltimateRefuse(scope.paperId)).data
-  if (code == 0) ElMessage.success(msg)
-  getPaperList()
-}
+  console.log(scope.paperId);
+  const { code, msg } = (await setPaperUltimateRefuse(scope.paperId)).data;
+  if (code == 0) ElMessage.success(msg);
+  getPaperList();
+};
 </script>
 
 <style lang="scss" scoped>

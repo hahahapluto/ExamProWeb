@@ -237,11 +237,11 @@ const enterExam = ($router: any, item: any) => {
   //   ElMessage.error('考试未开始')
   //   return
   // }
-  paperDataPinia.paperId = item.paperID;
+  paperDataPinia.examName = item.examName;
   // paperData.paperName = item.
   paperDataPinia.scoreExamId = item.examID;
   // console.log(paperData.paperId, paperData.paperName, paperData.scoreExamId)
-  $router.push("/index/enterExam");
+  $router.push("/index/enterExamUltimate");
 };
 </script>
 
