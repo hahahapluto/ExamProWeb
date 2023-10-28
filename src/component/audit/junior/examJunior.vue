@@ -188,7 +188,9 @@ onMounted(() => {
 
 // 跳转
 const handleEdit = (row: examInterface, $router: any) => {
+  console.log("考试初审");
   console.log(row);
+  paperDataPinia.examName = row.examName;
   paperDataPinia.scoreExamId = row.examID;
   $router.push("/index/enterExamUltimate");
 };
