@@ -26,11 +26,21 @@ export function getAllExamRecord(examId: Number) {
   })
 }
 
+//getAllExamRecordMana
+export function getAllExamRecordMana(examId: Number,userId:Number) {
+  return service({
+    method: 'post', // 使用GET请求
+    url: '/exam/getAllExamRecordMana?examId=' + examId+'&userId='+userId,
+    headers: { 'Content-Type': 'application/json' }
+  })
+}
+
+
 // 更新学生成绩 updateUserExamScore
-export function updateUserExamScore(examId: Number, questionId: Number, score: Number) {
+export function updateUserExamScore(userId:Number,examId: Number, questionId: Number, score: Number) {
   return service({
     method: 'get', // 使用GET请求
-    url: '/exam/updateUserExamScore?examId=' + examId + '&questionId=' + questionId + '&score=' + score,
+    url: '/exam/updateUserExamScore?userId='+userId+'&examId=' + examId + '&questionId=' + questionId + '&score=' + score,
     headers: { 'Content-Type': 'application/json' }
   })
 }

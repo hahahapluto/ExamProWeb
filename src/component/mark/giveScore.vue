@@ -3,8 +3,8 @@ import { ElMessage } from "element-plus";
 import { onMounted, ref } from "vue";
 import { findQuesByPaperId } from "../../request/api/paper/paper";
 import {
-  getAllExamRecord,
-  updateUserExamScore,
+getAllExamRecordMana,
+updateUserExamScore
 } from "../../request/api/record/userExamRecord";
 import "../../sass/paper/createPaper.scss";
 import pinia from "../../stores";
@@ -95,8 +95,9 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   let res = await findQuesByPaperId(paperId);
   console.log(res);
   console.log(paperData.scoreExamId);
-
-  let userAnswerData = await getAllExamRecord(paperData.scoreExamId);
+  console.log(paperData.scoreUserId);
+  
+  let userAnswerData = (await getAllExamRecordMana(paperData.scoreExamId,paperData.scoreUserId)).data.data;
   console.log(userAnswerData);
 
   quesDatas = res.data.data;
@@ -146,6 +147,7 @@ const getQuesDataByPaperId = async (paperId: Number) => {
   for (const category of quesSequenceDatas.value) {
     category.lists.forEach((item) => {
       // 查找匹配的记录
+      console.log(userAnswerData);
       const matchingRecord = userAnswerData.find(
         (record: { questionId: any }) => record.questionId === item
       );
@@ -176,16 +178,18 @@ const finishGetScore = async () => {
   for (const category of quesSequenceDatas.value) {
     for (let i = 0; i < category.lists.length; i++) {
       // console.log(paperData.scoreExamId, category.lists[i], category.userGetScore[i])
-      const { code } = (
+      const { code,res,data } = (
         await updateUserExamScore(
+          paperData.scoreUserId,
           paperData.scoreExamId,
           category.lists[i],
           category.userGetScore[i]
         )
       ).data;
+      console.log(code,res,data);
+      
       if (code == 1) {
-        ElMessage.error("上传错误,请重新上传");
-        break;
+        return ElMessage.error("上传错误,请重新上传");
       }
     }
   }
