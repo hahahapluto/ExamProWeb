@@ -99,7 +99,7 @@ ExamPro在线考试系统
 
 要求与功能需求一致
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image002.gif)
+![img](images/clip_image002.gif)
 
 2.2.2 用例描述
 
@@ -265,19 +265,19 @@ ExamPro在线考试系统
 
 （1）题目管理：**考试管理员**或出卷人可以上传题目->**初级审核员**审核通过加进题目池->**考试管理员**或出卷人选择题目加入题库->**终极审核员**审核题库
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image004.gif)
+![img](images/clip_image004.gif)
 
 （2）试卷管理：**出卷人**出卷->**初级审核员**审核->**终极审核员**审核
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image006.gif)
+![img](images/clip_image006.gif)
 
 （3）考试安排和报名：**考试管理员**新增考试并选择卷子->**初级审核员**审核->**终极审核员**审核->**考生**可以报名考试
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image008.gif)
+![img](images/clip_image008.gif)
 
 （4）考试及评分管理：**考生**可以做卷子->**监考人**监考处理考试中问题和规则->考试结束**考试管理员**可以评卷->**考试管理员**可以查看考生成绩且可以修改有争议的成绩
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image010.gif)
+![img](images/clip_image010.gif)
 
 #### 3数据库设计
 
@@ -285,21 +285,21 @@ ExamPro在线考试系统
 
 1. 考试可以报名考试，监考人对考试进行监考，考生答题，由评卷人对考生所做的卷子进行评卷。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image012.gif)
+![img](images/clip_image012.gif)
 
 2. 考试管理员和出卷人可以出题，由初级审核员对题目进行审核，同时可以新增题库，讲题目添加到题库中，由终极审核员对题库进行审核。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image014.gif)
+![img](images/clip_image014.gif)
 
 3. 考试管理员可以创建考试，由初级审核员和终极审核员对考试进行审核，通过后学生才可以报名考试。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image016.gif)
+![img](images/clip_image016.gif)
 
 4. 出卷人可以新建卷子，在题目池或者题库中选择题目组成卷子，由初级审核员和终极审核员对考试进行审核，通过后考试管理员才可以在考试中选择该卷子。
 
  
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image018.gif)
+![img](images/clip_image018.gif)
 
 ###### 3.2 逻辑结构设计（关系模式）
 
@@ -696,55 +696,55 @@ create table user
 
 用户模块：控制层接收用户请求，例如查找用户、登录、注册以及更新用户信息，然后调用业务层执行核心逻辑，包括用户的查找、创建、信息更新等操作，业务层可能会涉及数据访问接口层以与数据存储进行交互，执行数据库操作，最终控制层将结果反馈给用户。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image020.gif)
+![img](images/clip_image020.gif)
 
 试题模块：控制层接收用户请求，例如搜索题目、添加题目、查询审核状态等，随后调用业务层完成核心逻辑，包括题目的创建、搜索、审核状态的查询，而业务层借助数据访问接口层与数据存储进行交互，执行数据库操作，最后，控制层将结果返回给用户。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image022.gif)
+![img](images/clip_image022.gif)
 
 考卷模块：控制层接收用户请求，如搜索试卷、添加试卷、查找试卷题目等，随后调用业务层完成核心逻辑，包括创建试卷、题目的增加等操作，而业务层访问接口层与数据存储进行交互，执行数据库操作，最后，控制层将结果返回给用户。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image024.gif)
+![img](images/clip_image024.gif)
 
 考试模块：控制层接收用户请求，涵盖了获取所有考试、用户考试记录、注册用户参加考试以及更新考试信息等多方面操作，业务层执行逻辑，包括考试的通过状态、用户考试记录等。业务层涉及数据访问接口层的调用，执行数据库操作，最后，控制层将结果返回给用户。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image026.gif)
+![img](images/clip_image026.gif)
 
 评卷模块：用户通过控制层发起审核请求，控制层解析请求并将其传递给业务层，业务层执行审核逻辑，包括条件检查和状态更新，调用数据访问接口以反映更改在数据存储中。最后，控制层将响应结果返回给用户，通知他们审核操作的结果。审核包括了题目，试卷，考试和题库的审核。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image028.gif)
+![img](images/clip_image028.gif)
 
 #### 5业务流程顺序图
 
 ###### 5.1 注册用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image030.gif)
+![img](images/clip_image030.gif)
 
 ###### 5.2 新增题目用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image032.gif)
+![img](images/clip_image032.gif)
 
 ###### 5.3 创建题库用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image034.gif)
+![img](images/clip_image034.gif)
 
 ###### 5.4 新建考卷用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image036.gif)
+![img](images/clip_image036.gif)
 
  
 
 ###### 5.5 新增考试用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image038.gif)
+![img](images/clip_image038.gif)
 
 ###### 5.5 考试报名及考试用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image040.gif)
+![img](images/clip_image040.gif)
 
 ###### 5.6 评卷人评卷用例
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image042.gif)
+![img](images/clip_image042.gif)
 
 #### 6系统各模块运行界面截图
 
@@ -752,11 +752,11 @@ create table user
 
 6.1.1 注册用户并选择用户角色
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image044.gif)
+![img](images/clip_image044.gif)
 
 6.1.2 登录注册成功的用户，输入用户名和密码即可登录
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image046.gif)
+![img](images/clip_image046.gif)
 
 ###### 6.2 考卷管理模块
 
@@ -764,19 +764,19 @@ create table user
 
 1. 用户可以查看通过审核的试题。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image048.gif)
+![img](images/clip_image048.gif)
 
  
 
 2. 可以把通过审核的试题加入到自己的创建的题库中。
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image050.gif)
+![img](images/clip_image050.gif)
 
 6.2.2 题库管理
 
 **1.** **新增题库**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image052.gif)**
+**![img](images/clip_image052.gif)**
 
  
 
@@ -784,49 +784,49 @@ create table user
 
 **1.** **新增题目（单选题）**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image054.gif)**
+**![img](images/clip_image054.gif)**
 
 **3.**     **新增题目（多选题）**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image056.gif)**
+**![img](images/clip_image056.gif)**
 
 **4.**     **新增题目（简答题）**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image058.gif)**
+**![img](images/clip_image058.gif)**
 
 **5.**     **选择题目添加到题库，可以进行多选。添加成功后会有成功提示。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image060.gif)**
+**![img](images/clip_image060.gif)**
 
 **6.**     **可以对题目类型进行筛选。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image062.gif)**
+**![img](images/clip_image062.gif)**
 
 6.3.4 试卷管理
 
 **1.**     **新增试卷，输入试卷名即可创建。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image064.gif)**
+**![img](images/clip_image064.gif)**
 
 **2.**     **创建试卷成功后自动跳转到试卷组成页面。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image066.gif)**
+**![img](images/clip_image066.gif)**
 
 **3.**     **可以选择通过初审的试题添加到试卷中。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image068.gif)**
+**![img](images/clip_image068.gif)**
 
 **4.**     **可以选择题库里面的试题加到试卷中。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image070.gif)**
+**![img](images/clip_image070.gif)**
 
 **5.**     **试题添加完毕后会自动组成一张卷子。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image072.gif)**
+**![img](images/clip_image072.gif)**
 
 **6.**     **试卷列表会自动计算试卷的分数，也会显示试卷的审核状态。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image074.gif)**
+**![img](images/clip_image074.gif)**
 
  
 
@@ -834,15 +834,15 @@ create table user
 
 **1.**     **新增考试，需要填写好试卷名称，描述，考试时间和时长，监考人和考卷信息。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image076.gif)**
+**![img](images/clip_image076.gif)**
 
 **2.**     **创建成功后可以看到考试的状态，考试报名的人数等信息。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image078.gif)**
+**![img](images/clip_image078.gif)**
 
 **3.**     **点击考试可以查看对应试卷详情。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image080.gif)**
+**![img](images/clip_image080.gif)**
 
  
 
@@ -852,29 +852,29 @@ create table user
 
 **1.**     **考试发布且通过审核后，考生可以查看考试列表。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image082.gif)**
+**![img](images/clip_image082.gif)**
 
 **2.**     **考生可以查看试卷详细信息，并可以报考试。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image084.gif)**
+**![img](images/clip_image084.gif)**
 
 6.3.2 在线考试
 
 **1.**     **在我的考试中可以看到我报名的考试**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image086.gif)
+![img](images/clip_image086.gif)
 
 **2.**     **点击对应的考试即可进行考试。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image088.gif)**
+**![img](images/clip_image088.gif)**
 
 **3.**     **答题完成后，即可进行交卷。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image090.gif)**
+**![img](images/clip_image090.gif)**
 
 **4.**     **交卷完成后，不可进行答案修改。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image092.gif)**
+**![img](images/clip_image092.gif)**
 
 ###### 6.4 评卷管理模块
 
@@ -882,15 +882,15 @@ create table user
 
 **1.**     **可以查看考试信息列表。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image094.gif)
+![img](images/clip_image094.gif)
 
 **2.**     **点击对应的考试，可以看到报名了考试的学生。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image096.gif)
+![img](images/clip_image096.gif)
 
 **3.**     **点击评卷即可进行评卷。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image098.gif)
+![img](images/clip_image098.gif)
 
 ###### 6.5 审核
 
@@ -898,19 +898,19 @@ create table user
 
 **1.**     **可以查看题目详情信息，然后点击通过按钮，试题即可通过初审。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image100.gif)**
+**![img](images/clip_image100.gif)**
 
 **2.**     **审核通过后会有弹窗表示审核通过成功。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image102.gif)**
+**![img](images/clip_image102.gif)**
 
 **3.**     **试卷初审中可以对试卷进行审核，同时点击查看也可以查看试卷详情。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image104.gif)**
+**![img](images/clip_image104.gif)**
 
 **4.**     **考试初审中可以对考试进行审核，同时点击查看也可以查看考试详情。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image106.gif)**
+**![img](images/clip_image106.gif)**
 
  
 
@@ -918,25 +918,25 @@ create table user
 
 **1.**     **点击题目题库审核，可以看到待审核的题库列表。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image108.gif)
+![img](images/clip_image108.gif)
 
 **2.**     **点击审核，对将要加入题库的题目进行审核。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image110.gif)**
+**![img](images/clip_image110.gif)**
 
 **3.**     **试卷通过初审后，则会提交到终审进行二级审核。点击通过即可进行审核成功。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image112.gif)**
+**![img](images/clip_image112.gif)**
 
 **4.**     **考试通过初审后，则会提交到终审进行二级审核。点击通过即可进行审核成功。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image114.gif)
+![img](images/clip_image114.gif)
 
 ###### 6.6 题目池
 
 **1.**     **可以看到通过审核的所有用户上传的题目。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image116.gif)
+![img](images/clip_image116.gif)
 
 ###### 6.7 监考管理
 
@@ -944,15 +944,15 @@ create table user
 
 **1.**     **考生在考试中遇到问题，可以及时反馈给监考人。**
 
-**![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image118.gif)**
+**![img](images/clip_image118.gif)**
 
 **2.**     **监考人查看考试中考生反馈的问题，及时处理。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image120.gif)
+![img](images/clip_image120.gif)
 
 3. **考生可以及时查看监考人的解决方案。**
 
-![img](file:///C:/Users/11359/AppData/Local/Temp/msohtmlclip1/01/clip_image122.gif)
+![img](images/clip_image122.gif)
 
 | 项目完成情况  及存在问题（不少于200字） | （1）项目的主要功能已经基本完成，包括用户登录注册、题库管理、试卷生成、考试管理、学生报名和参加考试、监考处理、评卷与成绩管理等。这些功能构成了一个完整的在线考试系统，为学生和教育机构提供了便捷的考试管理工具。         具体来说，项目允许考试管理员根据需要创建不同类型的考试，包括选择题、填空题、主观题等，这种多样性有助于适应不同学科和考试类型的需求。学生可以在规定时间内报名参加考试，系统还能够自动批改客观题，这提高了效率，同时评卷人可以登录平台，批改学生的主观题，确保评分的公平性和准确性。     存在问题：  尽管项目的主要功能已经实现，但还存在一些问题需要解决：     1. 颜色风格不统一：项目中一些页面的颜色风格不一致，这可能会影响用户的整体体验和界面的一致性。在视觉上，一致的颜色风格可以提升用户界面的专业性和吸引力。     2. 缺乏倒计时提醒：在考试过程中，缺乏倒计时提醒可能会导致学生不清楚剩余时间，从而影响他们的答题策略和时间管理。倒计时提醒是考试系统中重要的辅助功能，应该被添加以提供更好的用户体验。     3. 考试监考方式有限：目前，监考处理只支持学生与监考人进行文字问答，这可能不足以满足一些特殊考试的监考需求。考虑到不同考试可能需要不同的监考方式，项目可以考虑扩展监考方式的选项，以适应更广泛的应用场景。     总的来说，项目的基本功能已经相对完备，但需要解决一些细节问题，以提高用户体验和系统的功能完整性。解决这些问题将有助于使项目更加稳健和适用于广泛的考试需求。 |
 | --------------------------------------- | ------------------------------------------------------------ |
