@@ -4,8 +4,8 @@ import cloneDeep from "lodash/cloneDeep";
 import { computed, onMounted, reactive, ref } from "vue";
 import { getMyBank } from "../../request/api/paper/bank";
 import {
-getQuesPass,
-getQuestionPoolPageCount,
+  getQuesPass,
+  getQuestionPoolPageCount,
 } from "../../request/api/paper/question";
 import "../../sass/index/paper/addQues.scss";
 import "../../sass/index/paper/question.scss";
@@ -206,7 +206,7 @@ onMounted(() => {
       <el-table
         ref="multipleTableRef"
         :data="tableData"
-        style="width: 100%; height: 600px"
+        style="width: 100%; height: 480px"
         @selection-change="handleSelectionChange"
         class="from-table"
         :row-style="{ height: '50px' }"

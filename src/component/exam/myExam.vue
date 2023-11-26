@@ -78,9 +78,9 @@ const enterExam = ($router: any, index: number) => {
     ElMessage.error("考试未开始");
     return;
   }
-  console.log($router.currentRoute.value.fullPath);
-  if ($router.currentRoute.value.fullPath == "/index/aduit/junior/paperJunior")
-    console.log($router.currentRoute.value.fullPath);
+  // console.log($router.currentRoute.value.fullPath);
+  // if ($router.currentRoute.value.fullPath == "/index/aduit/junior/paperJunior")
+  //   console.log($router.currentRoute.value.fullPath);
 
   paperData.paperId = tableData.value[index].paperId;
   paperData.examName = tableData.value[index].examName;
